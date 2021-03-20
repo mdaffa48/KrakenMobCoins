@@ -1,5 +1,0 @@
-permissions:
-- krakenmobcoins.admin
-- krakenmobcoins.balance
-- krakenmobcoins.balance.others
-- krakenmobcoins.pay
