@@ -1,0 +1,335 @@
+
+# If MYSQL is disabled, we will use SQLite as the database.
+MYSQL:
+  enabled: false
+  hostname: 'localhost'
+  database: 'database'
+  username: 'username'
+  password: 'password'
+  port: 3306
+  useSSL: false
+
+autoSave:
+  enabled: true
+  # In seconds.
+  interval: 300
+
+# Looting System explanation.
+# Basically if the range amount for mobcoins are 1 - 2
+# and the player has Looting I, they will get additional
+# 10% of the minimum range, that means the range
+# will be 1.1 - 2.1
+#
+# (Only works if the mobcoin amount is in range mode)
+#
+# Physical Mob Coin explanation.
+# Basically every mobs death, will drop the mob coin instead
+# directly transferring it to the killer's account.
+options:
+  canGoNegative: true
+  lootingSystem: false
+  physicalMobCoin:
+    enabled: false
+    # Damage Cause can be found here https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html
+    deathCause:
+      - FALL
+      - FIRE_TICK
+      - ENTITY_ATTACK
+  confirmationMenu: true
+  closeAfterPurchase: false
+  startingBalance: 0
+  purchaseLimit: true
+  disableMobCoinsFromSpawner: false
+  autoUpdateGUI:
+    enabled: true
+    # In ticks (20 ticks = 1 second)
+    updateEvery: 20
+  salaryMode:
+    enabled: false
+    # In seconds ( 300 second = 5 minutes )
+    announceEvery: 300
+    # Player will receive the coins after the message shown, if this option is enabled.
+    receiveAfterMessage: false
+    messages:
+      - ''
+      - '&6&l[!] Mob &e&lCoins &7(Earning Summary)'
+      - '&fYou have earned &6%coins% coins &fin the past 5 minutes!'
+      - ''
+
+receivedMobCoins:
+  sound:
+    enabled: true
+    name: ENTITY_PLAYER_LEVELUP
+    volume: 1.0
+    pitch: 1.0
+  message:
+    enabled: true
+    message: '%prefix% &7You just received &e%amount% &7coins.'
+  title:
+    enabled: true
+    titles:
+      title: '&a&l+%amount% MobCoins'
+      subtitle: '&fYou just received %amount% coins!'
+      # Fade In, Stay, and Fade Out time are in ticks.
+      # 20 ticks = 1 second.
+      fadeIn: 15
+      stay: 20
+      fadeOut: 15
+  actionBar:
+    enabled: true
+    message: '&a+%amount% MobCoins'
+    # duration in seconds.
+    duration: 1
+
+sounds:
+  onRedeem:
+    enabled: true
+    name: ENTITY_PLAYER_LEVELUP
+    volume: 1.0
+    pitch: 1.0
+
+placeholders:
+  top:
+    nameIfEmpty: 'Empty'
+    moneyIfEmpty: '0'
+  outOfStock: '&c&lSOLD OUT'
+
+# To use custom textures.
+# Set the material to head;base64texture
+mobcoinItem:
+  material: 'SUNFLOWER'
+  name: '&6&lMob Coin &7(Click to redeem)'
+  lore:
+    - '&7You can use mob coin to purchase'
+    - '&7items on /mobcoins shop!'
+    - ''
+    - '&6%coins% coins &7are stored in this item!'
+    - ''
+    - '&6Right click to redeem!'
+
+# Disable player from getting mobcoins in
+# these worlds. (case-sensitive)
+disabledWorlds:
+  - 'exampleWorld'
+
+normalShop:
+  size: 45
+  title: "&8Select category..."
+  items:
+    dummy:
+      type: dummy
+      material: BLACK_STAINED_GLASS_PANE
+      name: '&f'
+      glow: false
+      slots:
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+        - 17
+        - 18
+        - 26
+        - 27
+        - 35
+        - 36
+        - 37
+        - 38
+        - 39
+        - 41
+        - 42
+        - 43
+        - 44
+    info:
+      type: dummy
+      material: SUNFLOWER
+      slot: 40
+      name: '&6Information Item'
+      glow: false
+      lore:
+        - '&7You have &6%coins% coins'
+        - ''
+        - '&7You can get MobCoins by killing'
+        - '&7mobs, and use MobCoins to buy'
+        - '&7special items in &6/mobcoins shop'
+    crates:
+      type: category
+      category: crates
+      material: TRIPWIRE_HOOK
+      slot: 20
+      name: '&e&lCrates'
+      glow: true
+      lore:
+        - '&7Click to open category menu!'
+
+rotatingShop:
+  enabled: false
+  # Normal Time Reset and Special Time Reset are in hours.
+  normalTimeReset: 24
+  specialTimeReset: 72
+  title: 'MobCoins Shop'
+  size: 36
+  normalItemSlots:
+    - 10
+    - 11
+    - 12
+    - 19
+    - 20
+    - 21
+  specialItemSlots:
+    - 15
+    - 24
+  messages:
+    normalRefresh:
+      - ''
+      - ' &e&lMOBCOINS NORMAL ITEMS HAS BEEN REFRESHED!'
+      - ' &7(( Check out the items on /mobcoins shop ))'
+      - ''
+    specialRefresh:
+      - ''
+      - ' &6&lMOBCOINS SPECIAL ITEMS HAS BEEN REFRESHED'
+      - ' &7(( Check out the items on /mobcoins shop ))'
+      - ''
+  items:
+    filler:
+      material: BLACK_STAINED_GLASS_PANE
+      name: '&f'
+      lore: []
+      slots:
+        - 0
+        - 1
+        - 3
+        - 4
+        - 5
+        - 7
+        - 8
+        - 9
+        - 13
+        - 14
+        - 16
+        - 17
+        - 18
+        - 22
+        - 23
+        - 25
+        - 26
+        - 27
+        - 28
+        - 29
+        - 30
+        - 31
+        - 32
+        - 33
+        - 34
+        - 35
+    info:
+      material: BOOK
+      name: '&6Information Book'
+      slot: 35
+      lore:
+        - '&7You have &6%coins% coins'
+        - ''
+        - '&6MobCoins &7can be earned by killing'
+        - '&7mobs, check out more on &6/mobcoins help'
+    normalTimeInfo:
+      material: WATCH
+      name: '&e&lNORMAL ITEM'
+      slot: 2
+      lore:
+        - ''
+        - '&6&l* &eTime Remaining: &7%timeNormal%'
+        - '&7((The normal items will change every 24 hours.))'
+    specialTimeInfo:
+      material: WATCH
+      name: '&6&lSPECIAL ITEMS'
+      slot: 6
+      lore:
+        - ''
+        - '&e&l* &6Time Remaining: &7%timeSpecial%'
+        - '&7((The special items will change every 3 days.))'
+
+messages:
+  prefix: '&6&l[!]'
+  noPermission: '%prefix% &cYou are lacking permission &f%permission%'
+  reload: '%prefix% &aYou have successfully reloaded the configuration!'
+  targetNotFound: '%prefix% &c%player% is not online!'
+  noAccount: '%prefix% &cYour account is not exist on our database!'
+  noAccountOthers: '%prefix% &c%player%''s account is not exist on our database!'
+  balance: '%prefix% &fYour balance: &6%coins% coins'
+  balanceOthers: '%prefix% &f%player%''s balance: &6%coins% coins'
+  onlyPlayer: '%prefix% &cOnly players can execute this command!'
+  notInt: '%prefix% &cAmount must be an integer/double!'
+  sendCoins: '%prefix% &aYou have send &e%coins% &acoins to &e%player%&a.'
+  receivedCoins: '%prefix% &aYou have received &e%coins% &acoins from &e%player%&a.'
+  notEnoughCoins: '%prefix% &cYou don''t have enough coins!'
+  withdraw: '%prefix% &aYou have successfully withdraw &e%coins% coins&a.'
+  toggleOn: '%prefix% &aNow you will receive notification!'
+  toggleOff: '%prefix% &cYou will not receive notification anymore.'
+  addCoins: '%prefix% &aYou have added &e%coins% coins &ato &e%player%''s &aaccount!'
+  targetAddCoins: '%prefix% &aYou have received &e%coins% coins&a.'
+  removeCoins: '%prefix% &aYou have removed &e%coins% coins &afrom &e%player%''s &aaccount!'
+  targetRemoveCoins: '%prefix% &aYour mobcoins have been removed by &e%coins% coins&a.'
+  setCoins: '%prefix% &aYou have set &e%coins% coins &ato &e%player%''s &aaccount!'
+  targetSetCoins: '%prefix% &aYour mobcoins has been set to &e%coins% coins.'
+  negativeAmount: '%prefix% &cTotal player coins will be negative!'
+  redeem: '%prefix% &aYou have redeemed &e%coins% coins&a.'
+  inventoryFull: '%prefix% &cYour inventory is full! Please make some space.'
+  purchasedItem: '%prefix% &aYou have successfully purchased &e%item%&a.'
+  openedShopMenu: '%prefix% &aYou have opened shop menu for &e%player%&a.'
+  refresh: '%prefix% &aYou have successfully refresh the rotating shop items.'
+  maxLimit: '%prefix% &cYou have reached max limit to purchase this item!'
+  createCategory: '%prefix% &aYou have successfully created category &e%category%&a.'
+  categoryNotExist: '%prefix% &cCategory &e%category% &cis not exists!'
+  categoryAlreadyExist: '%prefix% &cCategory &e%category% &cis already exists!'
+  removeCategory: '%prefix% &aYou have successfully removed category &e%category%&a.'
+  outOfStock: '%prefix% &cThis item is out of stock!'
+  leaderboard:
+    - '&6========= Coins Top ========='
+    - ''
+    - '  &6#1. &7%name_top1% - &6%money_top1% coins'
+    - '  &6#2. &7%name_top2% - &6%money_top2% coins'
+    - '  &6#3. &7%name_top3% - &6%money_top3% coins'
+    - '  &6#4. &7%name_top4% - &6%money_top4% coins'
+    - '  &6#5. &7%name_top5% - &6%money_top5% coins'
+    - '  &6#6. &7%name_top6% - &6%money_top6% coins'
+    - '  &6#7. &7%name_top7% - &6%money_top7% coins'
+    - '  &6#8. &7%name_top8% - &6%money_top8% coins'
+    - '  &6#9. &7%name_top9% - &6%money_top9% coins'
+    - '  &6#10. &7%name_top10% - &6%money_top10% coins'
+    - ''
+    - '&6==========================='
+  helpAdmin:
+    - ''
+    - '&6&lKraken Mobcoins &7- by aglerr'
+    - '&6/mobcoins help &7- show help messages.'
+    - '&6/mobcoins balance [player] &7- show you/other players mobcoins.'
+    - '&6/mobcoins pay <player> <amount> &7- pay someone with mobcoins.'
+    - '&6/mobcoins withdraw <amount> &7- withdraw mobcoins into items.'
+    - '&6/mobcoins toggle &7- toggle receiving notification.'
+    - '&6/mobcoins top &7- shows the mobcoins top!'
+    - '&6/mobcoins shop &7- opens up shop menu!'
+    - ''
+    - '&6&lAdmin Commands:'
+    - '&6/mobcoins add <player> <amount> &7- add player amount of mobcoins.'
+    - '&6/mobcoins remove <player> <amount> &7- remove player amount of mobcoins.'
+    - '&6/mobcoins set <player> <amount> &7- set player amount of mobcoins.'
+    - '&6/mobcoins refresh &7- refresh the rotating shop.'
+    - '&6/mobcoins category add/remove/open <category> [player] &7- add/remove/open specific category.'
+    - '&6/mobcoins reload &7- reload the configuration!'
+    - ''
+  help:
+    - ''
+    - '&6&lKraken Mobcoins &7- by aglerr'
+    - '&6/mobcoins help &7- show help messages.'
+    - '&6/mobcoins balance [player] &7- show you/other players mobcoins.'
+    - '&6/mobcoins pay <player> <amount> &7- pay someone with mobcoins.'
+    - '&6/mobcoins withdraw <amount> &7- withdraw mobcoins into items.'
+    - '&6/mobcoins toggle &7- toggle receiving notification.'
+    - '&6/mobcoins top &7- shows the mobcoins top!'
+    - '&6/mobcoins shop &7- opens up shop menu!'
+    - ''

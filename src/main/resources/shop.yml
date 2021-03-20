@@ -1,0 +1,283 @@
+confirmationMenu:
+  title: 'Confirmation Menu'
+  size: 27
+  items:
+    acceptButton:
+      material: LIME_WOOL
+      name: '&aConfirm Purchase'
+      slot: 10
+      lore:
+        - '&7Click to confirm purchase!'
+    cancelButton:
+      material: RED_WOOL
+      name: '&cCancel Purchase'
+      slot: 16
+      lore:
+        - '&7Click to decline purchase!'
+    purchasedItem:
+      enabled: true
+      slot: 13
+    fillGUI:
+      enabled: true
+      material: BLACK_STAINED_GLASS_PANE
+      name: '&f'
+
+shops:
+  'ironBlock':
+    material: IRON_BLOCK
+    name: '&f16x Iron Block'
+    amount: 16
+    glowing: false
+    price: 2.25
+    special: false
+    limit: 3
+    useStock: true
+    stock: 5
+    lore:
+      - '&7Buy 16 iron blocks!'
+      - ''
+      - '&7Price: &62.25 coins'
+      - '&7Limit: &6%limit% / %maxLimit%'
+      - '&7Stock: &6%stock%'
+      - ''
+      - '&a&lCLICK TO PURCHASE!'
+    commands:
+      - 'give %player% IRON_BLOCK 16'
+      - 'broadcast &f&l%player% just purchased 16x Iron Block'
+  'goldBlock':
+    material: GOLD_BLOCK
+    name: '&e16x Gold Block'
+    amount: 16
+    glowing: false
+    price: 5
+    special: false
+    limit: 3
+    useStock: true
+    stock: 5
+    lore:
+      - '&7Buy 16 gold blocks!'
+      - ''
+      - '&7Price: &65 coins'
+      - '&7Limit: &6%limit% / %maxLimit%'
+      - '&7Stock: &6%stock%'
+      - ''
+      - '&a&lCLICK TO PURCHASE!'
+    commands:
+      - 'give %player% GOLD_BLOCK 16'
+      - 'broadcast &e&l%player% just purchased 16x Gold Block'
+  'diamondBlock':
+    material: DIAMOND_BLOCK
+    name: '&b16x Diamond Block'
+    amount: 16
+    glowing: false
+    price: 7.45
+    special: false
+    limit: 3
+    lore:
+      - '&7Buy 16 diamond blocks!'
+      - ''
+      - '&7Price: &67.45 coins'
+      - '&7Limit: &6%limit% / %maxLimit%'
+      - ''
+      - '&a&lCLICK TO PURCHASE!'
+    commands:
+      - 'give %player% DIAMOND_BLOCK 16'
+      - 'broadcast &b&l%player% just purchased 16x Diamond Block'
+  'emeraldBlock':
+    material: EMERALD_BLOCK
+    name: '&a16x Emerald Block'
+    amount: 16
+    glowing: false
+    price: 10.15
+    special: false
+    limit: 3
+    lore:
+      - '&7Buy 64 emerald blocks!'
+      - ''
+      - '&7Price: &610.15 coins'
+      - '&7Limit: &6%limit% / %maxLimit%'
+      - ''
+      - '&a&lCLICK TO PURCHASE!'
+    commands:
+      - 'give %player% EMERALD_BLOCK 16'
+      - 'broadcast &a&l%player% just purchased 16x Emerald Block'
+  'tnt':
+    material: TNT
+    name: '&c16x TNT'
+    amount: 16
+    glowing: false
+    price: 10.15
+    special: false
+    limit: 3
+    lore:
+      - '&7Buy 16 TNT blocks!'
+      - ''
+      - '&7Price: &617.75 coins'
+      - '&7Limit: &6%limit% / %maxLimit%'
+      - ''
+      - '&a&lCLICK TO PURCHASE!'
+    commands:
+      - 'give %player% TNT 16'
+      - 'broadcast &c&l%player% just purchased 16x TNT'
+  'diamondSword':
+    material: DIAMOND_SWORD
+    name: '&b1x Diamond Sword'
+    amount: 1
+    glowing: false
+    price: 9.15
+    special: false
+    limit: 3
+    lore:
+      - '&7Buy 1x Diamond Sword!'
+      - ''
+      - '&7Price: &69.15 coins'
+      - '&7Limit: &6%limit% / %maxLimit%'
+      - ''
+      - '&a&lCLICK TO PURCHASE!'
+    commands:
+      - 'give %player% DIAMOND_SWORD 1'
+      - 'broadcast &b&l%player% just purchased 1x Diamond Sword'
+  'diamondHelmet':
+    material: DIAMOND_HELMET
+    name: '&b1x Diamond Helmet'
+    amount: 1
+    glowing: false
+    price: 8.95
+    special: false
+    limit: 3
+    lore:
+      - '&7Buy 1x Diamond Helmet!'
+      - ''
+      - '&7Price: &68.95 coins'
+      - '&7Limit: &6%limit% / %maxLimit%'
+      - ''
+      - '&a&lCLICK TO PURCHASE!'
+    commands:
+      - 'give %player% DIAMOND_HELMET 1'
+      - 'broadcast &b&l%player% just purchased 1x Diamond Helmet'
+  'diamondChestplate':
+    material: DIAMOND_CHESTPLATE
+    name: '&b1x Diamond Chestplate'
+    amount: 1
+    glowing: false
+    price: 12.15
+    special: false
+    limit: 3
+    lore:
+      - '&7Buy 1x Diamond Chestplate!'
+      - ''
+      - '&7Price: &612.15 coins'
+      - '&7Limit: &6%limit% / %maxLimit%'
+      - ''
+      - '&a&lCLICK TO PURCHASE!'
+    commands:
+      - 'give %player% DIAMOND_CHESTPLATE 1'
+      - 'broadcast &b&l%player% just purchased 1x Diamond Chestplate'
+  'diamondLeggings':
+    material: DIAMOND_LEGGINGS
+    name: '&b1x Diamond Leggings'
+    amount: 1
+    glowing: false
+    price: 10.50
+    special: false
+    limit: 3
+    lore:
+      - '&7Buy 1x Diamond Leggings!'
+      - ''
+      - '&7Price: &610.50 coins'
+      - '&7Limit: &6%limit% / %maxLimit%'
+      - ''
+      - '&a&lCLICK TO PURCHASE!'
+    commands:
+      - 'give %player% DIAMOND_LEGGINGS 1'
+      - 'broadcast &b&l%player% just purchased 1x Diamond Leggings'
+  'diamondBoots':
+    material: DIAMOND_BOOTS
+    name: '&b1x Diamond Boots'
+    amount: 1
+    glowing: false
+    price: 7.45
+    special: false
+    limit: 3
+    lore:
+      - '&7Buy 1x Diamond Boots!'
+      - ''
+      - '&7Price: &67.45 coins'
+      - '&7Limit: &6%limit% / %maxLimit%'
+      - ''
+      - '&a&lCLICK TO PURCHASE!'
+    commands:
+      - 'give %player% DIAMOND_BOOTS 1'
+      - 'broadcast &b&l%player% just purchased 1x Diamond Boots'
+  'ironBlockSpecial':
+    material: IRON_BLOCK
+    name: '&f64x Iron Block'
+    amount: 64
+    glowing: false
+    price: 15.25
+    special: true
+    limit: 3
+    lore:
+      - '&7Buy 64x Iron Block'
+      - ''
+      - '&7Price: &615.25 coins'
+      - '&7Limit: &6%limit% / %maxLimit%'
+      - ''
+      - '&a&lCLICK TO PURCHASE!'
+    commands:
+      - 'give %player% IRON_BLOCK 64'
+      - 'broadcast &f&l%player% just purchased 64x Iron Block'
+  'goldBlockSpecial':
+    material: GOLD_BLOCK
+    name: '&e64x Gold Block'
+    amount: 64
+    glowing: false
+    price: 20
+    special: true
+    limit: 3
+    lore:
+      - '&7Buy 64x Gold Block'
+      - ''
+      - '&7Price: &620 coins'
+      - '&7Limit: &6%limit% / %maxLimit%'
+      - ''
+      - '&a&lCLICK TO PURCHASE!'
+    commands:
+      - 'give %player% GOLD_BLOCK 64'
+      - 'broadcast &e&l%player% just purchased 64x Gold Block'
+  'diamondBlockSpecial':
+    material: DIAMOND_BLOCK
+    name: '&b64x Diamond Block'
+    amount: 64
+    glowing: false
+    price: 25.75
+    special: true
+    limit: 3
+    lore:
+      - '&7Buy 64x Diamond Block'
+      - ''
+      - '&7Price: &625.75 coins'
+      - '&7Limit: &6%limit% / %maxLimit%'
+      - ''
+      - '&a&lCLICK TO PURCHASE!'
+    commands:
+      - 'give %player% DIAMOND_BLOCK 64'
+      - 'broadcast &b&l%player% just purchased 64x Diamond Block'
+  'emeraldBlockSpecial':
+    material: EMERALD_BLOCK
+    name: '&a64x Emerald Block'
+    amount: 64
+    glowing: false
+    price: 37.25
+    special: true
+    limit: 3
+    lore:
+      - '&7Buy 64x Emerald Block'
+      - ''
+      - '&7Price: &637.25 coins'
+      - '&7Limit: &6%limit% / %maxLimit%'
+      - ''
+      - '&a&lCLICK TO PURCHASE!'
+    commands:
+      - 'give %player% EMERALD_BLOCK 64'
+      - 'broadcast &a&l%player% just purchased 64x Emerald Block'
