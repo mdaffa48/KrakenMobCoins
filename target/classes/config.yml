@@ -288,6 +288,7 @@ messages:
   categoryAlreadyExist: '%prefix% &cCategory &e%category% &cis already exists!'
   removeCategory: '%prefix% &aYou have successfully removed category &e%category%&a.'
   outOfStock: '%prefix% &cThis item is out of stock!'
+  amountNegative: ''
   leaderboard:
     - '&6========= Coins Top ========='
     - ''
