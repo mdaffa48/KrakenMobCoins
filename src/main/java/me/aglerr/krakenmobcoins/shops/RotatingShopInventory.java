@@ -56,12 +56,14 @@ public class RotatingShopInventory extends FastInv {
                 for(String line : normal.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(normal.getLimit()))
                             .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, normal.getConfigKey())))
-                            .replace("%stock%", placeholder));
+                            .replace("%stock%", placeholder)
+                            .replace("%price%", String.valueOf(normal.getPrice())));
                 }
             } else {
                 for(String line : normal.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(normal.getLimit()))
-                            .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, normal.getConfigKey()))));
+                            .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, normal.getConfigKey())))
+                            .replace("%price%", String.valueOf(normal.getPrice())));
                 }
             }
 
@@ -104,13 +106,15 @@ public class RotatingShopInventory extends FastInv {
                 for(String line : special.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(special.getLimit()))
                             .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, special.getConfigKey())))
-                            .replace("%stock%", placeholder));
+                            .replace("%stock%", placeholder)
+                            .replace("%price%", String.valueOf(special.getPrice())));
                 }
 
             } else {
                 for(String line : special.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(special.getLimit()))
-                            .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, special.getConfigKey()))));
+                            .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, special.getConfigKey())))
+                            .replace("%price%", String.valueOf(special.getPrice())));
                 }
 
             }
@@ -184,12 +188,14 @@ public class RotatingShopInventory extends FastInv {
                         for(String line : normal.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(normal.getLimit()))
                                     .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, normal.getConfigKey())))
-                                    .replace("%stock%", placeholder));
+                                    .replace("%stock%", placeholder)
+                                    .replace("%price%", String.valueOf(normal.getPrice())));
                         }
                     } else {
                         for(String line : normal.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(normal.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, normal.getConfigKey()))));
+                                    .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, normal.getConfigKey())))
+                                    .replace("%price%", String.valueOf(normal.getPrice())));
                         }
                     }
 
@@ -232,13 +238,15 @@ public class RotatingShopInventory extends FastInv {
                         for(String line : special.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(special.getLimit()))
                                     .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, special.getConfigKey())))
-                                    .replace("%stock%", placeholder));
+                                    .replace("%stock%", placeholder)
+                                    .replace("%price%", String.valueOf(special.getPrice())));
                         }
 
                     } else {
                         for(String line : special.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(special.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, special.getConfigKey()))));
+                                    .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, special.getConfigKey())))
+                                    .replace("%price%", String.valueOf(special.getPrice())));
                         }
 
                     }
