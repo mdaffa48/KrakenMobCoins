@@ -167,32 +167,51 @@ public class Utils {
         return string;
     }
 
+    public void resetStock(){
+        MobCoins.getInstance().getLimitManager().getConfiguration().set("items", new ArrayList<>());
+        MobCoins.getInstance().getLimitManager().saveData();
+        MobCoins.getInstance().getStock().clear();
+    }
+
+    public void resetLimit(){
+        MobCoins.getInstance().getLimit().clear();
+    }
+
     public void refreshNormalItems(){
 
         FileConfiguration config = MobCoins.getInstance().getConfig();
+        if(config.getBoolean("options.shuffleRotating")){
+            Collections.shuffle(MobCoins.getInstance().getNormalItems());
+        } else {
 
-        List<Integer> normalSlots = config.getIntegerList("rotatingShop.normalItemSlots");
-        List<ShopItems> removed = new ArrayList<>();
+            List<Integer> normalSlots = config.getIntegerList("rotatingShop.normalItemSlots");
+            List<ShopItems> removed = new ArrayList<>();
 
-        if(MobCoins.getInstance().getNormalItems().size() > normalSlots.size()){
-            for(int x = 0; x < normalSlots.size(); x++){
-                removed.add(MobCoins.getInstance().getNormalItems().get(0));
-                MobCoins.getInstance().getNormalItems().remove(0);
+            if(MobCoins.getInstance().getNormalItems().size() > normalSlots.size()){
+                for(int x = 0; x < normalSlots.size(); x++){
+                    removed.add(MobCoins.getInstance().getNormalItems().get(0));
+                    MobCoins.getInstance().getNormalItems().remove(0);
+                }
+
+            }
+
+            if(!removed.isEmpty()){
+                for(ShopItems items : removed){
+                    MobCoins.getInstance().getNormalItems().add(items);
+                }
             }
 
         }
 
-        if(!removed.isEmpty()){
-            for(ShopItems items : removed){
-                MobCoins.getInstance().getNormalItems().add(items);
-            }
-        }
 
     }
 
     public void refreshSpecialItems(){
 
         FileConfiguration config = MobCoins.getInstance().getConfig();
+        if(config.getBoolean("options.shuffleRotating")){
+            Collections.shuffle(MobCoins.getInstance().getSpecialItems());
+        }
 
         List<Integer> specialSlots = config.getIntegerList("rotatingShop.specialItemSlots");
         List<ShopItems> removed = new ArrayList<>();
