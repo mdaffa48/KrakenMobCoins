@@ -42,7 +42,12 @@ public class PlayerInteract implements Listener {
             String info = nbtItem.getString("info");
             if(!info.equals("krakenmobcoins")) return;
 
-            double amount = nbtItem.getDouble("amount");
+            double amount = 0;
+            if(hand.getAmount() == 1){
+                amount = nbtItem.getDouble("amount");
+            } else if(hand.getAmount() > 1){
+                amount = nbtItem.getDouble("amount") * hand.getAmount();
+            }
 
             event.setCancelled(true);
             PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
@@ -56,14 +61,10 @@ public class PlayerInteract implements Listener {
             Bukkit.getPluginManager().callEvent(mobCoinsRedeemEvent);
             if(mobCoinsRedeemEvent.isCancelled()) return;
 
-            if(hand.getAmount() == 1){
-                player.setItemInHand(XMaterial.AIR.parseItem());
-            } else if(hand.getAmount() > 1){
-                hand.setAmount(hand.getAmount() - 1);
-            }
-
+            player.setItemInHand(XMaterial.AIR.parseItem());
             player.updateInventory();
-            playerCoins.setMoney(playerCoins.getMoney() + amount);
+
+            playerCoins.setMoney(playerCoins.getMoney() + mobCoinsRedeemEvent.getAmount());
             player.sendMessage(utils.color(ConfigMessages.REDEEM.toString())
             .replace("%prefix%", utils.getPrefix())
             .replace("%coins%", utils.getDFormat().format(amount)));
