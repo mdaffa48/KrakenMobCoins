@@ -126,6 +126,11 @@ public class MobCoinsCMD implements CommandExecutor {
                 } else {
                     if(utils.isDouble(args[2])){
                         double amount = Double.parseDouble(args[2]);
+                        if(amount < 0){
+                            sender.sendMessage(utils.color(ConfigMessages.NEGATIVE_AMOUNT.toString())
+                            .replace("%prefix%", utils.getPrefix()));
+                            return true;
+                        }
 
                         PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
                         PlayerCoins targetCoins = MobCoins.getInstance().getPlayerCoins(target.getUniqueId().toString());
@@ -198,6 +203,12 @@ public class MobCoinsCMD implements CommandExecutor {
 
                 if(utils.isDouble(args[1])){
                     double amount = Double.parseDouble(args[1]);
+                    if(amount < 0){
+                        player.sendMessage(utils.color(ConfigMessages.NEGATIVE_AMOUNT.toString())
+                        .replace("%prefix%", utils.getPrefix()));
+                        return true;
+                    }
+
                     if(playerCoins.getMoney() >= amount){
                         if(player.getInventory().firstEmpty() == -1){
                             player.sendMessage(utils.color(ConfigMessages.INVENTORY_FULL.toString())
@@ -544,9 +555,8 @@ public class MobCoinsCMD implements CommandExecutor {
 
             }
 
-            MobCoins.getInstance().getStock().clear();
-            MobCoins.getInstance().getLimitManager().getConfiguration().set("items", new ArrayList<>());
-            MobCoins.getInstance().getLimitManager().saveData();
+            utils.resetStock();
+            utils.resetLimit();
 
         } else if(args[0].equalsIgnoreCase("category")){
             if(!(sender.hasPermission("krakenmobcoins.admin"))){
