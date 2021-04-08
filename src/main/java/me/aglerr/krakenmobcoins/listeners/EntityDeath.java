@@ -1,5 +1,6 @@
 package me.aglerr.krakenmobcoins.listeners;
 
+import com.bgsoftware.wildstacker.api.WildStackerAPI;
 import com.cryptomorin.xseries.XSound;
 import com.cryptomorin.xseries.messages.ActionBar;
 import com.cryptomorin.xseries.messages.Titles;
@@ -19,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -112,6 +114,11 @@ public class EntityDeath implements Listener {
                 MobCoinsReceiveEvent mobCoinsReceiveEvent = new MobCoinsReceiveEvent(player, amount, amountAfter, multiplierAmount, entity, multiplier);
                 Bukkit.getPluginManager().callEvent(mobCoinsReceiveEvent);
                 if (mobCoinsReceiveEvent.isCancelled()) return;
+
+                if(MobCoins.wildStackerHook){
+                    mobCoinsReceiveEvent.setAmountAfterMultiplier(mobCoinsReceiveEvent.getAmountAfterMultiplier() * WildStackerAPI.getEntityAmount(entity));
+
+                }
 
                 PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
                 if (playerCoins != null) {

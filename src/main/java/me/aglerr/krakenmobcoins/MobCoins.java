@@ -41,7 +41,7 @@ public class MobCoins extends JavaPlugin {
     private Utils utils = new Utils();
 
     public Map<String, PlayerCoins> accounts = new HashMap<>();
-    public Map<PlayerCoins, Double> value_modify = new HashMap<>();
+
     private Set<String> toggled = new HashSet<>();
     private Map<String, FileConfiguration> categories = new HashMap<>();
     private Map<UUID, Double> salary = new HashMap<>();
@@ -75,6 +75,7 @@ public class MobCoins extends JavaPlugin {
 
     public static boolean superMobCoinsHook = false;
     public static boolean mythicMobsHook = false;
+    public static boolean wildStackerHook = false;
 
     @Override
     public void onEnable() {
@@ -121,6 +122,8 @@ public class MobCoins extends JavaPlugin {
 
         ConfigMessages.initialize(this.getConfig());
         ConfigMessagesList.initialize(this.getConfig());
+
+
 
     }
 
@@ -372,6 +375,12 @@ public class MobCoins extends JavaPlugin {
             totalHooks++;
         }
 
+        if(pm.getPlugin("WildStacker") != null){
+            utils.sendConsoleMessage("WildStacker found, enabling hooks!");
+            wildStackerHook = true;
+            totalHooks++;
+        }
+
         utils.sendConsoleMessage("Successfully hooked " + totalHooks + " plugins, enjoy!");
     }
 
@@ -610,9 +619,12 @@ public class MobCoins extends JavaPlugin {
     private void runAutoSave(){
         if(this.getConfig().getBoolean("autoSave.enabled")){
             int interval = this.getConfig().getInt("autoSave.interval");
-            Bukkit.getScheduler().runTaskTimer(this, () ->{
-                savePlayerData();
-            }, 100, 20 * interval);
+            new BukkitRunnable(){
+                @Override
+                public void run(){
+                    savePlayerData();
+                }
+            }.runTaskTimer(this, 0L, 20 * interval);
         }
     }
 
@@ -644,7 +656,6 @@ public class MobCoins extends JavaPlugin {
     public Utils getUtils() { return utils; }
     public static SQL getDatabase() { return database; }
     public Map<String, PlayerCoins> getAccounts() { return accounts; }
-    public Map<PlayerCoins, Double> getValueModify() { return value_modify; }
     public Set<String> getToggled() { return toggled; }
     public TempDataManager getTempDataManager() { return tempDataManager; }
     public ShopManager getShopManager() { return shopManager; }
