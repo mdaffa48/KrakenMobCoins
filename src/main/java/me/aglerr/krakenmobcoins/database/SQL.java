@@ -28,6 +28,7 @@ public class SQL {
                 port = config.getInt("MYSQL.port");
                 useSSL = config.getBoolean("MYSQL.useSSL");
 
+                Class.forName("com.mysql.jdbc.Driver");
                 Connection connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database + "?verifyServerCertificate=false&useSSL=false",
                         this.username, this.password);
                 String command = "CREATE TABLE IF NOT EXISTS krakencoins (UUID Text, Coins Text)";
@@ -46,6 +47,7 @@ public class SQL {
             utils.sendConsoleMessage("Trying to connect to the database.");
             try{
 
+                Class.forName("org.sqlite.JDBC");
                 Connection connection = DriverManager.getConnection("jdbc:sqlite:plugins/KrakenMobcoins/database.db");
                 String command = "CREATE TABLE IF NOT EXISTS krakencoins (UUID Text, Coins Text)";
                 PreparedStatement statement = connection.prepareStatement(command);
