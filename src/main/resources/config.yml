@@ -30,6 +30,8 @@ options:
   lootingSystem: false
   physicalMobCoin:
     enabled: false
+    # If true, mobcoins can drop with any death cause.
+    ignoreDeathCause: false
     # Damage Cause can be found here https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/entity/EntityDamageEvent.DamageCause.html
     deathCause:
       - FALL

@@ -2,7 +2,7 @@ package me.aglerr.krakenmobcoins.listeners;
 
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
 import me.aglerr.krakenmobcoins.MobCoins;
-import me.aglerr.krakenmobcoins.PlayerCoins;
+import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.api.events.MobCoinsReceiveEvent;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;

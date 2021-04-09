@@ -4,6 +4,7 @@ import fr.mrmicky.fastinv.FastInvManager;
 import me.aglerr.krakenmobcoins.api.MobCoinsExpansion;
 import me.aglerr.krakenmobcoins.commands.MobCoinsCMD;
 import me.aglerr.krakenmobcoins.configs.*;
+import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.database.SQL;
 import me.aglerr.krakenmobcoins.listeners.*;
 import me.aglerr.krakenmobcoins.shops.ShopUtils;
@@ -12,7 +13,6 @@ import me.aglerr.krakenmobcoins.shops.category.shops.ShopNormalLoader;
 import me.aglerr.krakenmobcoins.shops.items.RotatingLoader;
 import me.aglerr.krakenmobcoins.shops.items.ShopItems;
 import me.aglerr.krakenmobcoins.shops.items.ShopItemsLoader;
-import me.aglerr.krakenmobcoins.utils.CoinsData;
 import me.aglerr.krakenmobcoins.utils.ConfigUpdater;
 import me.aglerr.krakenmobcoins.utils.Metrics;
 import me.aglerr.krakenmobcoins.utils.Utils;
@@ -36,7 +36,7 @@ import java.util.*;
 public class MobCoins extends JavaPlugin {
 
     private static MobCoins instance;
-    private static SQL database;
+    private SQL database;
 
     private Utils utils = new Utils();
 
@@ -97,7 +97,7 @@ public class MobCoins extends JavaPlugin {
         database = new SQL();
 
         utils.sendConsoleMessage("Loading all saved accounts!");
-        CoinsData.loadAccounts();
+        database.loadAccounts();
         this.loadPlayerToggled();
 
         this.runAutoSave();
@@ -624,7 +624,7 @@ public class MobCoins extends JavaPlugin {
                 public void run(){
                     savePlayerData();
                 }
-            }.runTaskTimer(this, 0L, 20 * interval);
+            }.runTaskTimerAsynchronously(this, 0L, 20 * interval);
         }
     }
 
@@ -654,7 +654,7 @@ public class MobCoins extends JavaPlugin {
 
     public static MobCoins getInstance() { return instance; }
     public Utils getUtils() { return utils; }
-    public static SQL getDatabase() { return database; }
+    public SQL getDatabase() { return database; }
     public Map<String, PlayerCoins> getAccounts() { return accounts; }
     public Set<String> getToggled() { return toggled; }
     public TempDataManager getTempDataManager() { return tempDataManager; }

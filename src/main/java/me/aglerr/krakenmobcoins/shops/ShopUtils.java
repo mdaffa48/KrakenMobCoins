@@ -1,7 +1,7 @@
 package me.aglerr.krakenmobcoins.shops;
 
 import me.aglerr.krakenmobcoins.MobCoins;
-import me.aglerr.krakenmobcoins.PlayerCoins;
+import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.configs.ConfigMessages;
 import me.aglerr.krakenmobcoins.shops.category.shops.ShopNormalItems;
 import me.aglerr.krakenmobcoins.shops.items.ShopItems;
@@ -25,7 +25,7 @@ public class ShopUtils {
             if(config.getBoolean("options.confirmationMenu")){
 
                 int sizeConfirmation = shop.getInt("confirmationMenu.size");
-                String titleConfirmation = shop.getString("confirmationMenu.title");
+                String titleConfirmation = utils.color(shop.getString("confirmationMenu.title"));
                 new ConfirmationInventory(sizeConfirmation, titleConfirmation, stack, items.getPrice(), items.getCommands(), items.getConfigKey(), items.getLimit(), items.isUseStock(), items.getStock()).open(player);
 
             } else {
@@ -93,7 +93,7 @@ public class ShopUtils {
             if(config.getBoolean("options.confirmationMenu")){
 
                 int sizeConfirmation = shop.getInt("confirmationMenu.size");
-                String titleConfirmation = shop.getString("confirmationMenu.title");
+                String titleConfirmation = utils.color(shop.getString("confirmationMenu.title"));
                 new ConfirmationInventory(sizeConfirmation, titleConfirmation, stack, items.getPrice(), items.getCommands(), items.getConfigKey(), items.getLimit(), items.isUseStock(), items.getStock()).open(player);
 
             } else {

@@ -1,6 +1,6 @@
 package me.aglerr.krakenmobcoins.shops;
 
-import me.aglerr.krakenmobcoins.PlayerCoins;
+import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.utils.ItemBuilder;
 import com.cryptomorin.xseries.XMaterial;
 import com.google.common.primitives.Ints;

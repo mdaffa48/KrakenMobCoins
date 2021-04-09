@@ -5,7 +5,7 @@ import com.cryptomorin.xseries.XMaterial;
 import com.google.common.primitives.Ints;
 import fr.mrmicky.fastinv.FastInv;
 import me.aglerr.krakenmobcoins.MobCoins;
-import me.aglerr.krakenmobcoins.PlayerCoins;
+import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.configs.LimitManager;
 import me.aglerr.krakenmobcoins.shops.items.RotatingItems;
 import me.aglerr.krakenmobcoins.shops.items.ShopItems;

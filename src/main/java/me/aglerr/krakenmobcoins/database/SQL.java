@@ -2,7 +2,9 @@ package me.aglerr.krakenmobcoins.database;
 
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
 
@@ -78,25 +80,102 @@ public class SQL {
         }
     }
 
-    public void insert(String value, String uuid) throws SQLException {
-        Connection connection = this.getNewConnection();
-        String command = "INSERT INTO " + table + " (UUID, Coins) VALUES ('" + uuid + "','" + value + "');";
-        PreparedStatement statement = connection.prepareStatement(command);
-        statement.execute();
+    public void insert(String value, String uuid) {
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                try{
 
-        statement.close();
-        connection.close();
+                    Connection connection = getNewConnection();
+                    String command = "INSERT INTO " + table + " (UUID, Coins) VALUES ('" + uuid + "','" + value + "');";
+                    PreparedStatement statement = connection.prepareStatement(command);
+                    statement.execute();
+
+                    statement.close();
+                    connection.close();
+
+                } catch(SQLException exception){
+                    System.out.println("[KrakenMobCoins] Error trying to insert to the database!");
+                    exception.printStackTrace();
+                }
+            }
+        }.runTaskAsynchronously(MobCoins.getInstance());
 
     }
 
-    public void update(String value, String uuid) throws SQLException {
-        Connection connection = this.getNewConnection();
-        String command = "UPDATE " + table + " SET Coins='" + value + "' WHERE UUID='" + uuid + "'";
-        PreparedStatement statement = connection.prepareStatement(command);
-        statement.executeUpdate();
+    public void update(String value, String uuid) {
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                try{
+                    Connection connection = getNewConnection();
+                    String command = "UPDATE " + table + " SET Coins='" + value + "' WHERE UUID='" + uuid + "'";
+                    PreparedStatement statement = connection.prepareStatement(command);
+                    statement.executeUpdate();
 
-        statement.close();
-        connection.close();
+                    statement.close();
+                    connection.close();
+                } catch(SQLException exception){
+                    System.out.println("[KrakenMobCoins] Error trying to update to the database!");
+                    exception.printStackTrace();
+                }
+            }
+        }.runTaskAsynchronously(MobCoins.getInstance());
+
+    }
+
+    public void createAccount(String uuid, double amount) {
+        PlayerCoins coins = new PlayerCoins(uuid);
+        coins.setMoney(amount);
+
+        MobCoins.getInstance().getAccounts().put(uuid, coins);
+    }
+
+    public void createAccount(String uuid) {
+        FileConfiguration config = MobCoins.getInstance().getConfig();
+
+        double balance = config.getDouble("options.startingBalance");
+
+        PlayerCoins coins = new PlayerCoins(uuid);
+        coins.setMoney(balance);
+        coins.save();
+
+        MobCoins.getInstance().getAccounts().put(uuid, coins);
+
+    }
+
+    public void loadAccounts(){
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                try{
+                    String command = "SELECT * FROM krakencoins";
+                    Connection connection = getNewConnection();
+                    PreparedStatement statement = connection.prepareStatement(command);
+                    ResultSet rs = statement.executeQuery();
+                    while(rs.next()){
+
+                        String uuid = rs.getString("UUID");
+                        double money = Double.parseDouble(rs.getString("Coins"));
+                        PlayerCoins coins = new PlayerCoins(uuid);
+                        coins.setMoney(money);
+
+                        MobCoins.getInstance().getAccounts().put(uuid, coins);
+
+                    }
+
+                    rs.close();
+                    statement.close();
+                    connection.close();
+
+                    MobCoins.getInstance().getUtils().sendConsoleMessage("Successfully loaded all saved accounts!");
+
+                } catch (SQLException e) {
+                    Bukkit.getPluginManager().disablePlugin(MobCoins.getInstance());
+                    MobCoins.getInstance().getUtils().sendConsoleMessage("&cError loading database player accounts!");
+                }
+            }
+        }.runTaskAsynchronously(MobCoins.getInstance());
 
     }
 

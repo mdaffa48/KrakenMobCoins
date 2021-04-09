@@ -1,7 +1,7 @@
 package me.aglerr.krakenmobcoins.api;
 
 import me.aglerr.krakenmobcoins.MobCoins;
-import me.aglerr.krakenmobcoins.PlayerCoins;
+import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.configuration.file.FileConfiguration;

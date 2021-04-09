@@ -1,30 +1,24 @@
 package me.aglerr.krakenmobcoins.commands;
 
 import me.aglerr.krakenmobcoins.MobCoins;
-import me.aglerr.krakenmobcoins.PlayerCoins;
+import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.api.events.MobCoinsWithdrawEvent;
 import me.aglerr.krakenmobcoins.configs.ConfigMessages;
 import me.aglerr.krakenmobcoins.configs.ConfigMessagesList;
 import me.aglerr.krakenmobcoins.tasks.ConvertTask;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Zombie;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class MobCoinsCMD implements CommandExecutor {
 
@@ -317,6 +311,7 @@ public class MobCoinsCMD implements CommandExecutor {
                     Player player = (Player) sender;
                     PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
 
+                    player.setResourcePack("");
                     if(playerCoins == null){
                         player.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT.toString())
                                 .replace("%prefix%", utils.getPrefix()));

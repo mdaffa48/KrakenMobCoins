@@ -1,5 +1,6 @@
 package me.aglerr.krakenmobcoins.listeners;
 
+import com.bgsoftware.wildstacker.api.WildStackerAPI;
 import de.tr7zw.changeme.nbtapi.NBTEntity;
 import me.aglerr.krakenmobcoins.MobCoins;
 import org.bukkit.Bukkit;
@@ -21,6 +22,7 @@ public class CreatureSpawn implements Listener {
                 MobCoins.getInstance().getMobSpawner().add(event.getEntity());
             }
         }
+
     }
 
 }

@@ -1,13 +1,8 @@
 package me.aglerr.krakenmobcoins.listeners;
 
 import com.bgsoftware.wildstacker.api.WildStackerAPI;
-import com.cryptomorin.xseries.XSound;
-import com.cryptomorin.xseries.messages.ActionBar;
-import com.cryptomorin.xseries.messages.Titles;
-import de.tr7zw.changeme.nbtapi.NBTEntity;
 import me.aglerr.krakenmobcoins.MobCoins;
-import me.aglerr.krakenmobcoins.PlayerCoins;
-import me.aglerr.krakenmobcoins.api.MobCoinsAPI;
+import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.api.events.MobCoinsReceiveEvent;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
@@ -20,7 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -117,7 +111,6 @@ public class EntityDeath implements Listener {
 
                 if(MobCoins.wildStackerHook){
                     mobCoinsReceiveEvent.setAmountAfterMultiplier(mobCoinsReceiveEvent.getAmountAfterMultiplier() * WildStackerAPI.getEntityAmount(entity));
-
                 }
 
                 PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());

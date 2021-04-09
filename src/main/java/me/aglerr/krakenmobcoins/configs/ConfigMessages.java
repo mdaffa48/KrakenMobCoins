@@ -36,7 +36,8 @@ public enum ConfigMessages {
     CATEGORY_NOT_EXIST("messages.categoryNotExist"),
     CATEGORY_ALREADY_EXIST("messages.categoryAlreadyExist"),
     REMOVE_CATEGORY("messages.removeCategory"),
-    OUT_OF_STOCK("messages.outOfStock");
+    OUT_OF_STOCK("messages.outOfStock"),
+    AMOUNT_NEGATIVE("messages.amountNegative");
 
     private final String configPath;
     private String value = "Not Loaded! Please contact administrator!";
