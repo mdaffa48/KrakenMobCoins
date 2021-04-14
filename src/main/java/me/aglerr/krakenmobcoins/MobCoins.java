@@ -2,7 +2,7 @@ package me.aglerr.krakenmobcoins;
 
 import fr.mrmicky.fastinv.FastInvManager;
 import me.aglerr.krakenmobcoins.api.MobCoinsExpansion;
-import me.aglerr.krakenmobcoins.commands.MobCoinsCMD;
+import me.aglerr.krakenmobcoins.commands.MainCommand;
 import me.aglerr.krakenmobcoins.configs.*;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.database.SQL;
@@ -474,6 +474,7 @@ public class MobCoins extends JavaPlugin {
     private void registerListeners(){
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new PlayerJoin(), this);
+        pm.registerEvents(new PlayerLeave(), this);
         pm.registerEvents(new PlayerInteract(), this);
         pm.registerEvents(new EntityDeath(), this);
         pm.registerEvents(new EntityDeathPhysical(), this);
@@ -485,7 +486,7 @@ public class MobCoins extends JavaPlugin {
     }
 
     private void registerCommands(){
-        this.getCommand("mobcoins").setExecutor(new MobCoinsCMD());
+        this.getCommand("mobcoins").setExecutor(new MainCommand(this));
     }
 
     private void startCounting(){
