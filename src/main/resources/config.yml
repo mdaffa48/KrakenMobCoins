@@ -291,7 +291,8 @@ messages:
   categoryAlreadyExist: '%prefix% &cCategory &e%category% &cis already exists!'
   removeCategory: '%prefix% &aYou have successfully removed category &e%category%&a.'
   outOfStock: '%prefix% &cThis item is out of stock!'
-  amountNegative: ''
+  amountNegative: '%prefix% &cThe amount cannot be negative!'
+  unknownCommand: '%prefix% &cUnknown command, please use /mobcoins help'
   leaderboard:
     - '&6========= Coins Top ========='
     - ''
