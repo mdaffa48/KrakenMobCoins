@@ -53,7 +53,7 @@ public class EntityDeathPhysical implements Listener {
         if(coinMob == null) return;
         if(!coinMob.willDropCoins()) return;
 
-        double amount = coinMob.getAmountToDrop(plugin.getConfig());
+        double amount = coinMob.getAmountToDrop();
 
         if(entity.getKiller() == null){
             entity.getWorld().dropItemNaturally(entity.getLocation(), utils.getMobCoinItem(amount));

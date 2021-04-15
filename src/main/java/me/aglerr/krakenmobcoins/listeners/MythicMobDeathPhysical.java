@@ -46,7 +46,7 @@ public class MythicMobDeathPhysical implements Listener {
         if(coinMob == null) return;
         if(!coinMob.willDropCoins()) return;
 
-        double amount = coinMob.getAmountToDrop(plugin.getConfig());
+        double amount = coinMob.getAmountToDrop();
 
         if(!(event.getKiller() instanceof Player)){
 

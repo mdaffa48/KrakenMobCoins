@@ -2,10 +2,8 @@ package me.aglerr.krakenmobcoins.coinmob;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -37,7 +35,7 @@ public class CoinMob {
         return ThreadLocalRandom.current().nextDouble(101) <= (getChance());
     }
 
-    public double getAmountToDrop(FileConfiguration config){
+    public double getAmountToDrop(){
         if(getCoinAmount().contains("-")){
 
             String[] split = getCoinAmount().split("-");
