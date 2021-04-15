@@ -44,7 +44,7 @@ public class MainCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args) {
 
-        Utils utils = MobCoins.getInstance().getUtils();
+        Utils utils = plugin.getUtils();
 
         if(args.length == 0){
             this.sendHelp(sender);
@@ -76,7 +76,7 @@ public class MainCommand implements CommandExecutor {
     }
 
     private void checkAliasesAndPerform(SubCommand subCommand, String command, CommandSender sender, String[] args){
-        Utils utils = MobCoins.getInstance().getUtils();
+        Utils utils = plugin.getUtils();
         if(subCommand.getAliases() != null){
             for(String alias : subCommand.getAliases()){
                 if(alias.equalsIgnoreCase(command)){
@@ -97,7 +97,7 @@ public class MainCommand implements CommandExecutor {
     }
 
     private void sendHelp(CommandSender sender){
-        Utils utils = MobCoins.getInstance().getUtils();
+        Utils utils = plugin.getUtils();
 
         if(sender.hasPermission("krakenmobcoins.admin")){
             for(String message : ConfigMessagesList.HELP_ADMIN.toStringList()){
