@@ -16,18 +16,8 @@ import java.util.List;
 public class TopCommand extends SubCommand {
 
     @Override
-    public @NotNull String getName() {
-        return "top";
-    }
-
-    @Override
     public @Nullable String getPermission() {
         return "krakenmobcoins.top";
-    }
-
-    @Override
-    public @Nullable List<String> getAliases() {
-        return null;
     }
 
     @Override

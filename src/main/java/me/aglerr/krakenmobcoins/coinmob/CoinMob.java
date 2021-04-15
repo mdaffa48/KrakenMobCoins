@@ -32,7 +32,7 @@ public class CoinMob {
     }
 
     public boolean willDropCoins(){
-        return ThreadLocalRandom.current().nextDouble(101) <= (getChance());
+        return ThreadLocalRandom.current().nextDouble(101) <= getChance();
     }
 
     public double getAmountToDrop(){
@@ -41,7 +41,6 @@ public class CoinMob {
             String[] split = getCoinAmount().split("-");
             double minimumCoin = Double.parseDouble(split[0]);
             double maximumCoin = Double.parseDouble(split[1]);
-
 
             return ThreadLocalRandom.current().nextDouble(maximumCoin - minimumCoin) + minimumCoin;
 

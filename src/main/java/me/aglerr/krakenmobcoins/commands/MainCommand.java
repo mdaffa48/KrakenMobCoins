@@ -14,30 +14,51 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainCommand implements CommandExecutor {
 
-    private final ArrayList<SubCommand> subCommands = new ArrayList<>();
+    private final Map<String, SubCommand> subCommands = new HashMap<>();
 
     private final MobCoins plugin;
     public MainCommand(final MobCoins plugin){
         this.plugin = plugin;
 
-        // Adding sub commands to the list.
-        subCommands.add(new AddCommand());
-        subCommands.add(new BalanceCommand());
-        subCommands.add(new CategoryCommand());
-        subCommands.add(new ConvertCommand());
-        subCommands.add(new HelpCommand());
-        subCommands.add(new PayCommand());
-        subCommands.add(new RefreshCommand());
-        subCommands.add(new ReloadCommand());
-        subCommands.add(new RemoveCommand());
-        subCommands.add(new SetCommand());
-        subCommands.add(new ShopCommand());
-        subCommands.add(new ToggleCommand());
-        subCommands.add(new TopCommand());
-        subCommands.add(new WithdrawCommand());
+        AddCommand addCommand = new AddCommand();
+        BalanceCommand balanceCommand = new BalanceCommand();
+        CategoryCommand categoryCommand = new CategoryCommand();
+        ConvertCommand convertCommand = new ConvertCommand();
+        HelpCommand helpCommand = new HelpCommand();
+        PayCommand payCommand = new PayCommand();
+        RefreshCommand refreshCommand = new RefreshCommand();
+        ReloadCommand reloadCommand = new ReloadCommand();
+        RemoveCommand removeCommand = new RemoveCommand();
+        SetCommand setCommand = new SetCommand();
+        ShopCommand shopCommand = new ShopCommand();
+        ToggleCommand toggleCommand = new ToggleCommand();
+        TopCommand topCommand = new TopCommand();
+        WithdrawCommand withdrawCommand = new WithdrawCommand();
+
+        subCommands.put("add", addCommand);
+
+        subCommands.put("balance", balanceCommand);
+        subCommands.put("bal", balanceCommand);
+
+        subCommands.put("category", categoryCommand);
+        subCommands.put("convert", convertCommand);
+        subCommands.put("help", helpCommand);
+        subCommands.put("pay", payCommand);
+        subCommands.put("refresh", refreshCommand);
+        subCommands.put("reload", reloadCommand);
+        subCommands.put("remove", removeCommand);
+        subCommands.put("set", setCommand);
+        subCommands.put("shop", shopCommand);
+        subCommands.put("toggle", toggleCommand);
+        subCommands.put("top", topCommand);
+
+        subCommands.put("withdraw", withdrawCommand);
+        subCommands.put("wd", withdrawCommand);
 
     }
 
@@ -46,14 +67,9 @@ public class MainCommand implements CommandExecutor {
 
         Utils utils = plugin.getUtils();
 
-        if(args.length == 0){
-            this.sendHelp(sender);
-            return true;
-        }
-
-        for(SubCommand subCommand : subCommands){
-            if(args[0].equalsIgnoreCase(subCommand.getName())){
-
+        if(args.length > 0){
+            SubCommand subCommand = subCommands.get(args[0].toLowerCase());
+            if(subCommand != null){
                 if(subCommand.getPermission() != null){
                     if(!(sender.hasPermission(subCommand.getPermission()))){
                         sender.sendMessage(utils.color(ConfigMessages.NO_PERMISSION.toString())
@@ -64,36 +80,15 @@ public class MainCommand implements CommandExecutor {
                 }
 
                 subCommand.perform(plugin, sender, args);
-                break;
+                return true;
 
             }
 
-            this.checkAliasesAndPerform(subCommand, args[0], sender, args);
-
+        } else {
+            this.sendHelp(sender);
         }
 
         return false;
-    }
-
-    private void checkAliasesAndPerform(SubCommand subCommand, String command, CommandSender sender, String[] args){
-        Utils utils = plugin.getUtils();
-        if(subCommand.getAliases() != null){
-            for(String alias : subCommand.getAliases()){
-                if(alias.equalsIgnoreCase(command)){
-                    if(subCommand.getPermission() != null){
-                        if(!(sender.hasPermission(subCommand.getPermission()))){
-                            sender.sendMessage(utils.color(ConfigMessages.NO_PERMISSION.toString())
-                                    .replace("%prefix%", utils.getPrefix())
-                                    .replace("%permission%", subCommand.getPermission()));
-                            return;
-                        }
-                    }
-
-                    subCommand.perform(plugin, sender, args);
-                    break;
-                }
-            }
-        }
     }
 
     private void sendHelp(CommandSender sender){

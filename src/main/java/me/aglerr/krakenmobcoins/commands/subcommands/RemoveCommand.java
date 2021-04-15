@@ -17,18 +17,8 @@ import java.util.List;
 public class RemoveCommand extends SubCommand {
 
     @Override
-    public @NotNull String getName() {
-        return "remove";
-    }
-
-    @Override
     public @Nullable String getPermission() {
         return "krakenmobcoins.admin";
-    }
-
-    @Override
-    public @Nullable List<String> getAliases() {
-        return null;
     }
 
     @Override

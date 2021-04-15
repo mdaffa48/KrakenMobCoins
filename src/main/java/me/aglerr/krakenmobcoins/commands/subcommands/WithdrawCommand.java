@@ -9,6 +9,7 @@ import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -17,18 +18,8 @@ import java.util.List;
 public class WithdrawCommand extends SubCommand {
 
     @Override
-    public String getName() {
-        return "withdraw";
-    }
-
-    @Override
     public String getPermission() {
         return "krakenmobcoins.withdraw";
-    }
-
-    @Override
-    public @Nullable List<String> getAliases() {
-        return Arrays.asList("wd");
     }
 
     @Override

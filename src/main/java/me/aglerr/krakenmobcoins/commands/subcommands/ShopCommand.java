@@ -17,18 +17,8 @@ import java.util.List;
 public class ShopCommand extends SubCommand {
 
     @Override
-    public @NotNull String getName() {
-        return "shop";
-    }
-
-    @Override
     public @Nullable String getPermission() {
         return "krakenmobcoins.shop";
-    }
-
-    @Override
-    public @Nullable List<String> getAliases() {
-        return Arrays.asList("market");
     }
 
     @Override

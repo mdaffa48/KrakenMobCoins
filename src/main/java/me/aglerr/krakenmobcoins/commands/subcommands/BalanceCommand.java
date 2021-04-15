@@ -18,17 +18,7 @@ import java.util.List;
 public class BalanceCommand extends SubCommand {
 
     @Override
-    public @NotNull String getName() {
-        return "balance";
-    }
-
-    @Override
     public @Nullable String getPermission(){ return "krakenmobcoins.balance"; }
-
-    @Override
-    public @Nullable List<String> getAliases() {
-        return Arrays.asList("bal", "coin", "coins");
-    }
 
     @Override
     public void perform(MobCoins plugin, CommandSender sender, String[] args) {

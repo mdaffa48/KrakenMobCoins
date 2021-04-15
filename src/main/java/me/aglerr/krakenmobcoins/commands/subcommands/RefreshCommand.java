@@ -14,18 +14,8 @@ import java.util.List;
 public class RefreshCommand extends SubCommand {
 
     @Override
-    public @NotNull String getName() {
-        return "refresh";
-    }
-
-    @Override
     public @Nullable String getPermission() {
         return "krakenmobcoins.admin";
-    }
-
-    @Override
-    public @Nullable List<String> getAliases() {
-        return null;
     }
 
     @Override

@@ -16,18 +16,8 @@ import java.util.List;
 public class AddCommand extends SubCommand {
 
     @Override
-    public @NotNull String getName() {
-        return "add";
-    }
-
-    @Override
     public @Nullable String getPermission() {
         return "krakenmobcoins.admin";
-    }
-
-    @Override
-    public @Nullable List<String> getAliases() {
-        return null;
     }
 
     @Override

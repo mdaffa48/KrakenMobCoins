@@ -14,19 +14,10 @@ import java.util.List;
 public class HelpCommand extends SubCommand {
 
     @Override
-    public @NotNull String getName() {
-        return "help";
-    }
-
-    @Override
     public @Nullable String getPermission() {
         return null;
     }
 
-    @Override
-    public @Nullable List<String> getAliases() {
-        return null;
-    }
 
     @Override
     public void perform(MobCoins plugin, CommandSender sender, String[] args) {

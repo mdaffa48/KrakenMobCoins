@@ -14,18 +14,8 @@ import java.util.List;
 public class ToggleCommand extends SubCommand {
 
     @Override
-    public @NotNull String getName() {
-        return "toggle";
-    }
-
-    @Override
     public @Nullable String getPermission() {
         return "krakenmobcoins.toggle";
-    }
-
-    @Override
-    public @Nullable List<String> getAliases() {
-        return null;
     }
 
     @Override

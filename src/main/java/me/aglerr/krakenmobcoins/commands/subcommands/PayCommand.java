@@ -16,18 +16,8 @@ import java.util.List;
 public class PayCommand extends SubCommand {
 
     @Override
-    public @NotNull String getName() {
-        return "pay";
-    }
-
-    @Override
     public @Nullable String getPermission() {
         return "krakenmobcoins.pay";
-    }
-
-    @Override
-    public @Nullable List<String> getAliases() {
-        return null;
     }
 
     @Override
