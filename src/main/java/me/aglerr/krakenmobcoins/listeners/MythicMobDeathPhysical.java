@@ -2,6 +2,8 @@ package me.aglerr.krakenmobcoins.listeners;
 
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
 import me.aglerr.krakenmobcoins.MobCoins;
+import me.aglerr.krakenmobcoins.coinmob.CoinMob;
+import me.aglerr.krakenmobcoins.coinmob.CoinMobManager;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -16,66 +18,50 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class MythicMobDeathPhysical implements Listener {
 
+    private final MobCoins plugin;
+    public MythicMobDeathPhysical(final MobCoins plugin){
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onDeathPhysical(MythicMobDeathEvent event){
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
+        Utils utils = plugin.getUtils();
         if(!config.getBoolean("options.physicalMobCoin.enabled")) return;
 
         if(!config.getBoolean("options.physicalMobCoin.ignoreDeathCause")){
-            EntityDamageEvent.DamageCause cause = event.getEntity().getLastDamageCause().getCause();
-            if(cause == null) return;
-            if(!MobCoins.getInstance().getDamageCauses().contains(cause)) return;
+            if(event.getEntity().getLastDamageCause() == null) return;
+            if(!MobCoins.getInstance().getDamageCauses().contains(event.getEntity().getLastDamageCause().getCause())) return;
         }
 
-        Utils utils = MobCoins.getInstance().getUtils();
         Entity entity = event.getEntity();
 
         List<String> worlds = config.getStringList("disabledWorlds");
         if(worlds.contains(entity.getWorld().getName())) return;
 
         String type = event.getMobType().getInternalName();
-        if(MobCoins.getInstance().getChance().containsKey(type) && MobCoins.getInstance().getDropAmount().containsKey(type)){
+        CoinMobManager manager = plugin.getCoinMobManager();
 
-            int chance = MobCoins.getInstance().getChance().get(type);
-            String checkAmount = MobCoins.getInstance().getDropAmount().get(type);
-            double amount;
+        CoinMob coinMob = manager.getCoinMob(type);
+        if(coinMob == null) return;
+        if(!coinMob.willDropCoins()) return;
 
-            if (checkAmount.contains("-")) {
+        double amount = coinMob.getAmountToDrop(plugin.getConfig());
 
-                String[] split = checkAmount.split("-");
-                double minimumRange = Double.parseDouble(split[0]);
-                double maximumRange = Double.parseDouble(split[1]);
+        if(!(event.getKiller() instanceof Player)){
 
-                amount = this.getRandomNumber(minimumRange, maximumRange);
+            entity.getWorld().dropItemNaturally(entity.getLocation(), utils.getMobCoinItem(amount));
 
-            } else {
+        } else {
 
-                double finalAmount = Double.parseDouble(checkAmount);
-                amount = finalAmount;
+            Player player = (Player) event.getKiller();
+            int multiplier = utils.getBooster(player);
+            double multiplierAmount = amount * multiplier / 100;
+            double amountAfter = amount + multiplierAmount;
 
-            }
-
-            int random = ThreadLocalRandom.current().nextInt(101);
-            if(random <= chance){
-                if(event.getKiller() instanceof Player){
-                    Player player = (Player) event.getKiller();
-
-                    int multiplier = utils.getBooster(player);
-                    double multiplierAmount = amount * multiplier / 100;
-                    double amountAfter = amount + multiplierAmount;
-
-                    entity.getWorld().dropItemNaturally(entity.getLocation(), utils.getMobCoinItem(amountAfter));
-                } else {
-                    entity.getWorld().dropItemNaturally(entity.getLocation(), utils.getMobCoinItem(amount));
-                }
-            }
-
+            entity.getWorld().dropItemNaturally(entity.getLocation(), utils.getMobCoinItem(amountAfter));
         }
 
-    }
-
-    private double getRandomNumber(double min, double max){
-        return ThreadLocalRandom.current().nextDouble(max - min) + min;
     }
 
 }

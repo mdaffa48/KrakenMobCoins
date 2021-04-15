@@ -127,21 +127,9 @@ public class SQL {
     public void createAccount(String uuid, double amount) {
         PlayerCoins coins = new PlayerCoins(uuid);
         coins.setMoney(amount);
+        coins.save(true);
 
         MobCoins.getInstance().getAccounts().put(uuid, coins);
-    }
-
-    public void createAccount(String uuid) {
-        FileConfiguration config = MobCoins.getInstance().getConfig();
-
-        double balance = config.getDouble("options.startingBalance");
-
-        PlayerCoins coins = new PlayerCoins(uuid);
-        coins.setMoney(balance);
-        coins.save();
-
-        MobCoins.getInstance().getAccounts().put(uuid, coins);
-
     }
 
     public void loadAccounts(){

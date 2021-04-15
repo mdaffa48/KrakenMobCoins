@@ -12,17 +12,22 @@ import java.sql.SQLException;
 
 public class PlayerJoin implements Listener {
 
+    private final MobCoins plugin;
+    public PlayerJoin(final MobCoins plugin){
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
         String uuid = player.getUniqueId().toString();
-        Utils utils = MobCoins.getInstance().getUtils();
+        Utils utils = plugin.getUtils();
 
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         double starting = config.getDouble("options.startingBalance");
 
-        if(MobCoins.getInstance().getPlayerCoins(uuid) == null){
-            MobCoins.getInstance().getDatabase().createAccount(uuid, starting);
+        if(plugin.getPlayerCoins(uuid) == null){
+            plugin.getDatabase().createAccount(uuid, starting);
             utils.sendConsoleMessage("Successfully creating a new account for " + player.getName());
             utils.sendConsoleMessage("UUID: " + uuid);
         }

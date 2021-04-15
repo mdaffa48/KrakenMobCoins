@@ -14,12 +14,17 @@ import org.bukkit.event.entity.EntityDamageEvent;
 
 public class CreatureSpawn implements Listener {
 
+    private final MobCoins plugin;
+    public CreatureSpawn(final MobCoins plugin){
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onSpawn(CreatureSpawnEvent event){
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         if(config.getBoolean("options.disableMobCoinsFromSpawner")){
             if(event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.SPAWNER){
-                MobCoins.getInstance().getMobSpawner().add(event.getEntity());
+                plugin.getMobSpawner().add(event.getEntity());
             }
         }
 

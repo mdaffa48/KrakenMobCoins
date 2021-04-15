@@ -9,12 +9,17 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerLeave implements Listener {
 
+    private final MobCoins plugin;
+    public PlayerLeave(final MobCoins plugin){
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onLeave(PlayerQuitEvent event){
         Player player = event.getPlayer();
-        PlayerCoins coins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
+        PlayerCoins coins = plugin.getPlayerCoins(player.getUniqueId().toString());
         if(coins != null){
-            coins.save();
+            coins.save(true);
         }
     }
 

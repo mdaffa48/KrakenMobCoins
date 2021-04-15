@@ -21,11 +21,16 @@ import org.bukkit.inventory.ItemStack;
 
 public class PlayerInteract implements Listener {
 
+    private final MobCoins plugin;
+    public PlayerInteract(final MobCoins plugin){
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onInteract(PlayerInteractEvent event){
         Player player = event.getPlayer();
-        Utils utils = MobCoins.getInstance().getUtils();
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        Utils utils = plugin.getUtils();
+        FileConfiguration config = plugin.getConfig();
 
         if(utils.hasOffhand()){
             if(event.getHand() == EquipmentSlot.OFF_HAND) return;
@@ -49,7 +54,7 @@ public class PlayerInteract implements Listener {
             }
 
             event.setCancelled(true);
-            PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
+            PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
             if(playerCoins == null){
                 player.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT.toString())
                         .replace("%prefix%", utils.getPrefix()));

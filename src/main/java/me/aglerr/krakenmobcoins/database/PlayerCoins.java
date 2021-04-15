@@ -36,11 +36,10 @@ public class PlayerCoins {
         return target.getName();
     }
 
-    public void save() {
+    public void save(boolean async) {
         SQL database = MobCoins.getInstance().getDatabase();
-        new BukkitRunnable(){
-            @Override
-            public void run(){
+        if(async){
+            Bukkit.getScheduler().runTaskAsynchronously(MobCoins.getInstance(), () -> {
                 try{
                     Connection connection = database.getNewConnection();
                     String command = "SELECT UUID FROM krakencoins WHERE UUID='" + uuid + "'";
@@ -59,8 +58,29 @@ public class PlayerCoins {
                     System.out.println("[KrakenMobCoins] Error saving player account data.");
                     exception.printStackTrace();
                 }
+            });
+        } else {
+
+            try{
+                Connection connection = database.getNewConnection();
+                String command = "SELECT UUID FROM krakencoins WHERE UUID='" + uuid + "'";
+                PreparedStatement statement = connection.prepareStatement(command);
+                ResultSet rs = statement.executeQuery();
+                if(rs.next()){
+                    database.update(String.valueOf(coins), uuid);
+                } else {
+                    database.insert(String.valueOf(coins), uuid);
+                }
+
+                rs.close();
+                statement.close();
+                connection.close();
+            } catch(SQLException exception){
+                System.out.println("[KrakenMobCoins] Error saving player account data.");
+                exception.printStackTrace();
             }
-        }.runTaskAsynchronously(MobCoins.getInstance());
+
+        }
 
     }
 

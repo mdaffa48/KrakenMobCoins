@@ -2,144 +2,89 @@ package me.aglerr.krakenmobcoins.listeners;
 
 import io.lumine.xikage.mythicmobs.api.bukkit.events.MythicMobDeathEvent;
 import me.aglerr.krakenmobcoins.MobCoins;
+import me.aglerr.krakenmobcoins.coinmob.CoinMob;
+import me.aglerr.krakenmobcoins.coinmob.CoinMobManager;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.api.events.MobCoinsReceiveEvent;
+import me.aglerr.krakenmobcoins.salary.SalaryManager;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class MythicMobDeath implements Listener {
 
+    private final MobCoins plugin;
+    public MythicMobDeath(final MobCoins plugin){
+        this.plugin = plugin;
+    }
+
     @EventHandler
-    public void onDeath(MythicMobDeathEvent event) {
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+    public void onEntityDeath(MythicMobDeathEvent event){
+        FileConfiguration config = plugin.getConfig();
         if (config.getBoolean("options.physicalMobCoin.enabled")) return;
 
         if (!(event.getKiller() instanceof Player)) return;
-        Utils utils = MobCoins.getInstance().getUtils();
+        Utils utils = plugin.getUtils();
 
         Player player = (Player) event.getKiller();
+        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+        if(playerCoins == null) return;
 
         List<String> worlds = config.getStringList("disabledWorlds");
         if (worlds.contains(player.getWorld().getName())) return;
 
-        String type = event.getMobType().getInternalName();
-        if (MobCoins.getInstance().getChance().containsKey(type) && MobCoins.getInstance().getDropAmount().containsKey(type)) {
+        final String type = event.getMobType().getInternalName();
+        CoinMobManager manager = plugin.getCoinMobManager();
 
-            int chance = MobCoins.getInstance().getChance().get(type);
-            String checkAmount = MobCoins.getInstance().getDropAmount().get(type);
-            double amount;
+        CoinMob coinMob = manager.getCoinMob(type);
+        if(coinMob == null) return;
+        if(!coinMob.willDropCoins()) return;
 
-            if (checkAmount.contains("-")) {
+        double amount = coinMob.getAmountToDrop(plugin.getConfig(), player);
 
-                String[] split = checkAmount.split("-");
-                double minimumRange;
-                double maximumRange;
-                if (config.getBoolean("options.lootingSystem")) {
-                    ItemStack hand = player.getItemInHand();
-                    if (hand.containsEnchantment(Enchantment.LOOT_BONUS_MOBS)) {
-                        int level = hand.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
-                        int finalLevel = level * 10;
+        int multiplier = utils.getBooster(player);
+        double multiplierAmount = amount * multiplier / 100;
+        double amountAfter = amount + multiplierAmount;
 
-                        double minimumLooting = (Double.parseDouble(split[0]) * finalLevel) / 100;
-                        double maximumLooting = (Double.parseDouble(split[1]) * finalLevel) / 100;
+        MobCoinsReceiveEvent mobCoinsReceiveEvent = new MobCoinsReceiveEvent(player, amount, amountAfter, multiplierAmount, event.getEntity(), multiplier);
+        Bukkit.getPluginManager().callEvent(mobCoinsReceiveEvent);
+        if(mobCoinsReceiveEvent.isCancelled()) return;
 
-                        minimumRange = Double.parseDouble(split[0]) + minimumLooting;
-                        maximumRange = Double.parseDouble(split[1]) + maximumLooting;
+        if(config.getBoolean("options.salaryMode.enabled")) {
+            if (!config.getBoolean("options.salaryMode.receiveAfterMessage")) {
+                playerCoins.setMoney(playerCoins.getMoney() + mobCoinsReceiveEvent.getAmountAfterMultiplier());
+            }
+        } else {
+            playerCoins.setMoney(playerCoins.getMoney() + mobCoinsReceiveEvent.getAmountAfterMultiplier());
+        }
 
-                    } else {
+        if(!plugin.getToggled().contains(player.getUniqueId().toString())) {
+            if (config.getBoolean("options.salaryMode.enabled")) {
 
-                        minimumRange = Double.parseDouble(split[0]);
-                        maximumRange = Double.parseDouble(split[1]);
-
-                    }
+                SalaryManager salaryManager = plugin.getSalaryManager();
+                if(salaryManager.isPlayerExist(player.getUniqueId())){
+                    double current = salaryManager.getPlayerSalary(player.getUniqueId());
+                    double currentFinal = current + mobCoinsReceiveEvent.getAmountAfterMultiplier();
+                    salaryManager.setPlayerSalary(player.getUniqueId(), currentFinal);
                 } else {
-
-                    minimumRange = Double.parseDouble(split[0]);
-                    maximumRange = Double.parseDouble(split[1]);
-
+                    salaryManager.setPlayerSalary(player.getUniqueId(), mobCoinsReceiveEvent.getAmountAfterMultiplier());
                 }
-
-                amount = this.getRandomNumber(minimumRange, maximumRange);
 
             } else {
 
-                double finalAmount = Double.parseDouble(checkAmount);
-                if (config.getBoolean("options.lootingSystem")) {
-                    ItemStack hand = player.getItemInHand();
-                    if (hand.containsEnchantment(Enchantment.LOOT_BONUS_MOBS)) {
-                        int level = hand.getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS);
-                        int finalLevel = level * 10;
-
-                        finalAmount = (Double.parseDouble(checkAmount) * finalLevel) / 100;
-                    }
-
-                }
-
-                amount = finalAmount;
+                utils.sendSound(player);
+                utils.sendMessage(player, mobCoinsReceiveEvent.getAmountAfterMultiplier());
+                utils.sendTitle(player, mobCoinsReceiveEvent.getAmountAfterMultiplier());
+                utils.sendActionBar(player, mobCoinsReceiveEvent.getAmountAfterMultiplier());
 
             }
-
-            int random = ThreadLocalRandom.current().nextInt(101);
-            if (random <= chance) {
-
-                int multiplier = utils.getBooster(player);
-                double multiplierAmount = amount * multiplier / 100;
-                double amountAfter = amount + multiplierAmount;
-
-                MobCoinsReceiveEvent mobCoinsReceiveEvent = new MobCoinsReceiveEvent(player, amount, amountAfter, multiplierAmount, event.getEntity(), multiplier);
-                Bukkit.getPluginManager().callEvent(mobCoinsReceiveEvent);
-                if (mobCoinsReceiveEvent.isCancelled()) return;
-
-                PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
-                if (playerCoins != null) {
-                    if (config.getBoolean("options.salaryMode.enabled")) {
-                        if (!config.getBoolean("options.salaryMode.receiveAfterMessage")) {
-                            playerCoins.setMoney(playerCoins.getMoney() + mobCoinsReceiveEvent.getAmountAfterMultiplier());
-                        }
-                    } else {
-                        playerCoins.setMoney(playerCoins.getMoney() + mobCoinsReceiveEvent.getAmountAfterMultiplier());
-                    }
-
-
-                    if (!MobCoins.getInstance().getToggled().contains(player.getUniqueId().toString())) {
-                        if (config.getBoolean("options.salaryMode.enabled")) {
-                            if (MobCoins.getInstance().getSalary().containsKey(player.getUniqueId())) {
-                                double current = MobCoins.getInstance().getSalary().get(player.getUniqueId());
-                                double currentFinal = current + mobCoinsReceiveEvent.getAmountAfterMultiplier();
-                                MobCoins.getInstance().getSalary().put(player.getUniqueId(), currentFinal);
-                            } else {
-
-                                MobCoins.getInstance().getSalary().put(player.getUniqueId(), mobCoinsReceiveEvent.getAmountAfterMultiplier());
-
-                            }
-
-                        } else {
-
-                            utils.sendSound(player);
-                            utils.sendMessage(player, mobCoinsReceiveEvent.getAmountAfterMultiplier());
-                            utils.sendTitle(player, mobCoinsReceiveEvent.getAmountAfterMultiplier());
-                            utils.sendActionBar(player, mobCoinsReceiveEvent.getAmountAfterMultiplier());
-
-                        }
-
-                    }
-                }
-            }
-
         }
-    }
 
-    private double getRandomNumber(double min, double max) {
-        return ThreadLocalRandom.current().nextDouble(max - min) + min;
     }
 
 }

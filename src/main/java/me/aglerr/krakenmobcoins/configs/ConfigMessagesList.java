@@ -8,7 +8,8 @@ import java.util.List;
 public enum ConfigMessagesList {
     LEADERBOARD("messages.leaderboard"),
     HELP("messages.help"),
-    HELP_ADMIN("messages.helpAdmin");
+    HELP_ADMIN("messages.helpAdmin"),
+    SALARY("options.salaryMode.messages");
 
     private final String configPath;
     private List<String> value = Arrays.asList("Not Loaded! Please contact administrator!");

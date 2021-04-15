@@ -2,11 +2,14 @@ package me.aglerr.krakenmobcoins;
 
 import fr.mrmicky.fastinv.FastInvManager;
 import me.aglerr.krakenmobcoins.api.MobCoinsExpansion;
+import me.aglerr.krakenmobcoins.coinmob.CoinMob;
+import me.aglerr.krakenmobcoins.coinmob.CoinMobManager;
 import me.aglerr.krakenmobcoins.commands.MainCommand;
 import me.aglerr.krakenmobcoins.configs.*;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.database.SQL;
 import me.aglerr.krakenmobcoins.listeners.*;
+import me.aglerr.krakenmobcoins.salary.SalaryManager;
 import me.aglerr.krakenmobcoins.shops.ShopUtils;
 import me.aglerr.krakenmobcoins.shops.category.mainmenu.MainMenuLoader;
 import me.aglerr.krakenmobcoins.shops.category.shops.ShopNormalLoader;
@@ -38,22 +41,16 @@ public class MobCoins extends JavaPlugin {
     private static MobCoins instance;
     private SQL database;
 
-    private Utils utils = new Utils();
-
     public Map<String, PlayerCoins> accounts = new HashMap<>();
 
-    private Set<String> toggled = new HashSet<>();
-    private Map<String, FileConfiguration> categories = new HashMap<>();
-    private Map<UUID, Double> salary = new HashMap<>();
-    private Set<Entity> mobSpawner = new HashSet<>();
+    private final Set<String> toggled = new HashSet<>();
+    private final Map<String, FileConfiguration> categories = new HashMap<>();
+    private final Set<Entity> mobSpawner = new HashSet<>();
 
-    private Map<String, Integer> chance = new HashMap<>();
-    private Map<String, String> dropAmount = new HashMap<>();
+    private final Map<String, Integer> limit = new HashMap<>();
+    private final Map<String, Integer> stock = new HashMap<>();
 
-    private Map<String, Integer> limit = new HashMap<>();
-    private Map<String, Integer> stock = new HashMap<>();
-
-    private List<EntityDamageEvent.DamageCause> damageCauses = new ArrayList<>();
+    private final List<EntityDamageEvent.DamageCause> damageCauses = new ArrayList<>();
 
     public List<ShopItems> normalItems = new ArrayList<>();
     public List<ShopItems> specialItems = new ArrayList<>();
@@ -69,6 +66,10 @@ public class MobCoins extends JavaPlugin {
     public RotatingLoader rotatingLoader = new RotatingLoader();
 
     public ShopUtils shopUtils = new ShopUtils();
+
+    private final Utils utils = new Utils();
+    private final CoinMobManager coinMobManager = new CoinMobManager(this);
+    private final SalaryManager salaryManager = new SalaryManager(this);
 
     public long normalTime;
     public long specialTime;
@@ -101,7 +102,7 @@ public class MobCoins extends JavaPlugin {
         this.loadPlayerToggled();
 
         this.runAutoSave();
-        Metrics metrics = new Metrics(this, 10310);
+        new Metrics(this, 10310);
         FastInvManager.register(this);
 
         if(this.getConfig().getBoolean("rotatingShop.enabled")){
@@ -115,15 +116,13 @@ public class MobCoins extends JavaPlugin {
             shopNormalLoader.load();
         }
 
-        beginSalary();
-        loadMobs();
+        salaryManager.beginSalaryTask();
         loadStocks();
+        coinMobManager.loadCoinMob();
         loadDamageCausePhysical();
 
         ConfigMessages.initialize(this.getConfig());
         ConfigMessagesList.initialize(this.getConfig());
-
-
 
     }
 
@@ -156,53 +155,6 @@ public class MobCoins extends JavaPlugin {
             purchase.set("stock", null);
             limitManager.saveData();
         }
-    }
-
-    private void loadMobs(){
-        FileConfiguration mobs = mobsManager.getConfiguration();
-        int totalMobs = 0;
-        for(String key : mobs.getConfigurationSection("entities").getKeys(false)){
-
-            totalMobs++;
-            chance.put(key, mobs.getInt("entities." + key + ".chance"));
-            dropAmount.put(key, mobs.getString("entities." + key + ".amount"));
-        }
-
-        utils.sendConsoleMessage("Successfully loaded " + totalMobs + " mobs, enjoy!");
-
-    }
-
-    private void beginSalary(){
-        int delay = this.getConfig().getInt("options.salaryMode.announceEvery");
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                if(getConfig().getBoolean("options.salaryMode.enabled")){
-                    for(UUID uuid : salary.keySet()){
-                        Player player = Bukkit.getPlayer(uuid);
-                        if(player != null){
-                            PlayerCoins coins = getPlayerCoins(uuid.toString());
-                            double amount = salary.get(uuid);
-                            for(String message : getConfig().getStringList("options.salaryMode.messages")){
-                                player.sendMessage(utils.color(message.replace("%coins%", utils.getDFormat().format(amount))));
-                            }
-
-                            utils.sendSound(player);
-                            utils.sendTitle(player, amount);
-                            utils.sendActionBar(player, amount);
-
-                            if(getConfig().getBoolean("options.salaryMode.receiveAfterMessage")){
-                                coins.setMoney(coins.getMoney() + amount);
-                            }
-
-                            salary.remove(uuid);
-
-                        }
-                    }
-                }
-            }
-        }.runTaskTimerAsynchronously(this, 0L, 20 * delay);
-
     }
 
     private void loadCategories(){
@@ -429,12 +381,11 @@ public class MobCoins extends JavaPlugin {
         mainMenuLoader.getMainMenuItemsList().clear();
         shopNormalLoader.getShopNormalItemsList().clear();
         categories.clear();
-        chance.clear();
-        dropAmount.clear();
         rotatingLoader.getRotatingItemsList().clear();
         normalItems.clear();
         specialItems.clear();
         damageCauses.clear();
+        coinMobManager.loadCoinMob();
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
 
@@ -445,7 +396,6 @@ public class MobCoins extends JavaPlugin {
 
             loadRewards();
             loadCategories();
-            loadMobs();
             loadDamageCausePhysical();
 
             ConfigMessages.initialize(this.getConfig());
@@ -473,15 +423,15 @@ public class MobCoins extends JavaPlugin {
 
     private void registerListeners(){
         PluginManager pm = Bukkit.getPluginManager();
-        pm.registerEvents(new PlayerJoin(), this);
-        pm.registerEvents(new PlayerLeave(), this);
-        pm.registerEvents(new PlayerInteract(), this);
-        pm.registerEvents(new EntityDeath(), this);
-        pm.registerEvents(new EntityDeathPhysical(), this);
-        pm.registerEvents(new CreatureSpawn(), this);
+        pm.registerEvents(new PlayerJoin(this), this);
+        pm.registerEvents(new PlayerLeave(this), this);
+        pm.registerEvents(new PlayerInteract(this), this);
+        pm.registerEvents(new EntityDeath(this), this);
+        pm.registerEvents(new EntityDeathPhysical(this), this);
+        pm.registerEvents(new CreatureSpawn(this), this);
         if(mythicMobsHook){
-            pm.registerEvents(new MythicMobDeath(), this);
-            pm.registerEvents(new MythicMobDeathPhysical(), this);
+            pm.registerEvents(new MythicMobDeath(this), this);
+            pm.registerEvents(new MythicMobDeathPhysical(this), this);
         }
     }
 
@@ -522,9 +472,7 @@ public class MobCoins extends JavaPlugin {
         }
 
         if(!this.toggled.isEmpty()){
-            for(String uuid : this.toggled){
-                list.add(uuid);
-            }
+            list.addAll(this.toggled);
 
             data.set("data", list);
 
@@ -534,16 +482,10 @@ public class MobCoins extends JavaPlugin {
     }
 
     private void loadPlayerToggled(){
-        ArrayList<String> list = new ArrayList<>();
         FileConfiguration data = this.tempDataManager.getConfiguration();
 
-        for(String uuid : data.getStringList("data")){
-            list.add(uuid);
-        }
-
-        for(String loadedUUID : list){
-            this.toggled.add(loadedUUID);
-        }
+        ArrayList<String> list = new ArrayList<>(data.getStringList("data"));
+        this.toggled.addAll(list);
 
         data.set("data", new ArrayList<>());
 
@@ -597,14 +539,12 @@ public class MobCoins extends JavaPlugin {
             coins.add(accounts.get(a));
         }
 
-        List<PlayerCoins> convert = new ArrayList<>();
-        for (PlayerCoins pms : coins){
-            convert.add(pms);
-        }
-        Collections.sort(convert, (pt1, pt2) -> {
+        List<PlayerCoins> convert = new ArrayList<>(coins);
 
-            Float f1 = (float)pt1.getMoney();
-            Float f2 = (float)pt2.getMoney();
+        convert.sort((pt1, pt2) -> {
+
+            Float f1 = (float) pt1.getMoney();
+            Float f2 = (float) pt2.getMoney();
 
             return f2.compareTo(f1);
 
@@ -645,10 +585,7 @@ public class MobCoins extends JavaPlugin {
         mainMenuLoader.getMainMenuItemsList().clear();
         shopNormalLoader.getShopNormalItemsList().clear();
         categories.clear();
-        salary.clear();
         mobSpawner.clear();
-        chance.clear();
-        dropAmount.clear();
         toggled.clear();
         damageCauses.clear();
     }
@@ -669,13 +606,12 @@ public class MobCoins extends JavaPlugin {
     public ShopNormalLoader getShopNormalLoader() { return shopNormalLoader; }
     public Map<String, FileConfiguration> getCategories() { return categories; }
     public RotatingLoader getRotatingLoader() { return rotatingLoader; }
-    public Map<UUID, Double> getSalary() { return salary; }
-    public Map<String, Integer> getChance() { return chance; }
-    public Map<String, String> getDropAmount() { return dropAmount; }
     public Set<Entity> getMobSpawner() { return mobSpawner; }
     public ShopUtils getShopUtils() { return shopUtils; }
     public Map<String, Integer> getLimit() { return limit; }
     public Map<String, Integer> getStock() { return stock; }
     public List<EntityDamageEvent.DamageCause> getDamageCauses() { return damageCauses; }
+    public CoinMobManager getCoinMobManager() { return coinMobManager; }
+    public SalaryManager getSalaryManager() { return salaryManager; }
 
 }
