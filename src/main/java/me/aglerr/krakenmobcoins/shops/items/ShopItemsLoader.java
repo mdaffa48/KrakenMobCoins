@@ -10,8 +10,13 @@ public class ShopItemsLoader {
 
     private List<ShopItems> shopItemsList = new ArrayList<>();
 
+    private final MobCoins plugin;
+    public ShopItemsLoader(final MobCoins plugin){
+        this.plugin = plugin;
+    }
+
     public void load(){
-        FileConfiguration shop = MobCoins.getInstance().getShopManager().getConfiguration();
+        FileConfiguration shop = plugin.getShopManager().getConfiguration();
         for(String key : shop.getConfigurationSection("shops").getKeys(false)){
 
             String material = shop.getString("shops." + key + ".material");

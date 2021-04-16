@@ -15,10 +15,13 @@ public class SQL {
     public boolean useSSL;
 
     private String table = "krakencoins";
+    private final MobCoins plugin;
 
-    public SQL() {
-        FileConfiguration config = MobCoins.getInstance().getConfig();
-        Utils utils = MobCoins.getInstance().getUtils();
+    public SQL(final MobCoins plugin) {
+        this.plugin = plugin;
+        
+        FileConfiguration config = plugin.getConfig();
+        Utils utils = plugin.getUtils();
         if(config.getBoolean("MYSQL.enabled")){
             utils.sendConsoleMessage("Trying to connect to the database.");
             try{
@@ -71,7 +74,7 @@ public class SQL {
     }
 
     public Connection getNewConnection() throws SQLException {
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         if(config.getBoolean("MYSQL.enabled")){
             return DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database + "?verifyServerCertificate=false&useSSL=false",
                     this.username, this.password);
@@ -99,7 +102,7 @@ public class SQL {
                     exception.printStackTrace();
                 }
             }
-        }.runTaskAsynchronously(MobCoins.getInstance());
+        }.runTaskAsynchronously(plugin);
 
     }
 
@@ -120,7 +123,7 @@ public class SQL {
                     exception.printStackTrace();
                 }
             }
-        }.runTaskAsynchronously(MobCoins.getInstance());
+        }.runTaskAsynchronously(plugin);
 
     }
 
@@ -129,7 +132,7 @@ public class SQL {
         coins.setMoney(amount);
         coins.save(true);
 
-        MobCoins.getInstance().getAccounts().put(uuid, coins);
+        plugin.getAccounts().put(uuid, coins);
     }
 
     public void loadAccounts(){
@@ -148,7 +151,7 @@ public class SQL {
                         PlayerCoins coins = new PlayerCoins(uuid);
                         coins.setMoney(money);
 
-                        MobCoins.getInstance().getAccounts().put(uuid, coins);
+                        plugin.getAccounts().put(uuid, coins);
 
                     }
 
@@ -156,14 +159,14 @@ public class SQL {
                     statement.close();
                     connection.close();
 
-                    MobCoins.getInstance().getUtils().sendConsoleMessage("Successfully loaded all saved accounts!");
+                    plugin.getUtils().sendConsoleMessage("Successfully loaded all saved accounts!");
 
                 } catch (SQLException e) {
-                    Bukkit.getPluginManager().disablePlugin(MobCoins.getInstance());
-                    MobCoins.getInstance().getUtils().sendConsoleMessage("&cError loading database player accounts!");
+                    Bukkit.getPluginManager().disablePlugin(plugin);
+                    plugin.getUtils().sendConsoleMessage("&cError loading database player accounts!");
                 }
             }
-        }.runTaskAsynchronously(MobCoins.getInstance());
+        }.runTaskAsynchronously(plugin);
 
     }
 

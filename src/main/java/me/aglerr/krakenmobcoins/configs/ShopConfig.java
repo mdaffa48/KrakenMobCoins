@@ -13,16 +13,21 @@ public class ShopConfig {
     public FileConfiguration data;
     public File cfg;
 
+    private final MobCoins plugin;
+    public ShopConfig(final MobCoins plugin){
+        this.plugin = plugin;
+    }
+
     public void setup() {
-        Utils utils = MobCoins.getInstance().getUtils();
-        if(!MobCoins.getInstance().getDataFolder().exists()) {
-            MobCoins.getInstance().getDataFolder().mkdir();
+        Utils utils = plugin.getUtils();
+        if(!plugin.getDataFolder().exists()) {
+            plugin.getDataFolder().mkdir();
         }
 
-        cfg = new File(MobCoins.getInstance().getDataFolder(), "shop.yml");
+        cfg = new File(plugin.getDataFolder(), "shop.yml");
 
         if(!cfg.exists()) {
-            MobCoins.getInstance().saveResource("shop.yml", false);
+            plugin.saveResource("shop.yml", false);
             utils.sendConsoleMessage("shop.yml not found, creating shop.yml...");
         }
 

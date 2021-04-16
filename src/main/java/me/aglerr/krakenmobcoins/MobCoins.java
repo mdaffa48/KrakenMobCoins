@@ -7,9 +7,7 @@ import me.aglerr.krakenmobcoins.configs.*;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.database.SQL;
 import me.aglerr.krakenmobcoins.listeners.*;
-import me.aglerr.krakenmobcoins.manager.DependencyManager;
-import me.aglerr.krakenmobcoins.manager.ItemStockManager;
-import me.aglerr.krakenmobcoins.manager.SalaryManager;
+import me.aglerr.krakenmobcoins.manager.*;
 import me.aglerr.krakenmobcoins.shops.ShopUtils;
 import me.aglerr.krakenmobcoins.shops.category.mainmenu.MainMenuLoader;
 import me.aglerr.krakenmobcoins.shops.category.shops.ShopNormalLoader;
@@ -38,36 +36,35 @@ import java.util.*;
 public class MobCoins extends JavaPlugin {
 
     /**
-     * TODO: ItemLimitManager.class
+     * Version 2.1
+     * Main goal is to remove singletons usage and switching it
+     * into dependency injection and also make the code more object oriented
+     *
      * TODO: LastRewardManager.class
-     * TODO: RotatingShopTimeManager.class
+     * TODO: Fixing database bugs
+     *
      */
 
     private static MobCoins instance;
     private SQL database;
 
     public Map<String, PlayerCoins> accounts = new HashMap<>();
-
-    private final Set<String> toggled = new HashSet<>();
-    private final Map<String, FileConfiguration> categories = new HashMap<>();
     private final Set<Entity> mobSpawner = new HashSet<>();
-
-    private final Map<String, Integer> limit = new HashMap<>();
 
     private final List<EntityDamageEvent.DamageCause> damageCauses = new ArrayList<>();
 
     public List<ShopItems> normalItems = new ArrayList<>();
     public List<ShopItems> specialItems = new ArrayList<>();
 
-    private final TempDataConfig tempDataConfig = new TempDataConfig();
-    private final MobsConfig mobsConfig = new MobsConfig();
-    private final ShopConfig shopConfig = new ShopConfig();
-    private final LimitConfig limitConfig = new LimitConfig();
+    private final TempDataConfig tempDataConfig = new TempDataConfig(this);
+    private final MobsConfig mobsConfig = new MobsConfig(this);
+    private final ShopConfig shopConfig = new ShopConfig(this);
+    private final LimitConfig limitConfig = new LimitConfig(this);
 
-    public ShopItemsLoader shopItemsLoader = new ShopItemsLoader();
-    public MainMenuLoader mainMenuLoader = new MainMenuLoader();
-    public ShopNormalLoader shopNormalLoader = new ShopNormalLoader();
-    public RotatingLoader rotatingLoader = new RotatingLoader();
+    private final ShopItemsLoader shopItemsLoader = new ShopItemsLoader(this);
+    private final MainMenuLoader mainMenuLoader = new MainMenuLoader(this);
+    private final ShopNormalLoader shopNormalLoader = new ShopNormalLoader(this);
+    private final RotatingLoader rotatingLoader = new RotatingLoader(this);
 
     private final ShopUtils shopUtils = new ShopUtils(this);
     private final Utils utils = new Utils(this);
@@ -75,9 +72,9 @@ public class MobCoins extends JavaPlugin {
     private final SalaryManager salaryManager = new SalaryManager(this);
     private final DependencyManager dependencyManager = new DependencyManager(this);
     private final ItemStockManager itemStockManager = new ItemStockManager(this);
-
-    public long normalTime;
-    public long specialTime;
+    private final ToggleNotificationManager notificationManager = new ToggleNotificationManager(this);
+    private final RotatingShopTimeManager timeManager = new RotatingShopTimeManager(this);
+    private final CategoryManager categoryManager = new CategoryManager(this);
 
     @Override
     public void onEnable() {
@@ -96,11 +93,12 @@ public class MobCoins extends JavaPlugin {
         registerListeners();
         registerCommands();
 
-        database = new SQL();
+        database = new SQL(this);
 
         utils.sendConsoleMessage("Loading all saved accounts!");
         database.loadAccounts();
-        this.loadPlayerToggled();
+        notificationManager.loadToggledListFromConfig();
+        timeManager.loadTimeFromConfig();
 
         this.runAutoSave();
         new Metrics(this, 10310);
@@ -109,10 +107,10 @@ public class MobCoins extends JavaPlugin {
         if(this.getConfig().getBoolean("rotatingShop.enabled")){
             rotatingLoader.load();
             shopItemsLoader.load();
-            this.startCounting();
+            timeManager.startCounting();
             this.loadRewards();
         } else {
-            loadCategories();
+            categoryManager.loadCategory();
             mainMenuLoader.load();
             shopNormalLoader.load();
         }
@@ -130,23 +128,12 @@ public class MobCoins extends JavaPlugin {
     @Override
     public void onDisable(){
         utils.sendConsoleMessage("Saving all player data...");
-        this.savePlayerToggled();
+        notificationManager.saveToggledListToConfig();
+        timeManager.saveTimeToConfig();
         this.savePlayerData();
         itemStockManager.saveStockToConfig();
         this.saveLastRewards();
         this.clearHash();
-    }
-
-    private void loadCategories(){
-        FileConfiguration category;
-        File[] files = new File(this.getDataFolder() + File.separator + "categories").listFiles();
-        if(files.length > 0){
-            for(File file : files){
-                category = YamlConfiguration.loadConfiguration(file);
-                categories.put(file.getName(), category);
-            }
-        }
-
     }
 
     private void saveLastRewards(){
@@ -287,10 +274,7 @@ public class MobCoins extends JavaPlugin {
     }
 
     public PlayerCoins getPlayerCoins(String uuid){
-        if(accounts.containsKey(uuid)){
-            return accounts.get(uuid);
-        }
-        return null;
+        return accounts.get(uuid);
     }
 
     private void createDatabaseFile(){
@@ -299,7 +283,7 @@ public class MobCoins extends JavaPlugin {
             pluginFolder.mkdirs();
         }
 
-        File dataFolder = new File(MobCoins.getInstance().getDataFolder(), "database.db");
+        File dataFolder = new File(this.getDataFolder(), "database.db");
         if(!dataFolder.exists()){
             try{
                 dataFolder.createNewFile();
@@ -330,7 +314,7 @@ public class MobCoins extends JavaPlugin {
         shopItemsLoader.getShopItemsList().clear();
         mainMenuLoader.getMainMenuItemsList().clear();
         shopNormalLoader.getShopNormalItemsList().clear();
-        categories.clear();
+        categoryManager.clearCategory();
         rotatingLoader.getRotatingItemsList().clear();
         normalItems.clear();
         specialItems.clear();
@@ -345,7 +329,7 @@ public class MobCoins extends JavaPlugin {
             rotatingLoader.load();
 
             loadRewards();
-            loadCategories();
+            categoryManager.loadCategory();
             loadDamageCausePhysical();
 
             ConfigMessages.initialize(this.getConfig());
@@ -387,79 +371,6 @@ public class MobCoins extends JavaPlugin {
 
     private void registerCommands(){
         this.getCommand("mobcoins").setExecutor(new MainCommand(this));
-    }
-
-    private void startCounting(){
-        new BukkitRunnable(){
-            public void run(){
-                if(normalTime < System.currentTimeMillis()){
-                    normalTime = System.currentTimeMillis() + (getConfig().getInt("rotatingShop.normalTimeReset") * 3600 * 1000);
-                    utils.refreshNormalItems();
-                    for(String message : getConfig().getStringList("rotatingShop.messages.normalRefresh")){
-                        Bukkit.broadcastMessage(utils.color(message));
-                    }
-                }
-
-                if(specialTime < System.currentTimeMillis()){
-                    specialTime = System.currentTimeMillis() + (getConfig().getInt("rotatingShop.specialTimeReset") * 3600 * 1000);
-                    utils.refreshSpecialItems();
-                    for(String message : getConfig().getStringList("rotatingShop.messages.specialRefresh")){
-                        Bukkit.broadcastMessage(utils.color(message));
-                    }
-                }
-
-            }
-        }.runTaskTimerAsynchronously(this, 0L, 20L);
-    }
-
-    private void savePlayerToggled(){
-        ArrayList<String> list = new ArrayList<>();
-        FileConfiguration data = this.getTempDataManager().getConfiguration();
-
-        if(this.getConfig().getBoolean("rotatingShop.enabled")){
-            data.set("normalTimeReset", normalTime);
-            data.set("specialTimeReset", specialTime);
-        }
-
-        if(!this.toggled.isEmpty()){
-            list.addAll(this.toggled);
-
-            data.set("data", list);
-
-        }
-
-        this.tempDataConfig.saveData();
-    }
-
-    private void loadPlayerToggled(){
-        FileConfiguration data = this.tempDataConfig.getConfiguration();
-
-        ArrayList<String> list = new ArrayList<>(data.getStringList("data"));
-        this.toggled.addAll(list);
-
-        data.set("data", new ArrayList<>());
-
-        if(this.getConfig().getBoolean("rotatingShop.enabled")){
-            if(data.contains("normalTimeReset") && data.contains("specialTimeReset")){
-                System.out.println("[KrakenMobCoins] Loading saved normal time and special time reset.");
-                long savedNormal = data.getLong("normalTimeReset");
-                long savedSpecial = data.getLong("specialTimeReset");
-
-                normalTime = savedNormal;
-                specialTime = savedSpecial;
-
-                data.set("normalTimeReset", null);
-                data.set("specialTimeReset", null);
-            } else {
-
-                System.out.println("[KrakenMobCoins] Adding default value to the normal time and special time.");
-                normalTime = System.currentTimeMillis() + (this.getConfig().getInt("rotatingShop.normalTimeReset") * 3600 * 1000);
-                specialTime = System.currentTimeMillis() + (this.getConfig().getInt("rotatingShop.specialTimeReset") * 3600 * 1000);
-            }
-
-        }
-
-        this.tempDataConfig.saveData();
     }
 
     public void savePlayerData(){
@@ -515,7 +426,7 @@ public class MobCoins extends JavaPlugin {
                 public void run(){
                     savePlayerData();
                 }
-            }.runTaskTimerAsynchronously(this, 0L, 20 * interval);
+            }.runTaskTimerAsynchronously(this, 20 * interval, 0L);
         }
     }
 
@@ -534,9 +445,7 @@ public class MobCoins extends JavaPlugin {
         shopItemsLoader.getShopItemsList().clear();
         mainMenuLoader.getMainMenuItemsList().clear();
         shopNormalLoader.getShopNormalItemsList().clear();
-        categories.clear();
         mobSpawner.clear();
-        toggled.clear();
         damageCauses.clear();
     }
 
@@ -544,26 +453,24 @@ public class MobCoins extends JavaPlugin {
     public Utils getUtils() { return utils; }
     public SQL getDatabase() { return database; }
     public Map<String, PlayerCoins> getAccounts() { return accounts; }
-    public Set<String> getToggled() { return toggled; }
     public TempDataConfig getTempDataManager() { return tempDataConfig; }
     public ShopConfig getShopManager() { return shopConfig; }
-    public long getNormalTime() { return normalTime; }
-    public long getSpecialTime() { return specialTime; }
     public List<ShopItems> getNormalItems() { return normalItems; }
     public List<ShopItems> getSpecialItems() { return specialItems; }
     public LimitConfig getLimitManager() { return limitConfig; }
     public MainMenuLoader getMainMenuLoader() { return mainMenuLoader; }
     public ShopNormalLoader getShopNormalLoader() { return shopNormalLoader; }
-    public Map<String, FileConfiguration> getCategories() { return categories; }
     public RotatingLoader getRotatingLoader() { return rotatingLoader; }
     public Set<Entity> getMobSpawner() { return mobSpawner; }
     public ShopUtils getShopUtils() { return shopUtils; }
-    public Map<String, Integer> getLimit() { return limit; }
     public List<EntityDamageEvent.DamageCause> getDamageCauses() { return damageCauses; }
     public CoinMobManager getCoinMobManager() { return coinMobManager; }
     public SalaryManager getSalaryManager() { return salaryManager; }
     public DependencyManager getDependencyManager() { return dependencyManager; }
     public MobsConfig getMobsManager() { return mobsConfig; }
     public ItemStockManager getItemStockManager() { return itemStockManager; }
+    public ToggleNotificationManager getNotificationManager() { return notificationManager; }
+    public RotatingShopTimeManager getTimeManager() { return timeManager; }
+    public CategoryManager getCategoryManager() { return categoryManager; }
 
 }

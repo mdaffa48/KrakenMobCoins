@@ -12,8 +12,6 @@ import me.aglerr.krakenmobcoins.shops.CategoryInventory;
 import me.aglerr.krakenmobcoins.shops.NormalShopInventory;
 import me.aglerr.krakenmobcoins.shops.RotatingShopInventory;
 import me.aglerr.krakenmobcoins.shops.items.ShopItems;
-import me.swanis.mobcoins.MobCoinsAPI;
-import me.swanis.mobcoins.profile.Profile;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,12 +21,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import javax.rmi.CORBA.Util;
 import java.io.File;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -77,20 +72,19 @@ public class Utils {
         }
     }
 
-    public DecimalFormat getDFormat(){
-        DecimalFormat df = new DecimalFormat("###,###,###,###,###.##");
-        return df;
+    public DecimalFormat getDecimalFormat(){
+        return new DecimalFormat("###,###,###,###,###.##");
     }
 
     public ItemStack getMobCoinItem(double amount){
-        FileConfiguration config = MobCoins.getInstance().getConfig();
-        Utils utils = MobCoins.getInstance().getUtils();
+        FileConfiguration config = plugin.getConfig();
+        Utils utils = plugin.getUtils();
 
         String material = config.getString("mobcoinItem.material");
         String name = config.getString("mobcoinItem.name");
         List<String> lore = new ArrayList<>();
         for(String line : config.getStringList("mobcoinItem.lore")){
-            lore.add(line.replace("%coins%", this.getDFormat().format(amount)));
+            lore.add(line.replace("%coins%", this.getDecimalFormat().format(amount)));
         }
         
         ItemStack stack = null;
@@ -173,73 +167,65 @@ public class Utils {
         return string;
     }
 
-    public void resetStock(){
-        MobCoins.getInstance().getLimitManager().getConfiguration().set("items", new ArrayList<>());
-        MobCoins.getInstance().getLimitManager().saveData();
-        plugin.getItemStockManager().clearStock();
-    }
-
-    public void resetLimit(){
-        MobCoins.getInstance().getLimit().clear();
-    }
-
     public void refreshNormalItems(){
 
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         if(config.getBoolean("options.shuffleRotating")){
-            Collections.shuffle(MobCoins.getInstance().getNormalItems());
+            Collections.shuffle(plugin.getNormalItems());
         } else {
 
             List<Integer> normalSlots = config.getIntegerList("rotatingShop.normalItemSlots");
             List<ShopItems> removed = new ArrayList<>();
 
-            if(MobCoins.getInstance().getNormalItems().size() > normalSlots.size()){
+            if(plugin.getNormalItems().size() > normalSlots.size()){
                 for(int x = 0; x < normalSlots.size(); x++){
-                    removed.add(MobCoins.getInstance().getNormalItems().get(0));
-                    MobCoins.getInstance().getNormalItems().remove(0);
+                    removed.add(plugin.getNormalItems().get(0));
+                    plugin.getNormalItems().remove(0);
                 }
 
             }
 
             if(!removed.isEmpty()){
                 for(ShopItems items : removed){
-                    MobCoins.getInstance().getNormalItems().add(items);
+                    plugin.getNormalItems().add(items);
                 }
             }
 
         }
 
+        plugin.getItemStockManager().clearStock();
+        plugin.getLimitManager().clearPlayerLimit();
 
     }
 
     public void refreshSpecialItems(){
 
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         if(config.getBoolean("options.shuffleRotating")){
-            Collections.shuffle(MobCoins.getInstance().getSpecialItems());
+            Collections.shuffle(plugin.getSpecialItems());
         }
 
         List<Integer> specialSlots = config.getIntegerList("rotatingShop.specialItemSlots");
         List<ShopItems> removed = new ArrayList<>();
 
-        if(MobCoins.getInstance().getNormalItems().size() > specialSlots.size()){
+        if(plugin.getNormalItems().size() > specialSlots.size()){
             for(int x = 0; x < specialSlots.size(); x++){
-                removed.add(MobCoins.getInstance().getSpecialItems().get(0));
-                MobCoins.getInstance().getSpecialItems().remove(0);
+                removed.add(plugin.getSpecialItems().get(0));
+                plugin.getSpecialItems().remove(0);
             }
 
         }
 
         if(!removed.isEmpty()){
             for(ShopItems items : removed){
-                MobCoins.getInstance().getSpecialItems().add(items);
+                plugin.getSpecialItems().add(items);
             }
         }
 
     }
 
     public void openShopMenu(Player player){
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         if(config.getBoolean("rotatingShop.enabled")){
             String title = color(config.getString("rotatingShop.title"));
             int size = config.getInt("rotatingShop.size");
@@ -249,16 +235,16 @@ public class Utils {
             String title = color(config.getString("normalShop.title"));
             int size = config.getInt("normalShop.size");
 
-            new CategoryInventory(size, title, player).open(player);
+            new CategoryInventory(plugin, size, title, player).open(player);
         }
 
     }
 
     public void openCategory(String category, Player player){
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         String finalCategory = category + ".yml";
-        if(MobCoins.getInstance().getCategories().containsKey(finalCategory)){
-            FileConfiguration configuration = MobCoins.getInstance().getCategories().get(finalCategory);
+        if(plugin.getCategoryManager().isCategoryExist(finalCategory)){
+            FileConfiguration configuration = plugin.getCategoryManager().getCategory(finalCategory);
             String title = color(configuration.getString("title"));
             int size = configuration.getInt("size");
 
@@ -347,7 +333,7 @@ public class Utils {
     }
 
     public void sendSound(Player player){
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         if(config.getBoolean("receivedMobCoins.sound.enabled")){
             String name = config.getString("receivedMobCoins.sound.name").toUpperCase();
             float volume = (float) config.getDouble("receivedMobCoins.sound.volume");
@@ -357,20 +343,20 @@ public class Utils {
     }
 
     public void sendMessage(Player player, double amount){
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         if(config.getBoolean("receivedMobCoins.message.enabled")){
             String message = config.getString("receivedMobCoins.message.message");
             player.sendMessage(color(message)
                     .replace("%prefix%", getPrefix())
-                    .replace("%amount%", this.getDFormat().format(amount)));
+                    .replace("%amount%", this.getDecimalFormat().format(amount)));
         }
     }
 
     public void sendTitle(Player player, double amount){
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         if(config.getBoolean("receivedMobCoins.title.enabled")){
-            String title = config.getString("receivedMobCoins.title.titles.title").replace("%amount%", this.getDFormat().format(amount));
-            String subtitle = config.getString("receivedMobCoins.title.titles.subtitle").replace("%amount%", this.getDFormat().format(amount));
+            String title = config.getString("receivedMobCoins.title.titles.title").replace("%amount%", this.getDecimalFormat().format(amount));
+            String subtitle = config.getString("receivedMobCoins.title.titles.subtitle").replace("%amount%", this.getDecimalFormat().format(amount));
             int fadeIn = config.getInt("receivedMobCoins.title.titles.fadeIn");
             int stay = config.getInt("receivedMobCoins.title.titles.stay");
             int fadeOut = config.getInt("receivedMobCoins.title.titles.fadeOut");
@@ -381,12 +367,12 @@ public class Utils {
     }
 
     public void sendActionBar(Player player, double amount){
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         if(config.getBoolean("receivedMobCoins.actionBar.enabled")){
-            String message = config.getString("receivedMobCoins.actionBar.message").replace("%amount%", this.getDFormat().format(amount));
+            String message = config.getString("receivedMobCoins.actionBar.message").replace("%amount%", this.getDecimalFormat().format(amount));
             int duration = config.getInt("receivedMobCoins.actionBar.duration") * 20;
 
-            ActionBar.sendActionBar(MobCoins.getInstance(), player, color(message), duration);
+            ActionBar.sendActionBar(plugin, player, color(message), duration);
 
         }
     }

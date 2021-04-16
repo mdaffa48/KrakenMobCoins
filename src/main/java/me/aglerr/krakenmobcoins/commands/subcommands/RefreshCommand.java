@@ -29,15 +29,15 @@ public class RefreshCommand extends SubCommand {
             sender.sendMessage(utils.color(ConfigMessages.REFRESH.toString())
                     .replace("%prefix%", utils.getPrefix()));
 
-            MobCoins.getInstance().normalTime = System.currentTimeMillis() + (config.getInt("rotatingShop.normalTimeReset") * 3600 * 1000);
-            MobCoins.getInstance().specialTime = System.currentTimeMillis() + (config.getInt("rotatingShop.specialTimeReset") * 3600 * 1000);
+            plugin.getTimeManager().setNormalTime(System.currentTimeMillis() + (config.getInt("rotatingShop.normalTimeReset") * 3600 * 1000));
+            plugin.getTimeManager().setSpecialTime(System.currentTimeMillis() + (config.getInt("rotatingShop.specialTimeReset") * 3600 * 1000));
             utils.refreshNormalItems();
             utils.refreshSpecialItems();
 
         }
 
-        utils.resetStock();
-        utils.resetLimit();
+        plugin.getItemStockManager().clearStock();
+        plugin.getLimitManager().clearPlayerLimit();
 
     }
 

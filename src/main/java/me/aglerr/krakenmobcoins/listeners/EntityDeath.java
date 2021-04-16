@@ -80,7 +80,7 @@ public class EntityDeath implements Listener {
             playerCoins.setMoney(playerCoins.getMoney() + mobCoinsReceiveEvent.getAmountAfterMultiplier());
         }
 
-        if(!plugin.getToggled().contains(player.getUniqueId().toString())) {
+        if(!plugin.getNotificationManager().isPlayerExist(player.getUniqueId())) {
             if (config.getBoolean("options.salaryMode.enabled")) {
 
                 SalaryManager salaryManager = plugin.getSalaryManager();

@@ -8,12 +8,9 @@ import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.List;
 
 public class BalanceCommand extends SubCommand {
 
@@ -24,12 +21,12 @@ public class BalanceCommand extends SubCommand {
     public void perform(MobCoins plugin, CommandSender sender, String[] args) {
 
         Utils utils = plugin.getUtils();
-        DecimalFormat df = utils.getDFormat();
+        DecimalFormat df = utils.getDecimalFormat();
 
         if(args.length == 1){
             if(sender instanceof Player){
                 Player player = (Player) sender;
-                PlayerCoins coins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
+                PlayerCoins coins = plugin.getPlayerCoins(player.getUniqueId().toString());
 
                 if(coins == null){
                     player.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT.toString())
@@ -68,7 +65,7 @@ public class BalanceCommand extends SubCommand {
 
             } else {
 
-                PlayerCoins coins = MobCoins.getInstance().getPlayerCoins(target.getUniqueId().toString());
+                PlayerCoins coins = plugin.getPlayerCoins(target.getUniqueId().toString());
                 if(coins == null){
                     sender.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT_OTHERS.toString())
                             .replace("%prefix%", utils.getPrefix())

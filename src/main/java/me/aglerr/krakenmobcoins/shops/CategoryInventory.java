@@ -18,17 +18,17 @@ import java.util.List;
 
 public class CategoryInventory extends FastInv {
 
-    public CategoryInventory(int size, String title, Player player) {
+    public CategoryInventory(MobCoins plugin, int size, String title, Player player) {
         super(size, title);
 
-        PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
-        Utils utils = MobCoins.getInstance().getUtils();
+        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+        Utils utils = plugin.getUtils();
 
-        for(MainMenuItems items : MobCoins.getInstance().getMainMenuLoader().getMainMenuItemsList()){
+        for(MainMenuItems items : plugin.getMainMenuLoader().getMainMenuItemsList()){
 
             List<String> lore = new ArrayList<>();
             for(String line : items.getLore()){
-                lore.add(line.replace("%coins%", utils.getDFormat().format(playerCoins.getMoney())));
+                lore.add(line.replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney())));
             }
             String category = items.getCategory();
 

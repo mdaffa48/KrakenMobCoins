@@ -30,7 +30,7 @@ public class ShopCommand extends SubCommand {
             if(sender instanceof Player){
 
                 Player player = (Player) sender;
-                PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
+                PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
 
                 if(playerCoins == null){
                     player.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT.toString())
@@ -60,7 +60,7 @@ public class ShopCommand extends SubCommand {
                 return;
             } else {
 
-                PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(target.getUniqueId().toString());
+                PlayerCoins playerCoins = plugin.getPlayerCoins(target.getUniqueId().toString());
                 if(playerCoins == null){
                     sender.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT_OTHERS.toString())
                             .replace("%prefix%", utils.getPrefix())

@@ -11,8 +11,13 @@ public class MainMenuLoader {
 
     private List<MainMenuItems> mainMenuItemsList = new ArrayList<>();
 
+    private final MobCoins plugin;
+    public MainMenuLoader(final MobCoins plugin){
+        this.plugin = plugin;
+    }
+
     public void load(){
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         for(String key : config.getConfigurationSection("normalShop.items").getKeys(false)){
 
             String type = config.getString("normalShop.items." + key + ".type");

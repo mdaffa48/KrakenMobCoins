@@ -71,7 +71,7 @@ public class PlayerInteract implements Listener {
             playerCoins.setMoney(playerCoins.getMoney() + mobCoinsRedeemEvent.getAmount());
             player.sendMessage(utils.color(ConfigMessages.REDEEM.toString())
             .replace("%prefix%", utils.getPrefix())
-            .replace("%coins%", utils.getDFormat().format(amount)));
+            .replace("%coins%", utils.getDecimalFormat().format(amount)));
 
             if(config.getBoolean("sounds.onRedeem.enabled")){
                 String name = config.getString("sounds.onRedeem.name").toUpperCase();

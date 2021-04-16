@@ -12,17 +12,22 @@ public class MobsConfig {
 
     public FileConfiguration data;
     public File cfg;
+    
+    private final MobCoins plugin;
+    public MobsConfig(final MobCoins plugin){
+        this.plugin = plugin;
+    }
 
     public void setup() {
-        Utils utils = MobCoins.getInstance().getUtils();
-        if(!MobCoins.getInstance().getDataFolder().exists()) {
-            MobCoins.getInstance().getDataFolder().mkdir();
+        Utils utils = plugin.getUtils();
+        if(!plugin.getDataFolder().exists()) {
+            plugin.getDataFolder().mkdir();
         }
 
-        cfg = new File(MobCoins.getInstance().getDataFolder(), "mobs.yml");
+        cfg = new File(plugin.getDataFolder(), "mobs.yml");
 
         if(!cfg.exists()) {
-            MobCoins.getInstance().saveResource("mobs.yml", false);
+            plugin.saveResource("mobs.yml", false);
             utils.sendConsoleMessage("mobs.yml not found, creating mobs.yml...");
         }
 

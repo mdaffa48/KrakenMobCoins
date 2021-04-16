@@ -48,8 +48,8 @@ public class PayCommand extends SubCommand {
                         return;
                     }
 
-                    PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
-                    PlayerCoins targetCoins = MobCoins.getInstance().getPlayerCoins(target.getUniqueId().toString());
+                    PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+                    PlayerCoins targetCoins = plugin.getPlayerCoins(target.getUniqueId().toString());
 
                     if(playerCoins == null){
                         sender.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT.toString())

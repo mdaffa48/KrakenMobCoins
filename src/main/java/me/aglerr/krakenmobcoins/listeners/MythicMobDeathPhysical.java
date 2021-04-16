@@ -31,7 +31,7 @@ public class MythicMobDeathPhysical implements Listener {
 
         if(!config.getBoolean("options.physicalMobCoin.ignoreDeathCause")){
             if(event.getEntity().getLastDamageCause() == null) return;
-            if(!MobCoins.getInstance().getDamageCauses().contains(event.getEntity().getLastDamageCause().getCause())) return;
+            if(!plugin.getDamageCauses().contains(event.getEntity().getLastDamageCause().getCause())) return;
         }
 
         Entity entity = event.getEntity();

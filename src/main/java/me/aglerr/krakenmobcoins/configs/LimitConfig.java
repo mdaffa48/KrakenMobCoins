@@ -8,22 +8,28 @@ import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class LimitConfig {
 
     public FileConfiguration data;
     public File cfg;
 
+    private final MobCoins plugin;
+    public LimitConfig(final MobCoins plugin){
+        this.plugin = plugin;
+    }
+
     public void setup() {
-        Utils utils = MobCoins.getInstance().getUtils();
-        if(!MobCoins.getInstance().getDataFolder().exists()) {
-            MobCoins.getInstance().getDataFolder().mkdir();
+        Utils utils = plugin.getUtils();
+        if(!plugin.getDataFolder().exists()) {
+            plugin.getDataFolder().mkdir();
         }
 
-        cfg = new File(MobCoins.getInstance().getDataFolder(), "purchase_data.yml");
+        cfg = new File(plugin.getDataFolder(), "purchase_data.yml");
 
         if(!cfg.exists()) {
-            MobCoins.getInstance().saveResource("purchase_data.yml", false);
+            plugin.saveResource("purchase_data.yml", false);
             utils.sendConsoleMessage("purchase_data.yml not found, creating purchase_data.yml...");
         }
 
@@ -53,6 +59,11 @@ public class LimitConfig {
 
     public void setPlayerLimit(Player player, String key, int amount){
         data.set("items." + player.getUniqueId().toString() + "." + key, amount);
+        this.saveData();
+    }
+
+    public void clearPlayerLimit(){
+        data.set("items", new ArrayList<>());
         this.saveData();
     }
 

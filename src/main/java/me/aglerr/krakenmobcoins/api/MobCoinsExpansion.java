@@ -13,6 +13,11 @@ import java.util.List;
 
 public class MobCoinsExpansion extends PlaceholderExpansion {
 
+    private final MobCoins plugin;
+    public MobCoinsExpansion(final MobCoins plugin){
+        this.plugin = plugin;
+    }
+
     @Override
     public boolean persist(){
         return true;
@@ -42,11 +47,10 @@ public class MobCoinsExpansion extends PlaceholderExpansion {
     public String onPlaceholderRequest(Player player, String identifier){
         if(player == null) return null;
 
-        FileConfiguration config = MobCoins.getInstance().getConfig();
-        PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
-        Utils utils = MobCoins.getInstance().getUtils();
+        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+        Utils utils = plugin.getUtils();
 
-        DecimalFormat df = new DecimalFormat("###,###,###,###,###.##");
+        DecimalFormat df = utils.getDecimalFormat();
 
         if(identifier.equalsIgnoreCase("balance")){
             if(playerCoins == null){
@@ -73,13 +77,11 @@ public class MobCoinsExpansion extends PlaceholderExpansion {
         }
 
         if(identifier.equalsIgnoreCase("normal_time")){
-            long remainingNormalTime = MobCoins.getInstance().getNormalTime() - System.currentTimeMillis();
-            return utils.getFormattedString(remainingNormalTime);
+            return utils.getFormattedString(plugin.getTimeManager().getNormalTime() - System.currentTimeMillis());
         }
 
         if(identifier.equalsIgnoreCase("special_time")){
-            long remainingSpecialTime = MobCoins.getInstance().getSpecialTime() - System.currentTimeMillis();
-            return utils.getFormattedString(remainingSpecialTime);
+            return utils.getFormattedString(plugin.getTimeManager().getSpecialTime() - System.currentTimeMillis());
         }
 
         if(identifier.equalsIgnoreCase("name_top1")) return this.getTopName(0);
@@ -108,10 +110,10 @@ public class MobCoinsExpansion extends PlaceholderExpansion {
 
     private String getTopName(int index){
 
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         String nameEmpty = config.getString("placeholders.top.nameIfEmpty");
 
-        List<PlayerCoins> playerCoinsList = MobCoins.getInstance().getTop();
+        List<PlayerCoins> playerCoinsList = plugin.getTop();
 
         try{
             PlayerCoins playerCoins = playerCoinsList.get(index);
@@ -123,10 +125,10 @@ public class MobCoinsExpansion extends PlaceholderExpansion {
     }
 
     private String getTopMoney(int index){
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         String moneyEmpty = config.getString("placeholders.top.moneyIfEmpty");
 
-        List<PlayerCoins> playerCoinsList = MobCoins.getInstance().getTop();
+        List<PlayerCoins> playerCoinsList = plugin.getTop();
         DecimalFormat df = new DecimalFormat("###,###,###,###,###.##");
 
         try{

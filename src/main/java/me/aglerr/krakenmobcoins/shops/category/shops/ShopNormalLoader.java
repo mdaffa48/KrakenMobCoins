@@ -14,8 +14,13 @@ public class ShopNormalLoader {
     public FileConfiguration config;
     private List<ShopNormalItems> shopNormalItemsList = new ArrayList<>();
 
+    private final MobCoins plugin;
+    public ShopNormalLoader(final MobCoins plugin){
+        this.plugin = plugin;
+    }
+
     public void load(){
-        File[] files = new File(MobCoins.getInstance().getDataFolder() + File.separator + "categories").listFiles();
+        File[] files = new File(plugin.getDataFolder() + File.separator + "categories").listFiles();
         if(files.length > 0){
             for(File file : files){
                 config = YamlConfiguration.loadConfiguration(file);
@@ -42,10 +47,10 @@ public class ShopNormalLoader {
             }
         } else {
 
-            Utils utils = MobCoins.getInstance().getUtils();
+            Utils utils = plugin.getUtils();
             System.out.println("[KrakenMobCoins] Couldn't find any category, creating one...");
 
-            File file = new File(MobCoins.getInstance().getDataFolder() + File.separator + "categories", "crates.yml");
+            File file = new File(plugin.getDataFolder() + File.separator + "categories", "crates.yml");
             utils.exampleShop(file);
 
         }

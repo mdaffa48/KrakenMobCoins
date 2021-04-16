@@ -21,11 +21,11 @@ public class HelpCommand extends SubCommand {
 
     @Override
     public void perform(MobCoins plugin, CommandSender sender, String[] args) {
-        sendHelp(sender);
+        sendHelp(sender, plugin);
     }
 
-    private void sendHelp(CommandSender sender){
-        Utils utils = MobCoins.getInstance().getUtils();
+    private void sendHelp(CommandSender sender, MobCoins plugin){
+        Utils utils = plugin.getUtils();
 
         if(sender.hasPermission("krakenmobcoins.admin")){
             for(String message : ConfigMessagesList.HELP_ADMIN.toStringList()){

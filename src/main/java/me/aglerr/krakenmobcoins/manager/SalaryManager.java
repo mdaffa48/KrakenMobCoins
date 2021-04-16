@@ -51,7 +51,7 @@ public class SalaryManager {
                         PlayerCoins playerCoins = plugin.getPlayerCoins(uuid.toString());
                         double amount = getPlayerSalary(uuid);
                         for(String message : ConfigMessagesList.SALARY.toStringList()){
-                            player.sendMessage(utils.color(message.replace("%coins%", utils.getDFormat().format(amount))));
+                            player.sendMessage(utils.color(message.replace("%coins%", utils.getDecimalFormat().format(amount))));
                         }
 
                         utils.sendSound(player);

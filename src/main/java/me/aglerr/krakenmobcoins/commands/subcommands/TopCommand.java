@@ -27,36 +27,36 @@ public class TopCommand extends SubCommand {
 
         for(String message : ConfigMessagesList.LEADERBOARD.toStringList()){
             sender.sendMessage(utils.color(message)
-                    .replace("%name_top1%", this.getTopName(0))
-                    .replace("%money_top1%", this.getTopMoney(0))
-                    .replace("%name_top2%", this.getTopName(1))
-                    .replace("%money_top2%", this.getTopMoney(1))
-                    .replace("%name_top3%", this.getTopName(2))
-                    .replace("%money_top3%", this.getTopMoney(2))
-                    .replace("%name_top4%", this.getTopName(3))
-                    .replace("%money_top4%", this.getTopMoney(3))
-                    .replace("%name_top5%", this.getTopName(4))
-                    .replace("%money_top5%", this.getTopMoney(4))
-                    .replace("%name_top6%", this.getTopName(5))
-                    .replace("%money_top6%", this.getTopMoney(5))
-                    .replace("%name_top7%", this.getTopName(6))
-                    .replace("%money_top7%", this.getTopMoney(6))
-                    .replace("%name_top8%", this.getTopName(7))
-                    .replace("%money_top8%", this.getTopMoney(7))
-                    .replace("%name_top9%", this.getTopName(8))
-                    .replace("%money_top9%", this.getTopMoney(8))
-                    .replace("%name_top10%", this.getTopName(9))
-                    .replace("%money_top10%", this.getTopMoney(9)));
+                    .replace("%name_top1%", this.getTopName(plugin, 0))
+                    .replace("%money_top1%", this.getTopMoney(plugin, 0))
+                    .replace("%name_top2%", this.getTopName(plugin, 1))
+                    .replace("%money_top2%", this.getTopMoney(plugin, 1))
+                    .replace("%name_top3%", this.getTopName(plugin, 2))
+                    .replace("%money_top3%", this.getTopMoney(plugin, 2))
+                    .replace("%name_top4%", this.getTopName(plugin, 3))
+                    .replace("%money_top4%", this.getTopMoney(plugin, 3))
+                    .replace("%name_top5%", this.getTopName(plugin, 4))
+                    .replace("%money_top5%", this.getTopMoney(plugin, 4))
+                    .replace("%name_top6%", this.getTopName(plugin, 5))
+                    .replace("%money_top6%", this.getTopMoney(plugin, 5))
+                    .replace("%name_top7%", this.getTopName(plugin, 6))
+                    .replace("%money_top7%", this.getTopMoney(plugin, 6))
+                    .replace("%name_top8%", this.getTopName(plugin, 7))
+                    .replace("%money_top8%", this.getTopMoney(plugin, 7))
+                    .replace("%name_top9%", this.getTopName(plugin, 8))
+                    .replace("%money_top9%", this.getTopMoney(plugin, 8))
+                    .replace("%name_top10%", this.getTopName(plugin, 9))
+                    .replace("%money_top10%", this.getTopMoney(plugin, 9)));
         }
 
     }
 
-    private String getTopName(int index){
+    private String getTopName(MobCoins plugin, int index){
 
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         String nameEmpty = config.getString("placeholders.top.nameIfEmpty");
 
-        List<PlayerCoins> playerCoinsList = MobCoins.getInstance().getTop();
+        List<PlayerCoins> playerCoinsList = plugin.getTop();
 
         try{
             PlayerCoins playerCoins = playerCoinsList.get(index);
@@ -67,11 +67,11 @@ public class TopCommand extends SubCommand {
 
     }
 
-    private String getTopMoney(int index){
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+    private String getTopMoney(MobCoins plugin, int index){
+        FileConfiguration config = plugin.getConfig();
         String moneyEmpty = config.getString("placeholders.top.moneyIfEmpty");
 
-        List<PlayerCoins> playerCoinsList = MobCoins.getInstance().getTop();
+        List<PlayerCoins> playerCoinsList = plugin.getTop();
         DecimalFormat df = new DecimalFormat("###,###,###,###,###.##");
 
         try{

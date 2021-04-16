@@ -141,12 +141,12 @@ public class RotatingShopInventory extends FastInv {
 
         for(RotatingItems items : plugin.getRotatingLoader().getRotatingItemsList()){
 
-            long normalRemaining = plugin.getNormalTime() - System.currentTimeMillis();
-            long specialRemaining = plugin.getSpecialTime() - System.currentTimeMillis();
+            long normalRemaining = plugin.getTimeManager().getNormalTime() - System.currentTimeMillis();
+            long specialRemaining = plugin.getTimeManager().getSpecialTime() - System.currentTimeMillis();
 
             List<String> lore = new ArrayList<>();
             for(String line : items.getLore()){
-                lore.add(line.replace("%coins%", utils.getDFormat().format(playerCoins.getMoney()))
+                lore.add(line.replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney()))
                         .replace("%timeNormal%", utils.getFormattedString(normalRemaining))
                         .replace("%timeSpecial%", utils.getFormattedString(specialRemaining)));
             }
@@ -274,12 +274,12 @@ public class RotatingShopInventory extends FastInv {
 
                 for(RotatingItems items : plugin.getRotatingLoader().getRotatingItemsList()){
 
-                    long normalRemaining = plugin.getNormalTime() - System.currentTimeMillis();
-                    long specialRemaining = plugin.getSpecialTime() - System.currentTimeMillis();
+                    long normalRemaining = plugin.getTimeManager().getNormalTime() - System.currentTimeMillis();
+                    long specialRemaining = plugin.getTimeManager().getSpecialTime() - System.currentTimeMillis();
 
                     List<String> lore = new ArrayList<>();
                     for(String line : items.getLore()){
-                        lore.add(line.replace("%coins%", utils.getDFormat().format(playerCoins.getMoney()))
+                        lore.add(line.replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney()))
                                 .replace("%timeNormal%", utils.getFormattedString(normalRemaining))
                                 .replace("%timeSpecial%", utils.getFormattedString(specialRemaining)));
                     }

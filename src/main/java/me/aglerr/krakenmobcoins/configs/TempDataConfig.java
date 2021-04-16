@@ -14,16 +14,21 @@ public class TempDataConfig {
     public FileConfiguration data;
     public File cfg;
 
+    private final MobCoins plugin;
+    public TempDataConfig(final MobCoins plugin){
+        this.plugin = plugin;
+    }
+
     public void setup() {
-        Utils utils = MobCoins.getInstance().getUtils();
-        if(!MobCoins.getInstance().getDataFolder().exists()) {
-            MobCoins.getInstance().getDataFolder().mkdir();
+        Utils utils = plugin.getUtils();
+        if(!plugin.getDataFolder().exists()) {
+            plugin.getDataFolder().mkdir();
         }
 
-        cfg = new File(MobCoins.getInstance().getDataFolder(), "temp_data.yml");
+        cfg = new File(plugin.getDataFolder(), "temp_data.yml");
 
         if(!cfg.exists()) {
-            MobCoins.getInstance().saveResource("temp_data.yml", false);
+            plugin.saveResource("temp_data.yml", false);
             utils.sendConsoleMessage("temp_data.yml not found, creating temp_data.yml...");
         }
 

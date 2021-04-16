@@ -10,8 +10,13 @@ public class RotatingLoader {
 
     private List<RotatingItems> rotatingItemsList = new ArrayList<>();
 
+    private final MobCoins plugin;
+    public RotatingLoader(final MobCoins plugin){
+        this.plugin = plugin;
+    }
+
     public void load(){
-        FileConfiguration config = MobCoins.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         for(String key : config.getConfigurationSection("rotatingShop.items").getKeys(false)){
 
             String material = config.getString("rotatingShop.items." + key + ".material");

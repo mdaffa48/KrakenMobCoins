@@ -24,7 +24,7 @@ public class DependencyManager {
         int totalHooks = 0;
         if(pm.getPlugin("PlaceholderAPI") != null){
             utils.sendConsoleMessage("PlaceholderAPI found, enabling hooks!");
-            new MobCoinsExpansion().register();
+            new MobCoinsExpansion(plugin).register();
             totalHooks++;
         }
 

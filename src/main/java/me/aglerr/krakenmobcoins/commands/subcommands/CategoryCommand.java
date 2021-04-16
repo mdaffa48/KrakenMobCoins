@@ -44,7 +44,7 @@ public class CategoryCommand extends SubCommand {
                     utils.exampleShop(file);
 
                     FileConfiguration categoryConfig = YamlConfiguration.loadConfiguration(file);
-                    plugin.getCategories().put(file.getName(), categoryConfig);
+                    plugin.getCategoryManager().addCategory(file.getName(), categoryConfig);
                     sender.sendMessage(utils.color(ConfigMessages.CREATE_CATEGORY.toString())
                             .replace("%prefix%", utils.getPrefix())
                             .replace("%category%", category));

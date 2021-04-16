@@ -55,7 +55,7 @@ public class NormalShopInventory extends FastInv {
                     lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
                             .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, items.getConfigKey())))
                             .replace("%stock%", placeholder)
-                            .replace("%coins%", utils.getDFormat().format(playerCoins.getMoney()))
+                            .replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney()))
                             .replace("%price%", String.valueOf(items.getPrice())));
                 }
 
@@ -64,7 +64,7 @@ public class NormalShopInventory extends FastInv {
                 for(String line : items.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
                             .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, items.getConfigKey())))
-                            .replace("%coins%", utils.getDFormat().format(playerCoins.getMoney()))
+                            .replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney()))
                             .replace("%price%", String.valueOf(items.getPrice())));
                 }
 
@@ -137,7 +137,7 @@ public class NormalShopInventory extends FastInv {
                             lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
                                     .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, items.getConfigKey())))
                                     .replace("%stock%", placeholder)
-                                    .replace("%coins%", utils.getDFormat().format(playerCoins.getMoney()))
+                                    .replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney()))
                                     .replace("%price%", String.valueOf(items.getPrice())));
                         }
 
@@ -146,7 +146,7 @@ public class NormalShopInventory extends FastInv {
                         for(String line : items.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
                                     .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, items.getConfigKey())))
-                                    .replace("%coins%", utils.getDFormat().format(playerCoins.getMoney()))
+                                    .replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney()))
                                     .replace("%price%", String.valueOf(items.getPrice())));
                         }
 

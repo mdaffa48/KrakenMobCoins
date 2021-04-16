@@ -40,8 +40,8 @@ public class EntityDeathPhysical implements Listener {
         if(worlds.contains(entity.getWorld().getName())) return;
 
         if (config.getBoolean("options.disableMobCoinsFromSpawner")) {
-            if (MobCoins.getInstance().getMobSpawner().contains(entity)) {
-                MobCoins.getInstance().getMobSpawner().remove(entity);
+            if (plugin.getMobSpawner().contains(entity)) {
+                plugin.getMobSpawner().remove(entity);
                 return;
             }
         }
