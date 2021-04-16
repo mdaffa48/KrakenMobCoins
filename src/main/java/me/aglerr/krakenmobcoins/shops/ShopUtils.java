@@ -3,6 +3,7 @@ package me.aglerr.krakenmobcoins.shops;
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.configs.ConfigMessages;
+import me.aglerr.krakenmobcoins.manager.ItemStockManager;
 import me.aglerr.krakenmobcoins.shops.category.shops.ShopNormalItems;
 import me.aglerr.krakenmobcoins.shops.items.ShopItems;
 import me.aglerr.krakenmobcoins.utils.Utils;
@@ -13,25 +14,32 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class ShopUtils {
+    
+    private final MobCoins plugin;
+    private final ItemStockManager stockManager;
+    public ShopUtils(final MobCoins plugin){
+        this.plugin = plugin;
+        this.stockManager = plugin.getItemStockManager();
+    }
 
-    public void buyHandler(InventoryClickEvent event, ShopItems items, Player player, ItemStack stack){
+    public void buyHandler(ShopItems items, Player player, ItemStack stack){
 
-        PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
-        FileConfiguration config = MobCoins.getInstance().getConfig();
-        Utils utils = MobCoins.getInstance().getUtils();
-        FileConfiguration shop = MobCoins.getInstance().getShopManager().getConfiguration();
+        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+        FileConfiguration config = plugin.getConfig();
+        Utils utils = plugin.getUtils();
+        FileConfiguration shop = plugin.getShopManager().getConfiguration();
 
         if(playerCoins.getMoney() >= items.getPrice()){
             if(config.getBoolean("options.confirmationMenu")){
 
                 int sizeConfirmation = shop.getInt("confirmationMenu.size");
                 String titleConfirmation = utils.color(shop.getString("confirmationMenu.title"));
-                new ConfirmationInventory(sizeConfirmation, titleConfirmation, stack, items.getPrice(), items.getCommands(), items.getConfigKey(), items.getLimit(), items.isUseStock(), items.getStock()).open(player);
+                new ConfirmationInventory(sizeConfirmation, titleConfirmation, stack, items.getPrice(), items.getCommands(), items.getConfigKey(), items.getLimit(), items.isUseStock(), plugin).open(player);
 
             } else {
 
                 if(config.getBoolean("options.purchaseLimit") && items.getLimit() > 0){
-                    int playerLimit = MobCoins.getInstance().getLimitManager().getPlayerLimit(player, items.getConfigKey());
+                    int playerLimit = plugin.getLimitManager().getPlayerLimit(player, items.getConfigKey());
                     if(playerLimit >= items.getLimit()){
                         player.sendMessage(utils.color(ConfigMessages.MAX_LIMIT.toString())
                                 .replace("%prefix%", utils.getPrefix()));
@@ -40,7 +48,7 @@ public class ShopUtils {
                 }
 
                 if(items.isUseStock()){
-                    int currentStock = MobCoins.getInstance().getStock().get(items.getConfigKey());
+                    int currentStock = stockManager.getItemStock(items.getConfigKey());
                     if(currentStock <= 0){
                         player.sendMessage(utils.color(ConfigMessages.OUT_OF_STOCK.toString())
                                 .replace("%prefix%", utils.getPrefix()));
@@ -48,7 +56,7 @@ public class ShopUtils {
                     }
                 }
 
-                playerCoins.setMoney(playerCoins.getMoney() - items.getPrice());
+                playerCoins.reduceMoney(items.getPrice());
                 player.sendMessage(utils.color(ConfigMessages.PURCHASED_ITEM.toString())
                         .replace("%prefix%", utils.getPrefix())
                         .replace("%item%", utils.color(items.getName())));
@@ -61,13 +69,13 @@ public class ShopUtils {
                 }
 
                 if(items.isUseStock()){
-                    int currentStock = MobCoins.getInstance().getStock().get(items.getConfigKey());
-                    MobCoins.getInstance().getStock().put(items.getConfigKey(), currentStock - 1);
+                    int currentStock = stockManager.getItemStock(items.getConfigKey());
+                    stockManager.setStock(items.getConfigKey(), currentStock - 1);
                 }
 
                 if(config.getBoolean("options.purchaseLimit") && items.getLimit() > 0){
-                    int playerLimit = MobCoins.getInstance().getLimitManager().getPlayerLimit(player, items.getConfigKey());
-                    MobCoins.getInstance().getLimitManager().setPlayerLimit(player, items.getConfigKey(), playerLimit + 1);
+                    int playerLimit = plugin.getLimitManager().getPlayerLimit(player, items.getConfigKey());
+                    plugin.getLimitManager().setPlayerLimit(player, items.getConfigKey(), playerLimit + 1);
                 }
 
             }
@@ -82,24 +90,24 @@ public class ShopUtils {
 
     }
 
-    public void buyHandler(InventoryClickEvent event, ShopNormalItems items, Player player, ItemStack stack){
+    public void buyHandler(ShopNormalItems items, Player player, ItemStack stack){
 
-        PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
-        FileConfiguration config = MobCoins.getInstance().getConfig();
-        Utils utils = MobCoins.getInstance().getUtils();
-        FileConfiguration shop = MobCoins.getInstance().getShopManager().getConfiguration();
+        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+        FileConfiguration config = plugin.getConfig();
+        Utils utils = plugin.getUtils();
+        FileConfiguration shop = plugin.getShopManager().getConfiguration();
 
         if(playerCoins.getMoney() >= items.getPrice()){
             if(config.getBoolean("options.confirmationMenu")){
 
                 int sizeConfirmation = shop.getInt("confirmationMenu.size");
                 String titleConfirmation = utils.color(shop.getString("confirmationMenu.title"));
-                new ConfirmationInventory(sizeConfirmation, titleConfirmation, stack, items.getPrice(), items.getCommands(), items.getConfigKey(), items.getLimit(), items.isUseStock(), items.getStock()).open(player);
+                new ConfirmationInventory(sizeConfirmation, titleConfirmation, stack, items.getPrice(), items.getCommands(), items.getConfigKey(), items.getLimit(), items.isUseStock(), plugin).open(player);
 
             } else {
 
                 if(config.getBoolean("options.purchaseLimit") && items.getLimit() > 0){
-                    int playerLimit = MobCoins.getInstance().getLimitManager().getPlayerLimit(player, items.getConfigKey());
+                    int playerLimit = plugin.getLimitManager().getPlayerLimit(player, items.getConfigKey());
                     if(playerLimit >= items.getLimit()){
                         player.sendMessage(utils.color(ConfigMessages.MAX_LIMIT.toString())
                                 .replace("%prefix%", utils.getPrefix()));
@@ -108,7 +116,7 @@ public class ShopUtils {
                 }
 
                 if(items.isUseStock()){
-                    int currentStock = MobCoins.getInstance().getStock().get(items.getConfigKey());
+                    int currentStock = stockManager.getItemStock(items.getConfigKey());
                     if(currentStock <= 0){
                         player.sendMessage(utils.color(ConfigMessages.OUT_OF_STOCK.toString())
                                 .replace("%prefix%", utils.getPrefix()));
@@ -130,13 +138,13 @@ public class ShopUtils {
                 }
 
                 if(items.isUseStock()){
-                    int currentStock = MobCoins.getInstance().getStock().get(items.getConfigKey());
-                    MobCoins.getInstance().getStock().put(items.getConfigKey(), currentStock - 1);
+                    int currentStock = stockManager.getItemStock(items.getConfigKey());
+                    stockManager.setStock(items.getConfigKey(), currentStock - 1);
                 }
 
                 if(config.getBoolean("options.purchaseLimit") && items.getLimit() > 0){
-                    int playerLimit = MobCoins.getInstance().getLimitManager().getPlayerLimit(player, items.getConfigKey());
-                    MobCoins.getInstance().getLimitManager().setPlayerLimit(player, items.getConfigKey(), playerLimit + 1);
+                    int playerLimit = plugin.getLimitManager().getPlayerLimit(player, items.getConfigKey());
+                    plugin.getLimitManager().setPlayerLimit(player, items.getConfigKey(), playerLimit + 1);
                 }
 
             }

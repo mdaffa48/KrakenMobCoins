@@ -4,11 +4,12 @@ import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
 
-public class MobsManager {
+public class TempDataConfig {
 
     public FileConfiguration data;
     public File cfg;
@@ -19,11 +20,11 @@ public class MobsManager {
             MobCoins.getInstance().getDataFolder().mkdir();
         }
 
-        cfg = new File(MobCoins.getInstance().getDataFolder(), "mobs.yml");
+        cfg = new File(MobCoins.getInstance().getDataFolder(), "temp_data.yml");
 
         if(!cfg.exists()) {
-            MobCoins.getInstance().saveResource("mobs.yml", false);
-            utils.sendConsoleMessage("mobs.yml not found, creating mobs.yml...");
+            MobCoins.getInstance().saveResource("temp_data.yml", false);
+            utils.sendConsoleMessage("temp_data.yml not found, creating temp_data.yml...");
         }
 
         data = YamlConfiguration.loadConfiguration(cfg);
@@ -45,6 +46,5 @@ public class MobsManager {
     public void reloadData() {
         data = YamlConfiguration.loadConfiguration(cfg);
     }
-
 
 }

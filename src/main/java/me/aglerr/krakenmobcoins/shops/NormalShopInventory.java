@@ -1,12 +1,13 @@
 package me.aglerr.krakenmobcoins.shops;
 
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
+import me.aglerr.krakenmobcoins.manager.ItemStockManager;
 import me.aglerr.krakenmobcoins.utils.ItemBuilder;
 import com.cryptomorin.xseries.XMaterial;
 import com.google.common.primitives.Ints;
 import fr.mrmicky.fastinv.FastInv;
 import me.aglerr.krakenmobcoins.MobCoins;
-import me.aglerr.krakenmobcoins.configs.LimitManager;
+import me.aglerr.krakenmobcoins.configs.LimitConfig;
 import me.aglerr.krakenmobcoins.shops.category.shops.ShopNormalItems;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
@@ -22,24 +23,25 @@ import java.util.List;
 
 public class NormalShopInventory extends FastInv {
 
-    public NormalShopInventory(int size, String title, String category, Player player) {
+    public NormalShopInventory(int size, String title, String category, Player player, MobCoins plugin) {
         super(size, title);
 
-        FileConfiguration config = MobCoins.getInstance().getConfig();
-        Utils utils = MobCoins.getInstance().getUtils();
-        LimitManager limitManager = MobCoins.getInstance().getLimitManager();
-        PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
+        FileConfiguration config = plugin.getConfig();
+        Utils utils = plugin.getUtils();
+        LimitConfig limitConfig = plugin.getLimitManager();
+        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+        final ItemStockManager stockManager = plugin.getItemStockManager();
 
-        for(ShopNormalItems items : MobCoins.getInstance().getShopNormalLoader().getShopNormalItemsList()){
+        for(ShopNormalItems items : plugin.getShopNormalLoader().getShopNormalItemsList()){
 
             List<String> lore = new ArrayList<>();
             if(items.isUseStock()){
                 int finalStock;
-                if(MobCoins.getInstance().getStock().containsKey(items.getConfigKey())){
-                    finalStock = MobCoins.getInstance().getStock().get(items.getConfigKey());
+                if(stockManager.isItemExist(items.getConfigKey())){
+                    finalStock = stockManager.getItemStock(items.getConfigKey());
                 } else {
                     finalStock = items.getStock();
-                    MobCoins.getInstance().getStock().put(items.getConfigKey(), items.getStock());
+                    stockManager.setStock(items.getConfigKey(), items.getSlot());
                 }
 
                 String placeholder;
@@ -51,7 +53,7 @@ public class NormalShopInventory extends FastInv {
 
                 for(String line : items.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
-                            .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, items.getConfigKey())))
+                            .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, items.getConfigKey())))
                             .replace("%stock%", placeholder)
                             .replace("%coins%", utils.getDFormat().format(playerCoins.getMoney()))
                             .replace("%price%", String.valueOf(items.getPrice())));
@@ -61,7 +63,7 @@ public class NormalShopInventory extends FastInv {
 
                 for(String line : items.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
-                            .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, items.getConfigKey())))
+                            .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, items.getConfigKey())))
                             .replace("%coins%", utils.getDFormat().format(playerCoins.getMoney()))
                             .replace("%price%", String.valueOf(items.getPrice())));
                 }
@@ -82,7 +84,7 @@ public class NormalShopInventory extends FastInv {
                     setItem(items.getSlot(), stack, event -> {
 
                         if(items.getType().equals("shop")){
-                            MobCoins.getInstance().getShopUtils().buyHandler(event, items, player, stack);
+                            plugin.getShopUtils().buyHandler(items, player, stack);
                         }
 
                         if(items.getType().equals("back")){
@@ -95,7 +97,7 @@ public class NormalShopInventory extends FastInv {
                     setItems(slots1, stack, event -> {
                         if(items.getType().equals("shop")){
 
-                            MobCoins.getInstance().getShopUtils().buyHandler(event, items, player, stack);
+                            plugin.getShopUtils().buyHandler(items, player, stack);
                         }
 
                         if(items.getType().equals("back")){
@@ -112,17 +114,17 @@ public class NormalShopInventory extends FastInv {
 
         if(config.getBoolean("options.autoUpdateGUI.enabled")){
             int tick = config.getInt("options.autoUpdateGUI.updateEvery");
-            BukkitTask task = Bukkit.getServer().getScheduler().runTaskTimer(MobCoins.getInstance(), () -> {
-                for(ShopNormalItems items : MobCoins.getInstance().getShopNormalLoader().getShopNormalItemsList()){
+            BukkitTask task = Bukkit.getServer().getScheduler().runTaskTimer(plugin, () -> {
+                for(ShopNormalItems items : plugin.getShopNormalLoader().getShopNormalItemsList()){
 
                     List<String> lore = new ArrayList<>();
                     if(items.isUseStock()){
                         int finalStock;
-                        if(MobCoins.getInstance().getStock().containsKey(items.getConfigKey())){
-                            finalStock = MobCoins.getInstance().getStock().get(items.getConfigKey());
+                        if(stockManager.isItemExist(items.getConfigKey())){
+                            finalStock = stockManager.getItemStock(items.getConfigKey());
                         } else {
                             finalStock = items.getStock();
-                            MobCoins.getInstance().getStock().put(items.getConfigKey(), items.getStock());
+                            stockManager.setStock(items.getConfigKey(), items.getSlot());
                         }
 
                         String placeholder;
@@ -133,7 +135,7 @@ public class NormalShopInventory extends FastInv {
                         }
                         for(String line : items.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, items.getConfigKey())))
+                                    .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, items.getConfigKey())))
                                     .replace("%stock%", placeholder)
                                     .replace("%coins%", utils.getDFormat().format(playerCoins.getMoney()))
                                     .replace("%price%", String.valueOf(items.getPrice())));
@@ -143,7 +145,7 @@ public class NormalShopInventory extends FastInv {
 
                         for(String line : items.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, items.getConfigKey())))
+                                    .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, items.getConfigKey())))
                                     .replace("%coins%", utils.getDFormat().format(playerCoins.getMoney()))
                                     .replace("%price%", String.valueOf(items.getPrice())));
                         }
@@ -164,7 +166,7 @@ public class NormalShopInventory extends FastInv {
                             setItem(items.getSlot(), stack, event -> {
 
                                 if(items.getType().equals("shop")){
-                                    MobCoins.getInstance().getShopUtils().buyHandler(event, items, player, stack);
+                                    plugin.getShopUtils().buyHandler(items, player, stack);
                                 }
 
                                 if(items.getType().equals("back")){
@@ -177,7 +179,7 @@ public class NormalShopInventory extends FastInv {
                             setItems(slots1, stack, event -> {
                                 if(items.getType().equals("shop")){
 
-                                    MobCoins.getInstance().getShopUtils().buyHandler(event, items, player, stack);
+                                    plugin.getShopUtils().buyHandler(items, player, stack);
                                 }
 
                                 if(items.getType().equals("back")){

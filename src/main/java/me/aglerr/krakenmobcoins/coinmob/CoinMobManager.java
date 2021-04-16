@@ -24,7 +24,7 @@ public class CoinMobManager {
     }
 
     public void loadCoinMob(){
-        FileConfiguration mobs = plugin.mobsManager.getConfiguration();
+        FileConfiguration mobs = plugin.getMobsManager().getConfiguration();
         Utils utils = plugin.getUtils();
 
         if(!coinMobList.isEmpty()) coinMobList.clear();

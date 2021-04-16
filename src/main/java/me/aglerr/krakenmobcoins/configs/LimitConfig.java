@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import java.io.File;
 import java.io.IOException;
 
-public class TempDataManager {
+public class LimitConfig {
 
     public FileConfiguration data;
     public File cfg;
@@ -20,11 +20,11 @@ public class TempDataManager {
             MobCoins.getInstance().getDataFolder().mkdir();
         }
 
-        cfg = new File(MobCoins.getInstance().getDataFolder(), "temp_data.yml");
+        cfg = new File(MobCoins.getInstance().getDataFolder(), "purchase_data.yml");
 
         if(!cfg.exists()) {
-            MobCoins.getInstance().saveResource("temp_data.yml", false);
-            utils.sendConsoleMessage("temp_data.yml not found, creating temp_data.yml...");
+            MobCoins.getInstance().saveResource("purchase_data.yml", false);
+            utils.sendConsoleMessage("purchase_data.yml not found, creating purchase_data.yml...");
         }
 
         data = YamlConfiguration.loadConfiguration(cfg);
@@ -45,6 +45,15 @@ public class TempDataManager {
 
     public void reloadData() {
         data = YamlConfiguration.loadConfiguration(cfg);
+    }
+
+    public int getPlayerLimit(Player player, String key){
+        return data.getInt("items." + player.getUniqueId().toString() + "." + key);
+    }
+
+    public void setPlayerLimit(Player player, String key, int amount){
+        data.set("items." + player.getUniqueId().toString() + "." + key, amount);
+        this.saveData();
     }
 
 }

@@ -30,6 +30,14 @@ public class PlayerCoins {
         this.coins = value;
     }
 
+    public void reduceMoney(double value){
+        setMoney(getMoney() - value);
+    }
+
+    public void addMoney(double value){
+        setMoney(getMoney() + value);
+    }
+
     public String getPlayerName(){
         UUID playerUUID = UUID.fromString(this.uuid);
         OfflinePlayer target = Bukkit.getOfflinePlayer(playerUUID);

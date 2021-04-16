@@ -1,12 +1,13 @@
 package me.aglerr.krakenmobcoins.shops;
 
+import me.aglerr.krakenmobcoins.manager.ItemStockManager;
 import me.aglerr.krakenmobcoins.utils.ItemBuilder;
 import com.cryptomorin.xseries.XMaterial;
 import com.google.common.primitives.Ints;
 import fr.mrmicky.fastinv.FastInv;
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
-import me.aglerr.krakenmobcoins.configs.LimitManager;
+import me.aglerr.krakenmobcoins.configs.LimitConfig;
 import me.aglerr.krakenmobcoins.shops.items.RotatingItems;
 import me.aglerr.krakenmobcoins.shops.items.ShopItems;
 import me.aglerr.krakenmobcoins.utils.Utils;
@@ -23,28 +24,30 @@ import java.util.List;
 
 public class RotatingShopInventory extends FastInv {
 
-    public RotatingShopInventory(int size, String title, Player player) {
+    public RotatingShopInventory(int size, String title, Player player, MobCoins plugin) {
         super(size, title);
 
-        FileConfiguration config = MobCoins.getInstance().getConfig();
-        LimitManager limitManager = MobCoins.getInstance().getLimitManager();
-        Utils utils = MobCoins.getInstance().getUtils();
+        final ItemStockManager stockManager = plugin.getItemStockManager();
 
-        PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
+        FileConfiguration config = plugin.getConfig();
+        LimitConfig limitConfig = plugin.getLimitManager();
+        Utils utils = plugin.getUtils();
+
+        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
 
         List<Integer> normalSlots = config.getIntegerList("rotatingShop.normalItemSlots");
 
         int normalCounter = 0;
-        for(ShopItems normal : MobCoins.getInstance().getNormalItems()){
+        for(ShopItems normal : plugin.getNormalItems()){
 
             List<String> lore = new ArrayList<>();
             if(normal.isUseStock()){
                 int finalStock;
-                if(MobCoins.getInstance().getStock().containsKey(normal.getConfigKey())){
-                    finalStock = MobCoins.getInstance().getStock().get(normal.getConfigKey());
+                if(stockManager.isItemExist(normal.getConfigKey())){
+                    finalStock = stockManager.getItemStock(normal.getConfigKey());
                 } else {
                     finalStock = normal.getStock();
-                    MobCoins.getInstance().getStock().put(normal.getConfigKey(), normal.getStock());
+                    stockManager.setStock(normal.getConfigKey(), normal.getStock());
                 }
 
                 String placeholder;
@@ -55,14 +58,14 @@ public class RotatingShopInventory extends FastInv {
                 }
                 for(String line : normal.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(normal.getLimit()))
-                            .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, normal.getConfigKey())))
+                            .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, normal.getConfigKey())))
                             .replace("%stock%", placeholder)
                             .replace("%price%", String.valueOf(normal.getPrice())));
                 }
             } else {
                 for(String line : normal.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(normal.getLimit()))
-                            .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, normal.getConfigKey())))
+                            .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, normal.getConfigKey())))
                             .replace("%price%", String.valueOf(normal.getPrice())));
                 }
             }
@@ -76,25 +79,26 @@ public class RotatingShopInventory extends FastInv {
             if(normal.isGlowing()) builder.enchant(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
             ItemStack stack = builder.build();
 
-            this.setItem(normalSlots.get(normalCounter), stack, event -> MobCoins.getInstance().getShopUtils().buyHandler(event, normal, player, stack));
+            this.setItem(normalSlots.get(normalCounter), stack, event -> plugin.getShopUtils().buyHandler(normal, player, stack));
             normalCounter++;
 
             if(normalCounter == normalSlots.size()) break;
         }
 
         int specialCounter = 0;
-        for(ShopItems special : MobCoins.getInstance().getSpecialItems()){
+        for(ShopItems special : plugin.getSpecialItems()){
             List<Integer> specialSlots = config.getIntegerList("rotatingShop.specialItemSlots");
 
             List<String> lore = new ArrayList<>();
             if(special.isUseStock()){
                 int finalStock;
-                if(MobCoins.getInstance().getStock().containsKey(special.getConfigKey())){
-                    finalStock = MobCoins.getInstance().getStock().get(special.getConfigKey());
+                if(stockManager.isItemExist(special.getConfigKey())){
+                    finalStock = stockManager.getItemStock(special.getConfigKey());
                 } else {
                     finalStock = special.getStock();
-                    MobCoins.getInstance().getStock().put(special.getConfigKey(), special.getStock());
+                    stockManager.setStock(special.getConfigKey(), special.getStock());
                 }
+
                 String placeholder;
                 if(finalStock <= 0){
                     placeholder = config.getString("placeholders.outOfStock");
@@ -105,7 +109,7 @@ public class RotatingShopInventory extends FastInv {
 
                 for(String line : special.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(special.getLimit()))
-                            .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, special.getConfigKey())))
+                            .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, special.getConfigKey())))
                             .replace("%stock%", placeholder)
                             .replace("%price%", String.valueOf(special.getPrice())));
                 }
@@ -113,7 +117,7 @@ public class RotatingShopInventory extends FastInv {
             } else {
                 for(String line : special.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(special.getLimit()))
-                            .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, special.getConfigKey())))
+                            .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, special.getConfigKey())))
                             .replace("%price%", String.valueOf(special.getPrice())));
                 }
 
@@ -128,17 +132,17 @@ public class RotatingShopInventory extends FastInv {
             if(special.isGlowing()) builder.enchant(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
             ItemStack stack = builder.build();
 
-            this.setItem(specialSlots.get(specialCounter), stack, event -> MobCoins.getInstance().getShopUtils().buyHandler(event, special, player, stack));
+            this.setItem(specialSlots.get(specialCounter), stack, event -> plugin.getShopUtils().buyHandler(special, player, stack));
             specialCounter++;
 
             if(specialCounter == specialSlots.size()) break;
 
         }
 
-        for(RotatingItems items : MobCoins.getInstance().getRotatingLoader().getRotatingItemsList()){
+        for(RotatingItems items : plugin.getRotatingLoader().getRotatingItemsList()){
 
-            long normalRemaining = MobCoins.getInstance().getNormalTime() - System.currentTimeMillis();
-            long specialRemaining = MobCoins.getInstance().getSpecialTime() - System.currentTimeMillis();
+            long normalRemaining = plugin.getNormalTime() - System.currentTimeMillis();
+            long specialRemaining = plugin.getSpecialTime() - System.currentTimeMillis();
 
             List<String> lore = new ArrayList<>();
             for(String line : items.getLore()){
@@ -165,18 +169,18 @@ public class RotatingShopInventory extends FastInv {
 
         if(config.getBoolean("options.autoUpdateGUI.enabled")){
             int tick = config.getInt("options.autoUpdateGUI.updateEvery");
-            BukkitTask task = Bukkit.getServer().getScheduler().runTaskTimer(MobCoins.getInstance(), () -> {
+            BukkitTask task = Bukkit.getServer().getScheduler().runTaskTimer(plugin, () -> {
                 int taskNormal = 0;
-                for(ShopItems normal : MobCoins.getInstance().getNormalItems()){
+                for(ShopItems normal : plugin.getNormalItems()){
 
                     List<String> lore = new ArrayList<>();
                     if(normal.isUseStock()){
                         int finalStock;
-                        if(MobCoins.getInstance().getStock().containsKey(normal.getConfigKey())){
-                            finalStock = MobCoins.getInstance().getStock().get(normal.getConfigKey());
+                        if(stockManager.isItemExist(normal.getConfigKey())){
+                            finalStock = stockManager.getItemStock(normal.getConfigKey());
                         } else {
                             finalStock = normal.getStock();
-                            MobCoins.getInstance().getStock().put(normal.getConfigKey(), normal.getStock());
+                            stockManager.setStock(normal.getConfigKey(), normal.getStock());
                         }
 
                         String placeholder;
@@ -187,14 +191,14 @@ public class RotatingShopInventory extends FastInv {
                         }
                         for(String line : normal.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(normal.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, normal.getConfigKey())))
+                                    .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, normal.getConfigKey())))
                                     .replace("%stock%", placeholder)
                                     .replace("%price%", String.valueOf(normal.getPrice())));
                         }
                     } else {
                         for(String line : normal.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(normal.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, normal.getConfigKey())))
+                                    .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, normal.getConfigKey())))
                                     .replace("%price%", String.valueOf(normal.getPrice())));
                         }
                     }
@@ -208,25 +212,26 @@ public class RotatingShopInventory extends FastInv {
                     if(normal.isGlowing()) builder.enchant(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
                     ItemStack stack = builder.build();
 
-                    this.setItem(normalSlots.get(taskNormal), stack, event -> MobCoins.getInstance().getShopUtils().buyHandler(event, normal, player, stack));
+                    this.setItem(normalSlots.get(taskNormal), stack, event -> plugin.getShopUtils().buyHandler(normal, player, stack));
                     taskNormal++;
 
                     if(taskNormal == normalSlots.size()) break;
                 }
 
                 int taskSpecial = 0;
-                for(ShopItems special : MobCoins.getInstance().getSpecialItems()){
+                for(ShopItems special : plugin.getSpecialItems()){
                     List<Integer> specialSlots = config.getIntegerList("rotatingShop.specialItemSlots");
 
                     List<String> lore = new ArrayList<>();
                     if(special.isUseStock()){
                         int finalStock;
-                        if(MobCoins.getInstance().getStock().containsKey(special.getConfigKey())){
-                            finalStock = MobCoins.getInstance().getStock().get(special.getConfigKey());
+                        if(stockManager.isItemExist(special.getConfigKey())){
+                            finalStock = stockManager.getItemStock(special.getConfigKey());
                         } else {
                             finalStock = special.getStock();
-                            MobCoins.getInstance().getStock().put(special.getConfigKey(), special.getStock());
+                            stockManager.setStock(special.getConfigKey(), special.getStock());
                         }
+
                         String placeholder;
                         if(finalStock <= 0){
                             placeholder = config.getString("placeholders.outOfStock");
@@ -237,7 +242,7 @@ public class RotatingShopInventory extends FastInv {
 
                         for(String line : special.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(special.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, special.getConfigKey())))
+                                    .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, special.getConfigKey())))
                                     .replace("%stock%", placeholder)
                                     .replace("%price%", String.valueOf(special.getPrice())));
                         }
@@ -245,7 +250,7 @@ public class RotatingShopInventory extends FastInv {
                     } else {
                         for(String line : special.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(special.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitManager.getPlayerLimit(player, special.getConfigKey())))
+                                    .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, special.getConfigKey())))
                                     .replace("%price%", String.valueOf(special.getPrice())));
                         }
 
@@ -260,17 +265,17 @@ public class RotatingShopInventory extends FastInv {
                     if(special.isGlowing()) builder.enchant(Enchantment.ARROW_INFINITE).flag(ItemFlag.HIDE_ENCHANTS);
                     ItemStack stack = builder.build();
 
-                    this.setItem(specialSlots.get(taskSpecial), stack, event -> MobCoins.getInstance().getShopUtils().buyHandler(event, special, player, stack));
+                    this.setItem(specialSlots.get(taskSpecial), stack, event -> plugin.getShopUtils().buyHandler(special, player, stack));
                     taskSpecial++;
 
                     if(taskSpecial == specialSlots.size()) break;
 
                 }
 
-                for(RotatingItems items : MobCoins.getInstance().getRotatingLoader().getRotatingItemsList()){
+                for(RotatingItems items : plugin.getRotatingLoader().getRotatingItemsList()){
 
-                    long normalRemaining = MobCoins.getInstance().getNormalTime() - System.currentTimeMillis();
-                    long specialRemaining = MobCoins.getInstance().getSpecialTime() - System.currentTimeMillis();
+                    long normalRemaining = plugin.getNormalTime() - System.currentTimeMillis();
+                    long specialRemaining = plugin.getSpecialTime() - System.currentTimeMillis();
 
                     List<String> lore = new ArrayList<>();
                     for(String line : items.getLore()){

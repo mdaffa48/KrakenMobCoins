@@ -1,14 +1,12 @@
-package me.aglerr.krakenmobcoins.salary;
+package me.aglerr.krakenmobcoins.manager;
 
 import me.aglerr.krakenmobcoins.MobCoins;
-import me.aglerr.krakenmobcoins.configs.ConfigMessages;
 import me.aglerr.krakenmobcoins.configs.ConfigMessagesList;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
 import java.util.Map;

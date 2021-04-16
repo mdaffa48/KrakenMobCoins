@@ -6,7 +6,7 @@ import me.aglerr.krakenmobcoins.coinmob.CoinMob;
 import me.aglerr.krakenmobcoins.coinmob.CoinMobManager;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.api.events.MobCoinsReceiveEvent;
-import me.aglerr.krakenmobcoins.salary.SalaryManager;
+import me.aglerr.krakenmobcoins.manager.SalaryManager;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;

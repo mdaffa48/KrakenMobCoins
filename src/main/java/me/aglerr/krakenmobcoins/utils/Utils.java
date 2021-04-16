@@ -25,6 +25,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import javax.rmi.CORBA.Util;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -36,6 +37,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Utils {
+
+    private final MobCoins plugin;
+    public Utils(final MobCoins plugin){
+        this.plugin = plugin;
+    }
 
     public String color(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
@@ -170,7 +176,7 @@ public class Utils {
     public void resetStock(){
         MobCoins.getInstance().getLimitManager().getConfiguration().set("items", new ArrayList<>());
         MobCoins.getInstance().getLimitManager().saveData();
-        MobCoins.getInstance().getStock().clear();
+        plugin.getItemStockManager().clearStock();
     }
 
     public void resetLimit(){
@@ -238,7 +244,7 @@ public class Utils {
             String title = color(config.getString("rotatingShop.title"));
             int size = config.getInt("rotatingShop.size");
 
-            new RotatingShopInventory(size, title, player).open(player);
+            new RotatingShopInventory(size, title, player, plugin).open(player);
         } else {
             String title = color(config.getString("normalShop.title"));
             int size = config.getInt("normalShop.size");
@@ -256,7 +262,7 @@ public class Utils {
             String title = color(configuration.getString("title"));
             int size = configuration.getInt("size");
 
-            new NormalShopInventory(size, title, finalCategory, player).open(player);
+            new NormalShopInventory(size, title, finalCategory, player, plugin).open(player);
 
         } else {
 

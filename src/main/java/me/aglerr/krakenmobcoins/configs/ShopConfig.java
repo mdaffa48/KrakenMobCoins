@@ -8,7 +8,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 
-public class ShopManager {
+public class ShopConfig {
 
     public FileConfiguration data;
     public File cfg;

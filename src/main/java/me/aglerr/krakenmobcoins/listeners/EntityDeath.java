@@ -6,7 +6,8 @@ import me.aglerr.krakenmobcoins.coinmob.CoinMob;
 import me.aglerr.krakenmobcoins.coinmob.CoinMobManager;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.api.events.MobCoinsReceiveEvent;
-import me.aglerr.krakenmobcoins.salary.SalaryManager;
+import me.aglerr.krakenmobcoins.manager.DependencyManager;
+import me.aglerr.krakenmobcoins.manager.SalaryManager;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -66,7 +67,8 @@ public class EntityDeath implements Listener {
         Bukkit.getPluginManager().callEvent(mobCoinsReceiveEvent);
         if(mobCoinsReceiveEvent.isCancelled()) return;
 
-        if(MobCoins.wildStackerHook) {
+        final DependencyManager dependencyManager = plugin.getDependencyManager();
+        if(dependencyManager.isWildStacker()) {
             mobCoinsReceiveEvent.setAmountAfterMultiplier(mobCoinsReceiveEvent.getAmountAfterMultiplier() * WildStackerAPI.getEntityAmount(entity));
         }
 

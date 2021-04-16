@@ -5,6 +5,7 @@ import fr.mrmicky.fastinv.FastInv;
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.configs.ConfigMessages;
+import me.aglerr.krakenmobcoins.manager.ItemStockManager;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -16,12 +17,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.List;
 
 public class ConfirmationInventory extends FastInv {
-    public ConfirmationInventory(int size, String title, ItemStack itemStack, double price, List<String> commands, String configKey, int limit, boolean useStock, int stock) {
+    public ConfirmationInventory(int size, String title, ItemStack itemStack, double price, List<String> commands, String configKey, int limit, boolean useStock, MobCoins plugin) {
         super(size, title);
 
-        FileConfiguration config = MobCoins.getInstance().getConfig();
-        FileConfiguration shop = MobCoins.getInstance().getShopManager().getConfiguration();
-        Utils utils = MobCoins.getInstance().getUtils();
+        FileConfiguration config = plugin.getConfig();
+        FileConfiguration shop = plugin.getShopManager().getConfiguration();
+        Utils utils = plugin.getUtils();
+        final ItemStockManager stockManager = plugin.getItemStockManager();
 
         String acceptMaterial = shop.getString("confirmationMenu.items.acceptButton.material").toUpperCase();
         String acceptName = shop.getString("confirmationMenu.items.acceptButton.name");
@@ -38,7 +40,7 @@ public class ConfirmationInventory extends FastInv {
             if(!(event.getWhoClicked() instanceof Player)) return;
 
             Player player = (Player) event.getWhoClicked();
-            PlayerCoins playerCoins = MobCoins.getInstance().getPlayerCoins(player.getUniqueId().toString());
+            PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
             if(playerCoins != null){
                 if(player.getInventory().firstEmpty() == -1){
                     player.closeInventory();
@@ -48,7 +50,7 @@ public class ConfirmationInventory extends FastInv {
                 }
 
                 if(config.getBoolean("options.purchaseLimit") && limit > 0){
-                    int playerLimit = MobCoins.getInstance().getLimitManager().getPlayerLimit(player, configKey);
+                    int playerLimit = plugin.getLimitManager().getPlayerLimit(player, configKey);
                     if(playerLimit >= limit){
                         player.sendMessage(utils.color(ConfigMessages.MAX_LIMIT.toString())
                         .replace("%prefix%", utils.getPrefix()));
@@ -58,7 +60,7 @@ public class ConfirmationInventory extends FastInv {
                 }
 
                 if(useStock){
-                    int currentStock = MobCoins.getInstance().getStock().get(configKey);
+                    int currentStock = stockManager.getItemStock(configKey);
                     if(currentStock <= 0){
                         player.sendMessage(utils.color(ConfigMessages.OUT_OF_STOCK.toString())
                                 .replace("%prefix%", utils.getPrefix()));
@@ -82,13 +84,13 @@ public class ConfirmationInventory extends FastInv {
                 }
 
                 if(useStock){
-                    int currentStock = MobCoins.getInstance().getStock().get(configKey);
-                    MobCoins.getInstance().getStock().put(configKey, currentStock - 1);
+                    int currentStock = stockManager.getItemStock(configKey);
+                    stockManager.setStock(configKey, currentStock - 1);
                 }
 
                 if(config.getBoolean("options.purchaseLimit") && limit > 0){
-                    int playerLimit = MobCoins.getInstance().getLimitManager().getPlayerLimit(player, configKey);
-                    MobCoins.getInstance().getLimitManager().setPlayerLimit(player, configKey, playerLimit + 1);
+                    int playerLimit = plugin.getLimitManager().getPlayerLimit(player, configKey);
+                    plugin.getLimitManager().setPlayerLimit(player, configKey, playerLimit + 1);
                 }
 
             } else {
