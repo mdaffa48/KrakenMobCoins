@@ -39,9 +39,7 @@ public class PlayerCoins {
     }
 
     public String getPlayerName(){
-        UUID playerUUID = UUID.fromString(this.uuid);
-        OfflinePlayer target = Bukkit.getOfflinePlayer(playerUUID);
-        return target.getName();
+        return Bukkit.getOfflinePlayer(UUID.fromString(this.uuid)).getName();
     }
 
 }

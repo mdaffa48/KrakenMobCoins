@@ -1,10 +1,10 @@
 package me.aglerr.krakenmobcoins;
 
 import fr.mrmicky.fastinv.FastInvManager;
+import me.aglerr.krakenmobcoins.api.MobCoinsAPI;
 import me.aglerr.krakenmobcoins.coinmob.CoinMobManager;
 import me.aglerr.krakenmobcoins.commands.MainCommand;
 import me.aglerr.krakenmobcoins.configs.*;
-import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.database.SQL;
 import me.aglerr.krakenmobcoins.listeners.*;
 import me.aglerr.krakenmobcoins.manager.*;
@@ -19,18 +19,13 @@ import me.aglerr.krakenmobcoins.utils.Metrics;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
 
 public class MobCoins extends JavaPlugin {
@@ -76,9 +71,12 @@ public class MobCoins extends JavaPlugin {
     private final CategoryManager categoryManager = new CategoryManager(this);
     private final AccountManager accountManager = new AccountManager(this);
 
+    private static MobCoinsAPI api;
+
     @Override
     public void onEnable() {
         instance = this;
+        api = new MobCoinsAPI(this);
 
         createDatabaseFile();
         File categoriesFolder = new File("plugins/KrakenMobcoins/categories");
@@ -395,6 +393,7 @@ public class MobCoins extends JavaPlugin {
     }
 
     public static MobCoins getInstance() { return instance; }
+    public static MobCoinsAPI getAPI() { return api; }
     public Utils getUtils() { return utils; }
     public SQL getDatabase() { return database; }
     public TempDataConfig getTempDataManager() { return tempDataConfig; }
