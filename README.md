@@ -16,7 +16,11 @@ public class ExampleAPIUsage {
   
 }
 ```
-Check this class for full method https://github.com/lilsketchy/KrakenMobCoins/blob/master/src/main/java/me/aglerr/krakenmobcoins/database/PlayerCoins.java
+Useful Class for API
+<ul>
+  <li>https://github.com/lilsketchy/KrakenMobCoins/blob/master/src/main/java/me/aglerr/krakenmobcoins/database/PlayerCoins.java
+  <li>https://github.com/lilsketchy/KrakenMobCoins/blob/master/src/main/java/me/aglerr/krakenmobcoins/api/MobCoinsAPI.java
+</ul>
 
 # Useful Links
 <ul>
