@@ -27,6 +27,7 @@ package me.aglerr.krakenmobcoins.utils;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import me.aglerr.krakenmobcoins.MobCoins;
 import org.bukkit.ChatColor;
@@ -37,8 +38,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class ItemBuilder {
-
-    public Utils utils = MobCoins.getInstance().getUtils();
 
     private ItemStack stack;
 
@@ -68,7 +67,7 @@ public class ItemBuilder {
     	this.stack = stack;
     	stack.setAmount(amount);
     	ItemMeta stackMeta = stack.getItemMeta();
-    	stackMeta.setDisplayName(utils.color(name));
+    	stackMeta.setDisplayName(color(name));
     	stack.setItemMeta(stackMeta);
     	
     }
@@ -78,8 +77,8 @@ public class ItemBuilder {
     	this.stack = stack;
     	stack.setAmount(amount);
     	ItemMeta stackMeta = stack.getItemMeta();
-    	stackMeta.setDisplayName(utils.color(name));
-    	stackMeta.setLore(utils.color(lore));
+    	stackMeta.setDisplayName(color(name));
+    	stackMeta.setLore(color(lore));
     	stack.setItemMeta(stackMeta);
     	
     }
@@ -89,8 +88,8 @@ public class ItemBuilder {
     	this.stack = stack;
     	stack.setAmount(amount);
     	ItemMeta stackMeta = stack.getItemMeta();
-    	stackMeta.setDisplayName(utils.color(name));
-    	stackMeta.setLore(utils.color(lore));
+    	stackMeta.setDisplayName(color(name));
+    	stackMeta.setLore(color(lore));
     	stackMeta.addEnchant(enchantment, 0, true);
     	stack.setItemMeta(stackMeta);
     	
@@ -225,6 +224,14 @@ public class ItemBuilder {
      */
     public ItemStack build(){
         return stack;
+    }
+
+    private String color(String message) {
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    private List<String> color(List<String> strings) {
+        return strings.stream().map(this::color).collect(Collectors.toList());
     }
 
 }

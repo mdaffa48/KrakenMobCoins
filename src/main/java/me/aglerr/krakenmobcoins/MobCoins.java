@@ -40,7 +40,6 @@ public class MobCoins extends JavaPlugin {
      *
      */
 
-    private static MobCoins instance;
     private SQL database;
 
     private final Set<Entity> mobSpawner = new HashSet<>();
@@ -75,7 +74,6 @@ public class MobCoins extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        instance = this;
         api = new MobCoinsAPI(this);
 
         createDatabaseFile();
@@ -392,7 +390,6 @@ public class MobCoins extends JavaPlugin {
         damageCauses.clear();
     }
 
-    public static MobCoins getInstance() { return instance; }
     public static MobCoinsAPI getAPI() { return api; }
     public Utils getUtils() { return utils; }
     public SQL getDatabase() { return database; }
