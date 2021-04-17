@@ -6,16 +6,12 @@ Example Usage:
 ```java
 public class ExampleAPIUsage {
   
-  public void exampleUsage(Player player){
+  public double getPlayerCoins(Player player){
     MobCoinsAPI api = MobCoins.getAPI();
+    // PlayerCoins is nullable, so you want to nullcheck it first.
     PlayerCoins playerCoins = api.getPlayerData(player);
-    if(playerCoins == null) return;
     
-    playerCoins.getMoney()
-    playerCoins.setMoney()
-    playerCoins.reduceMoney()
-    playerCoins.addMoney()
-    
+    return playerCoins.getMoney();
   }
   
 }
