@@ -29,7 +29,7 @@ public class NormalShopInventory extends FastInv {
         FileConfiguration config = plugin.getConfig();
         Utils utils = plugin.getUtils();
         LimitConfig limitConfig = plugin.getLimitManager();
-        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+        PlayerCoins playerCoins = plugin.getAccountManager().getPlayerData(player.getUniqueId().toString());
         final ItemStockManager stockManager = plugin.getItemStockManager();
 
         for(ShopNormalItems items : plugin.getShopNormalLoader().getShopNormalItemsList()){

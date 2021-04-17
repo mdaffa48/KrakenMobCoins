@@ -3,6 +3,7 @@ package me.aglerr.krakenmobcoins.shops;
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.configs.ConfigMessages;
+import me.aglerr.krakenmobcoins.manager.AccountManager;
 import me.aglerr.krakenmobcoins.manager.ItemStockManager;
 import me.aglerr.krakenmobcoins.shops.category.shops.ShopNormalItems;
 import me.aglerr.krakenmobcoins.shops.items.ShopItems;
@@ -17,14 +18,16 @@ public class ShopUtils {
     
     private final MobCoins plugin;
     private final ItemStockManager stockManager;
+    private final AccountManager accountManager;
     public ShopUtils(final MobCoins plugin){
         this.plugin = plugin;
         this.stockManager = plugin.getItemStockManager();
+        this.accountManager = plugin.getAccountManager();
     }
 
     public void buyHandler(ShopItems items, Player player, ItemStack stack){
 
-        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+        PlayerCoins playerCoins = accountManager.getPlayerData(player.getUniqueId().toString());
         FileConfiguration config = plugin.getConfig();
         Utils utils = plugin.getUtils();
         FileConfiguration shop = plugin.getShopManager().getConfiguration();
@@ -92,7 +95,7 @@ public class ShopUtils {
 
     public void buyHandler(ShopNormalItems items, Player player, ItemStack stack){
 
-        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+        PlayerCoins playerCoins = accountManager.getPlayerData(player.getUniqueId().toString());
         FileConfiguration config = plugin.getConfig();
         Utils utils = plugin.getUtils();
         FileConfiguration shop = plugin.getShopManager().getConfiguration();

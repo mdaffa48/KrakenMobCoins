@@ -5,6 +5,7 @@ import fr.mrmicky.fastinv.FastInv;
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.configs.ConfigMessages;
+import me.aglerr.krakenmobcoins.manager.AccountManager;
 import me.aglerr.krakenmobcoins.manager.ItemStockManager;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
@@ -24,6 +25,7 @@ public class ConfirmationInventory extends FastInv {
         FileConfiguration shop = plugin.getShopManager().getConfiguration();
         Utils utils = plugin.getUtils();
         final ItemStockManager stockManager = plugin.getItemStockManager();
+        final AccountManager accountManager = plugin.getAccountManager();
 
         String acceptMaterial = shop.getString("confirmationMenu.items.acceptButton.material").toUpperCase();
         String acceptName = shop.getString("confirmationMenu.items.acceptButton.name");
@@ -40,7 +42,7 @@ public class ConfirmationInventory extends FastInv {
             if(!(event.getWhoClicked() instanceof Player)) return;
 
             Player player = (Player) event.getWhoClicked();
-            PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+            PlayerCoins playerCoins = accountManager.getPlayerData(player.getUniqueId().toString());
             if(playerCoins != null){
                 if(player.getInventory().firstEmpty() == -1){
                     player.closeInventory();

@@ -32,7 +32,7 @@ public class MythicMobDeath implements Listener {
         Utils utils = plugin.getUtils();
 
         Player player = (Player) event.getKiller();
-        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+        PlayerCoins playerCoins = plugin.getAccountManager().getPlayerData(player.getUniqueId().toString());
         if(playerCoins == null) return;
 
         List<String> worlds = config.getStringList("disabledWorlds");

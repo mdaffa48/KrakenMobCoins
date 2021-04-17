@@ -36,7 +36,7 @@ public class EntityDeath implements Listener {
         if(event.getEntity().getKiller() == null) return;
 
         Player player = event.getEntity().getKiller();
-        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+        PlayerCoins playerCoins = plugin.getAccountManager().getPlayerData(player.getUniqueId().toString());
         if(playerCoins == null) return;
 
         List<String> worlds = config.getStringList("disabledWorlds");
@@ -67,9 +67,11 @@ public class EntityDeath implements Listener {
         Bukkit.getPluginManager().callEvent(mobCoinsReceiveEvent);
         if(mobCoinsReceiveEvent.isCancelled()) return;
 
-        final DependencyManager dependencyManager = plugin.getDependencyManager();
-        if(dependencyManager.isWildStacker()) {
-            mobCoinsReceiveEvent.setAmountAfterMultiplier(mobCoinsReceiveEvent.getAmountAfterMultiplier() * WildStackerAPI.getEntityAmount(entity));
+        if(config.getBoolean("options.wildStackerSupport")){
+            final DependencyManager dependencyManager = plugin.getDependencyManager();
+            if(dependencyManager.isWildStacker()) {
+                mobCoinsReceiveEvent.setAmountAfterMultiplier(mobCoinsReceiveEvent.getAmountAfterMultiplier() * WildStackerAPI.getEntityAmount(entity));
+            }
         }
 
         if(config.getBoolean("options.salaryMode.enabled")) {

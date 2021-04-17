@@ -56,7 +56,7 @@ public class TopCommand extends SubCommand {
         FileConfiguration config = plugin.getConfig();
         String nameEmpty = config.getString("placeholders.top.nameIfEmpty");
 
-        List<PlayerCoins> playerCoinsList = plugin.getTop();
+        List<PlayerCoins> playerCoinsList = plugin.getAccountManager().getTop();
 
         try{
             PlayerCoins playerCoins = playerCoinsList.get(index);
@@ -71,7 +71,7 @@ public class TopCommand extends SubCommand {
         FileConfiguration config = plugin.getConfig();
         String moneyEmpty = config.getString("placeholders.top.moneyIfEmpty");
 
-        List<PlayerCoins> playerCoinsList = plugin.getTop();
+        List<PlayerCoins> playerCoinsList = plugin.getAccountManager().getTop();
         DecimalFormat df = new DecimalFormat("###,###,###,###,###.##");
 
         try{

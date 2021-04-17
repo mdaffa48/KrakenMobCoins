@@ -43,6 +43,8 @@ options:
   purchaseLimit: true
   disableMobCoinsFromSpawner: false
   shuffleRotating: false
+  # Still in beta (I still don't know what should I do with WildStacker hook, please explain it to me on Discord.)
+  wildStackerSupport: false
   autoUpdateGUI:
     enabled: true
     # In ticks (20 ticks = 1 second)

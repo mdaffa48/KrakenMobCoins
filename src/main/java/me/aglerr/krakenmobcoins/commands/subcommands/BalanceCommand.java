@@ -26,7 +26,7 @@ public class BalanceCommand extends SubCommand {
         if(args.length == 1){
             if(sender instanceof Player){
                 Player player = (Player) sender;
-                PlayerCoins coins = plugin.getPlayerCoins(player.getUniqueId().toString());
+                PlayerCoins coins = plugin.getAccountManager().getPlayerData(player.getUniqueId().toString());
 
                 if(coins == null){
                     player.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT.toString())
@@ -65,7 +65,7 @@ public class BalanceCommand extends SubCommand {
 
             } else {
 
-                PlayerCoins coins = plugin.getPlayerCoins(target.getUniqueId().toString());
+                PlayerCoins coins = plugin.getAccountManager().getPlayerData(target.getUniqueId().toString());
                 if(coins == null){
                     sender.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT_OTHERS.toString())
                             .replace("%prefix%", utils.getPrefix())

@@ -1,5 +1,6 @@
 package me.aglerr.krakenmobcoins.shops;
 
+import me.aglerr.krakenmobcoins.manager.AccountManager;
 import me.aglerr.krakenmobcoins.manager.ItemStockManager;
 import me.aglerr.krakenmobcoins.utils.ItemBuilder;
 import com.cryptomorin.xseries.XMaterial;
@@ -28,12 +29,13 @@ public class RotatingShopInventory extends FastInv {
         super(size, title);
 
         final ItemStockManager stockManager = plugin.getItemStockManager();
+        final AccountManager accountManager = plugin.getAccountManager();
 
         FileConfiguration config = plugin.getConfig();
         LimitConfig limitConfig = plugin.getLimitManager();
         Utils utils = plugin.getUtils();
 
-        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+        PlayerCoins playerCoins = accountManager.getPlayerData(player.getUniqueId().toString());
 
         List<Integer> normalSlots = config.getIntegerList("rotatingShop.normalItemSlots");
 

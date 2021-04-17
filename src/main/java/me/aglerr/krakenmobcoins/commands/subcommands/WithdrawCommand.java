@@ -34,7 +34,7 @@ public class WithdrawCommand extends SubCommand {
                 return;
             }
 
-            PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+            PlayerCoins playerCoins = plugin.getAccountManager().getPlayerData(player.getUniqueId().toString());
             if(playerCoins == null){
                 sender.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT.toString())
                         .replace("%prefix%", utils.getPrefix()));

@@ -1,7 +1,7 @@
 name: KrakenMobcoins
-version: 2.0
+version: 2.1
 api-version: 1.13
-author: aglerr
+authors: [aglerr, ItzStormz]
 main: me.aglerr.krakenmobcoins.MobCoins
 softdepend: [PlaceholderAPI, SuperMobCoins, MythicMobs, WildStacker]
 

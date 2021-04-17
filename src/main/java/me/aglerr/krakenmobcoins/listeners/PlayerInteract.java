@@ -54,7 +54,7 @@ public class PlayerInteract implements Listener {
             }
 
             event.setCancelled(true);
-            PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+            PlayerCoins playerCoins = plugin.getAccountManager().getPlayerData(player.getUniqueId().toString());
             if(playerCoins == null){
                 player.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT.toString())
                         .replace("%prefix%", utils.getPrefix()));

@@ -7,6 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.*;
+import java.util.concurrent.CompletableFuture;
 
 public class SQL {
 
@@ -19,12 +20,12 @@ public class SQL {
 
     public SQL(final MobCoins plugin) {
         this.plugin = plugin;
-        
+
         FileConfiguration config = plugin.getConfig();
         Utils utils = plugin.getUtils();
-        if(config.getBoolean("MYSQL.enabled")){
+        if (config.getBoolean("MYSQL.enabled")) {
             utils.sendConsoleMessage("Trying to connect to the database.");
-            try{
+            try {
 
                 host = config.getString("MYSQL.hostname");
                 database = config.getString("MYSQL.database");
@@ -34,7 +35,7 @@ public class SQL {
                 useSSL = config.getBoolean("MYSQL.useSSL");
 
                 Class.forName("com.mysql.jdbc.Driver");
-                Connection connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database + "?verifyServerCertificate=false&useSSL=false",
+                Connection connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database + "?verifyServerCertificate=false&useSSL=" + useSSL,
                         this.username, this.password);
                 String command = "CREATE TABLE IF NOT EXISTS krakencoins (UUID Text, Coins Text)";
                 PreparedStatement statement = connection.prepareStatement(command);
@@ -44,13 +45,13 @@ public class SQL {
                 statement.close();
                 connection.close();
 
-            } catch(Exception e){
+            } catch (Exception e) {
                 utils.sendConsoleMessage("MySQL error!");
                 e.printStackTrace();
             }
         } else {
             utils.sendConsoleMessage("Trying to connect to the database.");
-            try{
+            try {
 
                 Class.forName("org.sqlite.JDBC");
                 Connection connection = DriverManager.getConnection("jdbc:sqlite:plugins/KrakenMobcoins/database.db");
@@ -69,13 +70,13 @@ public class SQL {
         }
     }
 
-    public void setTable(String table){
+    public void setTable(String table) {
         this.table = table;
     }
 
     public Connection getNewConnection() throws SQLException {
         FileConfiguration config = plugin.getConfig();
-        if(config.getBoolean("MYSQL.enabled")){
+        if (config.getBoolean("MYSQL.enabled")) {
             return DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database + "?verifyServerCertificate=false&useSSL=false",
                     this.username, this.password);
         } else {
@@ -83,90 +84,35 @@ public class SQL {
         }
     }
 
-    public void insert(String value, String uuid) {
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                try{
+    public void insert(Connection connection, String uuid, String value) {
+        try {
 
-                    Connection connection = getNewConnection();
-                    String command = "INSERT INTO " + table + " (UUID, Coins) VALUES ('" + uuid + "','" + value + "');";
-                    PreparedStatement statement = connection.prepareStatement(command);
-                    statement.execute();
+            String command = "INSERT INTO " + table + " (UUID, Coins) VALUES ('" + uuid + "','" + value + "');";
+            PreparedStatement statement = connection.prepareStatement(command);
+            statement.execute();
 
-                    statement.close();
-                    connection.close();
+            statement.close();
 
-                } catch(SQLException exception){
-                    System.out.println("[KrakenMobCoins] Error trying to insert to the database!");
-                    exception.printStackTrace();
-                }
-            }
-        }.runTaskAsynchronously(plugin);
+        } catch (SQLException exception) {
+            System.out.println("[KrakenMobCoins] Error trying to insert to the database!");
+            exception.printStackTrace();
+        }
 
     }
 
-    public void update(String value, String uuid) {
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                try{
-                    Connection connection = getNewConnection();
-                    String command = "UPDATE " + table + " SET Coins='" + value + "' WHERE UUID='" + uuid + "'";
-                    PreparedStatement statement = connection.prepareStatement(command);
-                    statement.executeUpdate();
+    public void update(Connection connection, String uuid, String value) {
+        try {
 
-                    statement.close();
-                    connection.close();
-                } catch(SQLException exception){
-                    System.out.println("[KrakenMobCoins] Error trying to update to the database!");
-                    exception.printStackTrace();
-                }
-            }
-        }.runTaskAsynchronously(plugin);
+            String command = "UPDATE " + table + " SET Coins='" + value + "' WHERE UUID='" + uuid + "'";
+            PreparedStatement statement = connection.prepareStatement(command);
+            statement.executeUpdate();
 
-    }
+            statement.close();
 
-    public void createAccount(String uuid, double amount) {
-        PlayerCoins coins = new PlayerCoins(uuid);
-        coins.setMoney(amount);
-        coins.save(true);
-
-        plugin.getAccounts().put(uuid, coins);
-    }
-
-    public void loadAccounts(){
-        new BukkitRunnable(){
-            @Override
-            public void run(){
-                try{
-                    String command = "SELECT * FROM krakencoins";
-                    Connection connection = getNewConnection();
-                    PreparedStatement statement = connection.prepareStatement(command);
-                    ResultSet rs = statement.executeQuery();
-                    while(rs.next()){
-
-                        String uuid = rs.getString("UUID");
-                        double money = Double.parseDouble(rs.getString("Coins"));
-                        PlayerCoins coins = new PlayerCoins(uuid);
-                        coins.setMoney(money);
-
-                        plugin.getAccounts().put(uuid, coins);
-
-                    }
-
-                    rs.close();
-                    statement.close();
-                    connection.close();
-
-                    plugin.getUtils().sendConsoleMessage("Successfully loaded all saved accounts!");
-
-                } catch (SQLException e) {
-                    Bukkit.getPluginManager().disablePlugin(plugin);
-                    plugin.getUtils().sendConsoleMessage("&cError loading database player accounts!");
-                }
-            }
-        }.runTaskAsynchronously(plugin);
+        } catch (SQLException exception) {
+            System.out.println("[KrakenMobCoins] Error trying to update to the database!");
+            exception.printStackTrace();
+        }
 
     }
 

@@ -41,7 +41,7 @@ public class RemoveCommand extends SubCommand {
         } else {
             if(utils.isDouble(args[2])){
                 double amount = Double.parseDouble(args[2]);
-                PlayerCoins targetCoins = plugin.getPlayerCoins(target.getUniqueId().toString());
+                PlayerCoins targetCoins = plugin.getAccountManager().getPlayerData(target.getUniqueId().toString());
                 if(targetCoins == null){
                     sender.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT_OTHERS.toString())
                             .replace("%prefix%", utils.getPrefix())

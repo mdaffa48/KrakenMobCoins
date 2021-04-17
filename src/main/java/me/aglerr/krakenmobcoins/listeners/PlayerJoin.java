@@ -19,19 +19,7 @@ public class PlayerJoin implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
-        Player player = event.getPlayer();
-        String uuid = player.getUniqueId().toString();
-        Utils utils = plugin.getUtils();
-
-        FileConfiguration config = plugin.getConfig();
-        double starting = config.getDouble("options.startingBalance");
-
-        if(plugin.getPlayerCoins(uuid) == null){
-            plugin.getDatabase().createAccount(uuid, starting);
-            utils.sendConsoleMessage("Successfully creating a new account for " + player.getName());
-            utils.sendConsoleMessage("UUID: " + uuid);
-        }
-
+        plugin.getAccountManager().loadPlayerData(event.getPlayer().getUniqueId().toString());
     }
 
 }

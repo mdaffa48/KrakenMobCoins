@@ -2,6 +2,7 @@ package me.aglerr.krakenmobcoins.api;
 
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
+import me.aglerr.krakenmobcoins.manager.AccountManager;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,8 +15,10 @@ import java.util.List;
 public class MobCoinsExpansion extends PlaceholderExpansion {
 
     private final MobCoins plugin;
+    private final AccountManager accountManager;
     public MobCoinsExpansion(final MobCoins plugin){
         this.plugin = plugin;
+        this.accountManager = plugin.getAccountManager();
     }
 
     @Override
@@ -47,8 +50,8 @@ public class MobCoinsExpansion extends PlaceholderExpansion {
     public String onPlaceholderRequest(Player player, String identifier){
         if(player == null) return null;
 
-        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
         Utils utils = plugin.getUtils();
+        PlayerCoins playerCoins = accountManager.getPlayerData(player.getUniqueId().toString());
 
         DecimalFormat df = utils.getDecimalFormat();
 
@@ -113,7 +116,7 @@ public class MobCoinsExpansion extends PlaceholderExpansion {
         FileConfiguration config = plugin.getConfig();
         String nameEmpty = config.getString("placeholders.top.nameIfEmpty");
 
-        List<PlayerCoins> playerCoinsList = plugin.getTop();
+        List<PlayerCoins> playerCoinsList = accountManager.getTop();
 
         try{
             PlayerCoins playerCoins = playerCoinsList.get(index);
@@ -128,8 +131,8 @@ public class MobCoinsExpansion extends PlaceholderExpansion {
         FileConfiguration config = plugin.getConfig();
         String moneyEmpty = config.getString("placeholders.top.moneyIfEmpty");
 
-        List<PlayerCoins> playerCoinsList = plugin.getTop();
-        DecimalFormat df = new DecimalFormat("###,###,###,###,###.##");
+        List<PlayerCoins> playerCoinsList = accountManager.getTop();
+        DecimalFormat df = plugin.getUtils().getDecimalFormat();
 
         try{
             PlayerCoins playerCoins = playerCoinsList.get(index);

@@ -42,13 +42,14 @@ public class SalaryManager {
         int delay = config.getInt("options.salaryMode.announceEvery");
 
         Utils utils = plugin.getUtils();
+        AccountManager accountManager = plugin.getAccountManager();
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             if(config.getBoolean("options.salaryMode.enabled")){
                 for(UUID uuid : playerSalary.keySet()){
                     Player player = Bukkit.getPlayer(uuid);
                     if(player != null){
-                        PlayerCoins playerCoins = plugin.getPlayerCoins(uuid.toString());
+                        PlayerCoins playerCoins = accountManager.getPlayerData(uuid.toString());
                         double amount = getPlayerSalary(uuid);
                         for(String message : ConfigMessagesList.SALARY.toStringList()){
                             player.sendMessage(utils.color(message.replace("%coins%", utils.getDecimalFormat().format(amount))));

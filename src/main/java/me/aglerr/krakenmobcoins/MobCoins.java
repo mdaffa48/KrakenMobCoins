@@ -48,7 +48,6 @@ public class MobCoins extends JavaPlugin {
     private static MobCoins instance;
     private SQL database;
 
-    public Map<String, PlayerCoins> accounts = new HashMap<>();
     private final Set<Entity> mobSpawner = new HashSet<>();
 
     private final List<EntityDamageEvent.DamageCause> damageCauses = new ArrayList<>();
@@ -75,6 +74,7 @@ public class MobCoins extends JavaPlugin {
     private final ToggleNotificationManager notificationManager = new ToggleNotificationManager(this);
     private final RotatingShopTimeManager timeManager = new RotatingShopTimeManager(this);
     private final CategoryManager categoryManager = new CategoryManager(this);
+    private final AccountManager accountManager = new AccountManager(this);
 
     @Override
     public void onEnable() {
@@ -96,7 +96,7 @@ public class MobCoins extends JavaPlugin {
         database = new SQL(this);
 
         utils.sendConsoleMessage("Loading all saved accounts!");
-        database.loadAccounts();
+        accountManager.loadAllPlayerData();
         notificationManager.loadToggledListFromConfig();
         timeManager.loadTimeFromConfig();
 
@@ -130,7 +130,7 @@ public class MobCoins extends JavaPlugin {
         utils.sendConsoleMessage("Saving all player data...");
         notificationManager.saveToggledListToConfig();
         timeManager.saveTimeToConfig();
-        this.savePlayerData();
+        accountManager.saveAllPlayerData();
         itemStockManager.saveStockToConfig();
         this.saveLastRewards();
         this.clearHash();
@@ -273,10 +273,6 @@ public class MobCoins extends JavaPlugin {
         }
     }
 
-    public PlayerCoins getPlayerCoins(String uuid){
-        return accounts.get(uuid);
-    }
-
     private void createDatabaseFile(){
         File pluginFolder = new File("plugins/KrakenMobcoins");
         if(!pluginFolder.exists()){
@@ -341,9 +337,7 @@ public class MobCoins extends JavaPlugin {
 
     private void updateConfigs(){
         File configFile = new File(this.getDataFolder(), "config.yml");
-        ArrayList<String> listConfig = new ArrayList<>();
-        listConfig.add("normalShop.items");
-        listConfig.add("rotatingShop.items");
+        List<String> listConfig = Arrays.asList("normalShop.items", "rotatingShop.items");
 
         try {
             ConfigUpdater.update(this, "config.yml", configFile, listConfig);
@@ -373,60 +367,11 @@ public class MobCoins extends JavaPlugin {
         this.getCommand("mobcoins").setExecutor(new MainCommand(this));
     }
 
-    public void savePlayerData(){
-        try{
-
-            Connection connection = database.getNewConnection();
-            for(String uuid : accounts.keySet()){
-                PlayerCoins playerCoins = getPlayerCoins(uuid);
-                String command = "UPDATE krakencoins SET Coins='" + playerCoins.getMoney() + "' WHERE UUID='" + playerCoins.getUUID() + "'";
-                PreparedStatement statement = connection.prepareStatement(command);
-                statement.executeUpdate();
-            }
-
-            connection.close();
-            utils.sendConsoleMessage("Successfully saved all player data!");
-
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-
-    }
-
-    public List<PlayerCoins> getTop(){
-
-        List<PlayerCoins> coins = new ArrayList<>();
-        for (String a : accounts.keySet()){
-            coins.add(accounts.get(a));
-        }
-
-        List<PlayerCoins> convert = new ArrayList<>(coins);
-
-        convert.sort((pt1, pt2) -> {
-
-            Float f1 = (float) pt1.getMoney();
-            Float f2 = (float) pt2.getMoney();
-
-            return f2.compareTo(f1);
-
-        });
-        //	Collections.reverse(convert);
-        if (convert.size() > 10){
-            convert = convert.subList(0, 10);
-        }
-        return convert;
-
-    }
-
     private void runAutoSave(){
         if(this.getConfig().getBoolean("autoSave.enabled")){
             int interval = this.getConfig().getInt("autoSave.interval");
-            new BukkitRunnable(){
-                @Override
-                public void run(){
-                    savePlayerData();
-                }
-            }.runTaskTimerAsynchronously(this, 20 * interval, 0L);
+            Bukkit.getScheduler().runTaskTimerAsynchronously(this,
+                    accountManager::saveAllPlayerData, 0L, 20 * interval);
         }
     }
 
@@ -452,7 +397,6 @@ public class MobCoins extends JavaPlugin {
     public static MobCoins getInstance() { return instance; }
     public Utils getUtils() { return utils; }
     public SQL getDatabase() { return database; }
-    public Map<String, PlayerCoins> getAccounts() { return accounts; }
     public TempDataConfig getTempDataManager() { return tempDataConfig; }
     public ShopConfig getShopManager() { return shopConfig; }
     public List<ShopItems> getNormalItems() { return normalItems; }
@@ -472,5 +416,6 @@ public class MobCoins extends JavaPlugin {
     public ToggleNotificationManager getNotificationManager() { return notificationManager; }
     public RotatingShopTimeManager getTimeManager() { return timeManager; }
     public CategoryManager getCategoryManager() { return categoryManager; }
+    public AccountManager getAccountManager() { return accountManager; }
 
 }

@@ -4,6 +4,7 @@ import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.abstraction.SubCommand;
 import me.aglerr.krakenmobcoins.configs.ConfigMessages;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
+import me.aglerr.krakenmobcoins.manager.AccountManager;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -24,6 +25,7 @@ public class PayCommand extends SubCommand {
     public void perform(MobCoins plugin, CommandSender sender, String[] args) {
 
         Utils utils = plugin.getUtils();
+        AccountManager accountManager = plugin.getAccountManager();
 
         if(sender instanceof Player){
             Player player = (Player) sender;
@@ -48,8 +50,8 @@ public class PayCommand extends SubCommand {
                         return;
                     }
 
-                    PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
-                    PlayerCoins targetCoins = plugin.getPlayerCoins(target.getUniqueId().toString());
+                    PlayerCoins playerCoins = accountManager.getPlayerData(player.getUniqueId().toString());
+                    PlayerCoins targetCoins = accountManager.getPlayerData(target.getUniqueId().toString());
 
                     if(playerCoins == null){
                         sender.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT.toString())

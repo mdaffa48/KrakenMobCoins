@@ -21,7 +21,7 @@ public class CategoryInventory extends FastInv {
     public CategoryInventory(MobCoins plugin, int size, String title, Player player) {
         super(size, title);
 
-        PlayerCoins playerCoins = plugin.getPlayerCoins(player.getUniqueId().toString());
+        PlayerCoins playerCoins = plugin.getAccountManager().getPlayerData(player.getUniqueId().toString());
         Utils utils = plugin.getUtils();
 
         for(MainMenuItems items : plugin.getMainMenuLoader().getMainMenuItemsList()){
