@@ -6,21 +6,21 @@ Example Usage:
 ```java
 public class ExampleAPIUsage {
   
-  public void exampleUsage(Player player){
+  public double getPlayerCoins(Player player){
     MobCoinsAPI api = MobCoins.getAPI();
+    // PlayerCoins is nullable, so you want to nullcheck it first.
     PlayerCoins playerCoins = api.getPlayerData(player);
-    if(playerCoins == null) return;
     
-    playerCoins.getMoney()
-    playerCoins.setMoney()
-    playerCoins.reduceMoney()
-    playerCoins.addMoney()
-    
+    return playerCoins.getMoney();
   }
   
 }
 ```
-Check this class for full method https://github.com/lilsketchy/KrakenMobCoins/blob/master/src/main/java/me/aglerr/krakenmobcoins/database/PlayerCoins.java
+Useful Class for API
+<ul>
+  <li>https://github.com/lilsketchy/KrakenMobCoins/blob/master/src/main/java/me/aglerr/krakenmobcoins/database/PlayerCoins.java
+  <li>https://github.com/lilsketchy/KrakenMobCoins/blob/master/src/main/java/me/aglerr/krakenmobcoins/api/MobCoinsAPI.java
+</ul>
 
 # Useful Links
 <ul>
