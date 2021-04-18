@@ -24,77 +24,69 @@ public class AccountManager {
     private final Map<String, PlayerCoins> playerCoins = new HashMap<>();
 
     private final MobCoins plugin;
-    public AccountManager(final MobCoins plugin){
+    public AccountManager(final MobCoins plugin) {
         this.plugin = plugin;
     }
 
     @Nullable
-    public PlayerCoins getPlayerData(String uuid){
+    public PlayerCoins getPlayerData(String uuid) {
         return playerCoins.get(uuid);
     }
 
-    public boolean isDataExist(String uuid){
-        return playerCoins.containsKey(uuid);
-    }
-
-    public void createPlayerData(@NotNull String uuid, double coinAmount){
+    public void createPlayerData(@NotNull String uuid, double coinAmount) {
         PlayerCoins coins = new PlayerCoins(uuid);
         coins.setMoney(coinAmount);
 
-        CompletableFuture.runAsync(() -> {
-            savePlayerData(coins);
-        }).thenAccept(result ->
+        CompletableFuture.runAsync(() -> savePlayerData(coins)).thenAccept(result ->
                 Bukkit.getScheduler().runTask(plugin, () -> playerCoins.put(uuid, coins)));
 
     }
 
-    public void loadPlayerData(String uuid){
+    public void loadPlayerData(String uuid) {
         SQL sql = plugin.getDatabase();
         Utils utils = plugin.getUtils();
-        String command = "SELECT Coins FROM krakencoins WHERE UUID='" + uuid + "'";
+        String command = "SELECT UUID FROM krakencoins WHERE UUID='" + uuid + "'";
 
-        if(isDataExist(uuid)){
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-                try{
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            try {
 
-                    Connection connection = sql.getNewConnection();
-                    PreparedStatement statement = connection.prepareStatement(command);
-                    ResultSet rs = statement.executeQuery();
-                    while(rs.next()){
-                        PlayerCoins playerCoins = getPlayerData(uuid);
-                        double coins = Double.parseDouble(rs.getString("Coins"));
-                        playerCoins.setMoney(coins);
-                    }
+                Connection connection = sql.getNewConnection();
+                PreparedStatement statement = connection.prepareStatement(command);
+                ResultSet rs = statement.executeQuery();
+                if (rs.next()) {
+                    PlayerCoins playerCoins = getPlayerData(uuid);
+                    double coins = Double.parseDouble(rs.getString("Coins"));
+                    playerCoins.setMoney(coins);
 
-                    rs.close();
-                    statement.close();
-                    connection.close();
+                } else {
 
-                } catch(SQLException e){
-                    utils.sendConsoleMessage("Failed to load " + uuid + " data.");
-                    e.printStackTrace();
+                    FileConfiguration config = plugin.getConfig();
+                    double starting = config.getDouble("options.startingBalance");
+                    createPlayerData(uuid, starting);
                 }
-            });
 
-        } else {
+                rs.close();
+                statement.close();
+                connection.close();
 
-            FileConfiguration config = plugin.getConfig();
-            double starting = config.getDouble("options.startingBalance");
-            createPlayerData(uuid, starting);
+            } catch (SQLException e) {
+                utils.sendConsoleMessage("Failed to load " + uuid + " data.");
+                e.printStackTrace();
+            }
+        });
 
-        }
 
     }
 
-    public void savePlayerData(PlayerCoins coins){
+    public void savePlayerData(PlayerCoins coins) {
         SQL sql = plugin.getDatabase();
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            try{
+            try {
                 Connection connection = sql.getNewConnection();
                 String command = "SELECT UUID FROM krakencoins WHERE UUID='" + coins.getUUID() + "'";
                 PreparedStatement statement = connection.prepareStatement(command);
                 ResultSet rs = statement.executeQuery();
-                if(rs.next()){
+                if (rs.next()) {
                     sql.update(connection, coins.getUUID(), String.valueOf(coins.getMoney()));
                 } else {
                     sql.insert(connection, coins.getUUID(), String.valueOf(coins.getMoney()));
@@ -103,7 +95,7 @@ public class AccountManager {
                 rs.close();
                 statement.close();
                 connection.close();
-            } catch(SQLException exception){
+            } catch (SQLException exception) {
                 System.out.println("[KrakenMobCoins] Error saving player account data.");
                 exception.printStackTrace();
             }
@@ -111,7 +103,7 @@ public class AccountManager {
 
     }
 
-    public void loadAllPlayerData(){
+    public void loadAllPlayerData() {
         SQL sql = plugin.getDatabase();
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
 
@@ -146,12 +138,12 @@ public class AccountManager {
         });
     }
 
-    public void saveAllPlayerData(){
+    public void saveAllPlayerData() {
         SQL sql = plugin.getDatabase();
-        try{
+        try {
 
             Connection connection = sql.getNewConnection();
-            for(String uuid : playerCoins.keySet()){
+            for (String uuid : playerCoins.keySet()) {
                 PlayerCoins playerCoins = getPlayerData(uuid);
                 String command = "UPDATE krakencoins SET Coins='" + playerCoins.getMoney() + "' WHERE UUID='" + playerCoins.getUUID() + "'";
                 PreparedStatement statement = connection.prepareStatement(command);
@@ -161,15 +153,15 @@ public class AccountManager {
             connection.close();
             plugin.getUtils().sendConsoleMessage("Successfully saved all player data!");
 
-        }catch(SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public List<PlayerCoins> getTop(){
+    public List<PlayerCoins> getTop() {
 
         List<PlayerCoins> coins = new ArrayList<>();
-        for (String a : playerCoins.keySet()){
+        for (String a : playerCoins.keySet()) {
             coins.add(getPlayerData(a));
         }
 
@@ -184,7 +176,7 @@ public class AccountManager {
 
         });
         //	Collections.reverse(convert);
-        if (convert.size() > 10){
+        if (convert.size() > 10) {
             convert = convert.subList(0, 10);
         }
         return convert;
