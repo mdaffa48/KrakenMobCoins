@@ -1,4 +1,4 @@
-package me.aglerr.krakenmobcoins.configs;
+package me.aglerr.krakenmobcoins.enums;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
