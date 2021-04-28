@@ -168,63 +168,6 @@ public class Utils {
         return string;
     }
 
-    public void refreshNormalItems(){
-
-        FileConfiguration config = plugin.getConfig();
-        if(config.getBoolean("options.shuffleRotating")){
-            Collections.shuffle(plugin.getNormalItems());
-        } else {
-
-            List<Integer> normalSlots = config.getIntegerList("rotatingShop.normalItemSlots");
-            List<ShopItems> removed = new ArrayList<>();
-
-            if(plugin.getNormalItems().size() > normalSlots.size()){
-                for(int x = 0; x < normalSlots.size(); x++){
-                    removed.add(plugin.getNormalItems().get(0));
-                    plugin.getNormalItems().remove(0);
-                }
-
-            }
-
-            if(!removed.isEmpty()){
-                for(ShopItems items : removed){
-                    plugin.getNormalItems().add(items);
-                }
-            }
-
-        }
-
-        plugin.getItemStockManager().clearStock();
-        plugin.getLimitManager().clearPlayerLimit();
-
-    }
-
-    public void refreshSpecialItems(){
-
-        FileConfiguration config = plugin.getConfig();
-        if(config.getBoolean("options.shuffleRotating")){
-            Collections.shuffle(plugin.getSpecialItems());
-        }
-
-        List<Integer> specialSlots = config.getIntegerList("rotatingShop.specialItemSlots");
-        List<ShopItems> removed = new ArrayList<>();
-
-        if(plugin.getNormalItems().size() > specialSlots.size()){
-            for(int x = 0; x < specialSlots.size(); x++){
-                removed.add(plugin.getSpecialItems().get(0));
-                plugin.getSpecialItems().remove(0);
-            }
-
-        }
-
-        if(!removed.isEmpty()){
-            for(ShopItems items : removed){
-                plugin.getSpecialItems().add(items);
-            }
-        }
-
-    }
-
     public void openShopMenu(Player player){
         FileConfiguration config = plugin.getConfig();
         if(config.getBoolean("rotatingShop.enabled")){

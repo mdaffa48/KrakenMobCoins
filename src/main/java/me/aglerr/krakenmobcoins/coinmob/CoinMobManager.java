@@ -22,6 +22,9 @@ public class CoinMobManager {
         return getCoinMobList().stream().filter(coinMob -> coinMob.getType().equalsIgnoreCase(type))
                 .findFirst().orElse(null);
     }
+    public void clearCoinMob(){
+        coinMobList.clear();
+    }
 
     public void loadCoinMob(){
         FileConfiguration mobs = plugin.getMobsManager().getConfiguration();

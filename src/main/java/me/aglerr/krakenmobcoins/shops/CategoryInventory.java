@@ -6,7 +6,7 @@ import com.google.common.primitives.Ints;
 import fr.mrmicky.fastinv.FastInv;
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
-import me.aglerr.krakenmobcoins.shops.category.mainmenu.MainMenuItems;
+import me.aglerr.krakenmobcoins.shops.items.MainMenuItems;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -24,7 +24,7 @@ public class CategoryInventory extends FastInv {
         PlayerCoins playerCoins = plugin.getAccountManager().getPlayerData(player.getUniqueId().toString());
         Utils utils = plugin.getUtils();
 
-        for(MainMenuItems items : plugin.getMainMenuLoader().getMainMenuItemsList()){
+        for(MainMenuItems items :  plugin.getItemsLoader().getMainMenuItemsList()){
 
             List<String> lore = new ArrayList<>();
             for(String line : items.getLore()){

@@ -80,11 +80,11 @@ public class MobCoinsExpansion extends PlaceholderExpansion {
         }
 
         if(identifier.equalsIgnoreCase("normal_time")){
-            return utils.getFormattedString(plugin.getTimeManager().getNormalTime() - System.currentTimeMillis());
+            return plugin.getRotatingManager().getFormattedResetTime(false);
         }
 
         if(identifier.equalsIgnoreCase("special_time")){
-            return utils.getFormattedString(plugin.getTimeManager().getSpecialTime() - System.currentTimeMillis());
+            return plugin.getRotatingManager().getFormattedResetTime(true);
         }
 
         if(identifier.equalsIgnoreCase("name_top1")) return this.getTopName(0);

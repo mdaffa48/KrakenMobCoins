@@ -2,8 +2,6 @@ package me.aglerr.krakenmobcoins.api;
 
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
-import me.aglerr.krakenmobcoins.manager.AccountManager;
-import me.aglerr.krakenmobcoins.manager.RotatingShopTimeManager;
 import me.aglerr.krakenmobcoins.manager.SalaryManager;
 import me.aglerr.krakenmobcoins.manager.ToggleNotificationManager;
 import org.bukkit.entity.Player;
@@ -24,7 +22,5 @@ public class MobCoinsAPI {
     public ToggleNotificationManager getNotificationManager() { return plugin.getNotificationManager(); }
 
     public SalaryManager getSalaryManager() { return plugin.getSalaryManager(); }
-
-    public RotatingShopTimeManager getRotatingShopTimeManager() { return plugin.getTimeManager(); }
 
 }

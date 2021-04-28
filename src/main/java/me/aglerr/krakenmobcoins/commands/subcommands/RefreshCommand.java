@@ -3,6 +3,7 @@ package me.aglerr.krakenmobcoins.commands.subcommands;
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.abstraction.SubCommand;
 import me.aglerr.krakenmobcoins.configs.ConfigMessages;
+import me.aglerr.krakenmobcoins.manager.RotatingManager;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -29,15 +30,18 @@ public class RefreshCommand extends SubCommand {
             sender.sendMessage(utils.color(ConfigMessages.REFRESH.toString())
                     .replace("%prefix%", utils.getPrefix()));
 
-            plugin.getTimeManager().setNormalTime(System.currentTimeMillis() + (config.getInt("rotatingShop.normalTimeReset") * 3600 * 1000));
-            plugin.getTimeManager().setSpecialTime(System.currentTimeMillis() + (config.getInt("rotatingShop.specialTimeReset") * 3600 * 1000));
-            utils.refreshNormalItems();
-            utils.refreshSpecialItems();
+            RotatingManager rotatingManager = plugin.getRotatingManager();
+
+            rotatingManager.setNormalTime(rotatingManager.getDefaultNormalTime());
+            rotatingManager.setSpecialTime(rotatingManager.getDefaultSpecialTime());
+
+            rotatingManager.refreshNormalItems();
+            rotatingManager.refreshSpecialItems();
 
         }
 
         plugin.getItemStockManager().clearStock();
-        plugin.getLimitManager().clearPlayerLimit();
+        plugin.getPurchaseLimitManager().resetLimit();
 
     }
 

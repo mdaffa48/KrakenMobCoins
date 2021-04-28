@@ -35,8 +35,7 @@ public class SQL {
                 useSSL = config.getBoolean("MYSQL.useSSL");
 
                 Class.forName("com.mysql.jdbc.Driver");
-                Connection connection = DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database + "?verifyServerCertificate=false&useSSL=" + useSSL,
-                        this.username, this.password);
+                Connection connection = getNewConnection();
                 String command = "CREATE TABLE IF NOT EXISTS krakencoins (UUID Text, Coins Text)";
                 PreparedStatement statement = connection.prepareStatement(command);
                 statement.execute();
@@ -54,7 +53,7 @@ public class SQL {
             try {
 
                 Class.forName("org.sqlite.JDBC");
-                Connection connection = DriverManager.getConnection("jdbc:sqlite:plugins/KrakenMobcoins/database.db");
+                Connection connection = getNewConnection();
                 String command = "CREATE TABLE IF NOT EXISTS krakencoins (UUID Text, Coins Text)";
                 PreparedStatement statement = connection.prepareStatement(command);
                 statement.execute();
@@ -77,7 +76,7 @@ public class SQL {
     public Connection getNewConnection() throws SQLException {
         FileConfiguration config = plugin.getConfig();
         if (config.getBoolean("MYSQL.enabled")) {
-            return DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database + "?verifyServerCertificate=false&useSSL=false",
+            return DriverManager.getConnection("jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database + "?verifyServerCertificate=false&useSSL=" + this.useSSL,
                     this.username, this.password);
         } else {
             return DriverManager.getConnection("jdbc:sqlite:plugins/KrakenMobcoins/database.db");

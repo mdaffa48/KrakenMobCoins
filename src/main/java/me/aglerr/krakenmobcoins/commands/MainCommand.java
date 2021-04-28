@@ -6,14 +6,11 @@ import me.aglerr.krakenmobcoins.commands.subcommands.*;
 import me.aglerr.krakenmobcoins.configs.ConfigMessages;
 import me.aglerr.krakenmobcoins.configs.ConfigMessagesList;
 import me.aglerr.krakenmobcoins.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 

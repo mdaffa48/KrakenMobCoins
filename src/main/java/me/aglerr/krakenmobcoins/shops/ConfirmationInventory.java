@@ -52,7 +52,7 @@ public class ConfirmationInventory extends FastInv {
                 }
 
                 if(config.getBoolean("options.purchaseLimit") && limit > 0){
-                    int playerLimit = plugin.getLimitManager().getPlayerLimit(player, configKey);
+                    int playerLimit = plugin.getPurchaseLimitManager().getLimit(player.getUniqueId(), configKey);
                     if(playerLimit >= limit){
                         player.sendMessage(utils.color(ConfigMessages.MAX_LIMIT.toString())
                         .replace("%prefix%", utils.getPrefix()));
@@ -81,9 +81,7 @@ public class ConfirmationInventory extends FastInv {
 
                 if(config.getBoolean("options.closeAfterPurchase")){
                     player.closeInventory();
-                } else {
-                    utils.openShopMenu(player);
-                }
+                } else utils.openShopMenu(player);
 
                 if(useStock){
                     int currentStock = stockManager.getItemStock(configKey);
@@ -91,8 +89,7 @@ public class ConfirmationInventory extends FastInv {
                 }
 
                 if(config.getBoolean("options.purchaseLimit") && limit > 0){
-                    int playerLimit = plugin.getLimitManager().getPlayerLimit(player, configKey);
-                    plugin.getLimitManager().setPlayerLimit(player, configKey, playerLimit + 1);
+                    plugin.getPurchaseLimitManager().incrementLimit(player.getUniqueId(), configKey);
                 }
 
             } else {
@@ -100,7 +97,6 @@ public class ConfirmationInventory extends FastInv {
                 player.closeInventory();
                 player.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT.toString())
                         .replace("%prefix%", utils.getPrefix()));
-                return;
             }
         });
 

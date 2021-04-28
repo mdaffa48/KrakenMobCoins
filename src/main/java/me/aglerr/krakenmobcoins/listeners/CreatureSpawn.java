@@ -24,7 +24,7 @@ public class CreatureSpawn implements Listener {
         FileConfiguration config = plugin.getConfig();
         if(config.getBoolean("options.disableMobCoinsFromSpawner")){
             if(event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.SPAWNER){
-                plugin.getMobSpawner().add(event.getEntity());
+                plugin.getMobSpawner().add(event.getEntity().getUniqueId());
             }
         }
 

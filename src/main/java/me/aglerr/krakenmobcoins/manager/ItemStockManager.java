@@ -37,25 +37,25 @@ public class ItemStockManager {
 
     public void saveStockToConfig(){
 
-        FileConfiguration config = plugin.getLimitManager().getConfiguration();
+        FileConfiguration config = plugin.getTempDataManager().getConfiguration();
         for(String key : stock.keySet()){
             config.set("stock." + key, stock.get(key));
         }
 
-        plugin.getLimitManager().saveData();
+        plugin.getTempDataManager().saveData();
         clearStock();
 
     }
 
     public void loadStockFromConfig(){
-        FileConfiguration config = plugin.getLimitManager().getConfiguration();
+        FileConfiguration config = plugin.getTempDataManager().getConfiguration();
         if(config.isConfigurationSection("stock")){
             for(String key : config.getConfigurationSection("stock").getKeys(false)){
                 setStock(key, config.getInt("stock." + key));
             }
 
             config.set("stock", null);
-            plugin.getLimitManager().saveData();
+            plugin.getTempDataManager().saveData();
 
         }
     }

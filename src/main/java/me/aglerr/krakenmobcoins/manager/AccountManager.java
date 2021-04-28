@@ -5,7 +5,6 @@ import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.database.SQL;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,23 +44,28 @@ public class AccountManager {
     public void loadPlayerData(String uuid) {
         SQL sql = plugin.getDatabase();
         Utils utils = plugin.getUtils();
-        String command = "SELECT UUID FROM krakencoins WHERE UUID='" + uuid + "'";
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
 
                 Connection connection = sql.getNewConnection();
+                String command = "SELECT Coins FROM krakencoins WHERE UUID='" + uuid + "'";
                 PreparedStatement statement = connection.prepareStatement(command);
                 ResultSet rs = statement.executeQuery();
                 if (rs.next()) {
                     PlayerCoins playerCoins = getPlayerData(uuid);
-                    double coins = Double.parseDouble(rs.getString("Coins"));
-                    playerCoins.setMoney(coins);
+                    double money = Double.parseDouble(rs.getString("Coins"));
+                    if(playerCoins == null){
+                        PlayerCoins coins = new PlayerCoins(uuid);
+                        coins.setMoney(money);
+                        this.playerCoins.put(uuid, coins);
+                    } else {
+                        playerCoins.setMoney(money);
+                    }
 
                 } else {
 
-                    FileConfiguration config = plugin.getConfig();
-                    double starting = config.getDouble("options.startingBalance");
+                    double starting = plugin.getConfig().getDouble("options.startingBalance");
                     createPlayerData(uuid, starting);
                 }
 
@@ -83,7 +87,7 @@ public class AccountManager {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 Connection connection = sql.getNewConnection();
-                String command = "SELECT UUID FROM krakencoins WHERE UUID='" + coins.getUUID() + "'";
+                String command = "SELECT Coins FROM krakencoins WHERE UUID='" + coins.getUUID() + "'";
                 PreparedStatement statement = connection.prepareStatement(command);
                 ResultSet rs = statement.executeQuery();
                 if (rs.next()) {
@@ -120,7 +124,7 @@ public class AccountManager {
                     PlayerCoins coins = new PlayerCoins(uuid);
                     coins.setMoney(Double.parseDouble(money));
 
-                    playerCoins.put(uuid, coins);
+                    this.playerCoins.put(uuid, coins);
 
                 }
 
@@ -175,12 +179,19 @@ public class AccountManager {
             return f2.compareTo(f1);
 
         });
-        //	Collections.reverse(convert);
         if (convert.size() > 10) {
             convert = convert.subList(0, 10);
         }
         return convert;
 
+    }
+
+    public void startAutoSaveTask(){
+        if(plugin.getConfig().getBoolean("autoSave.enabled")){
+            int interval = plugin.getConfig().getInt("autoSave.interval");
+            Bukkit.getScheduler().runTaskTimerAsynchronously(plugin,
+                    this::saveAllPlayerData, 0L, 20 * interval);
+        }
     }
 
 }

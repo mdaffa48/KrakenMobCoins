@@ -1,4 +1,4 @@
-package me.aglerr.krakenmobcoins.shops.category.shops;
+package me.aglerr.krakenmobcoins.shops.items;
 
 import java.util.List;
 

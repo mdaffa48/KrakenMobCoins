@@ -44,8 +44,8 @@ public class EntityDeath implements Listener {
 
         LivingEntity entity = event.getEntity();
         if(config.getBoolean("options.disableMobCoinsFromSpawner")){
-            if(plugin.getMobSpawner().contains(entity)){
-                plugin.getMobSpawner().remove(entity);
+            if(plugin.getMobSpawner().contains(entity.getUniqueId())){
+                plugin.getMobSpawner().remove(entity.getUniqueId());
                 return;
             }
         }

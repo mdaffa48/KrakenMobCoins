@@ -2,13 +2,13 @@ package me.aglerr.krakenmobcoins.shops;
 
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.manager.ItemStockManager;
+import me.aglerr.krakenmobcoins.manager.PurchaseLimitManager;
 import me.aglerr.krakenmobcoins.utils.ItemBuilder;
 import com.cryptomorin.xseries.XMaterial;
 import com.google.common.primitives.Ints;
 import fr.mrmicky.fastinv.FastInv;
 import me.aglerr.krakenmobcoins.MobCoins;
-import me.aglerr.krakenmobcoins.configs.LimitConfig;
-import me.aglerr.krakenmobcoins.shops.category.shops.ShopNormalItems;
+import me.aglerr.krakenmobcoins.shops.items.ShopNormalItems;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -28,32 +28,31 @@ public class NormalShopInventory extends FastInv {
 
         FileConfiguration config = plugin.getConfig();
         Utils utils = plugin.getUtils();
-        LimitConfig limitConfig = plugin.getLimitManager();
+        PurchaseLimitManager limitManager = plugin.getPurchaseLimitManager();
         PlayerCoins playerCoins = plugin.getAccountManager().getPlayerData(player.getUniqueId().toString());
         final ItemStockManager stockManager = plugin.getItemStockManager();
 
-        for(ShopNormalItems items : plugin.getShopNormalLoader().getShopNormalItemsList()){
+        for(ShopNormalItems items : plugin.getItemsLoader().getShopNormalItemsList()){
 
             List<String> lore = new ArrayList<>();
             if(items.isUseStock()){
-                int finalStock;
-                if(stockManager.isItemExist(items.getConfigKey())){
+                int finalStock = 0;
+                if(stockManager.isItemExist(items.getConfigKey()))
                     finalStock = stockManager.getItemStock(items.getConfigKey());
-                } else {
+
+                if(!stockManager.isItemExist(items.getConfigKey())){
                     finalStock = items.getStock();
-                    stockManager.setStock(items.getConfigKey(), items.getSlot());
+                    stockManager.setStock(items.getConfigKey(), items.getStock());
                 }
 
-                String placeholder;
-                if(finalStock <= 0){
-                    placeholder = config.getString("placeholders.outOfStock");
-                } else {
-                    placeholder = String.valueOf(finalStock);
-                }
+                String placeholder = null;
+                if(finalStock <= 0) placeholder = config.getString("placeholders.outOfStock");
+                if(finalStock > 0) placeholder = String.valueOf(finalStock);
+                if(placeholder == null) placeholder = "Placeholder Error!";
 
                 for(String line : items.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
-                            .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, items.getConfigKey())))
+                            .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), items.getConfigKey())))
                             .replace("%stock%", placeholder)
                             .replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney()))
                             .replace("%price%", String.valueOf(items.getPrice())));
@@ -63,7 +62,7 @@ public class NormalShopInventory extends FastInv {
 
                 for(String line : items.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
-                            .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, items.getConfigKey())))
+                            .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), items.getConfigKey())))
                             .replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney()))
                             .replace("%price%", String.valueOf(items.getPrice())));
                 }
@@ -93,8 +92,8 @@ public class NormalShopInventory extends FastInv {
 
                     });
                 } else {
-                    int[] slots1 = Ints.toArray(items.getSlots());
-                    setItems(slots1, stack, event -> {
+
+                    setItems(Ints.toArray(items.getSlots()), stack, event -> {
                         if(items.getType().equals("shop")){
 
                             plugin.getShopUtils().buyHandler(items, player, stack);
@@ -115,27 +114,27 @@ public class NormalShopInventory extends FastInv {
         if(config.getBoolean("options.autoUpdateGUI.enabled")){
             int tick = config.getInt("options.autoUpdateGUI.updateEvery");
             BukkitTask task = Bukkit.getServer().getScheduler().runTaskTimer(plugin, () -> {
-                for(ShopNormalItems items : plugin.getShopNormalLoader().getShopNormalItemsList()){
+                for(ShopNormalItems items : plugin.getItemsLoader().getShopNormalItemsList()){
 
                     List<String> lore = new ArrayList<>();
                     if(items.isUseStock()){
-                        int finalStock;
-                        if(stockManager.isItemExist(items.getConfigKey())){
+                        int finalStock = 0;
+                        if(stockManager.isItemExist(items.getConfigKey()))
                             finalStock = stockManager.getItemStock(items.getConfigKey());
-                        } else {
+
+                        if(!stockManager.isItemExist(items.getConfigKey())){
                             finalStock = items.getStock();
-                            stockManager.setStock(items.getConfigKey(), items.getSlot());
+                            stockManager.setStock(items.getConfigKey(), items.getStock() - 1);
                         }
 
-                        String placeholder;
-                        if(finalStock <= 0){
-                            placeholder = config.getString("placeholders.outOfStock");
-                        } else {
-                            placeholder = String.valueOf(finalStock);
-                        }
+                        String placeholder = null;
+                        if(finalStock <= 0) placeholder = config.getString("placeholders.outOfStock");
+                        if(finalStock > 0) placeholder = String.valueOf(finalStock);
+                        if(placeholder == null) placeholder = "Placeholder Error!";
+
                         for(String line : items.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, items.getConfigKey())))
+                                    .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), items.getConfigKey())))
                                     .replace("%stock%", placeholder)
                                     .replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney()))
                                     .replace("%price%", String.valueOf(items.getPrice())));
@@ -145,7 +144,7 @@ public class NormalShopInventory extends FastInv {
 
                         for(String line : items.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitConfig.getPlayerLimit(player, items.getConfigKey())))
+                                    .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), items.getConfigKey())))
                                     .replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney()))
                                     .replace("%price%", String.valueOf(items.getPrice())));
                         }
@@ -175,8 +174,8 @@ public class NormalShopInventory extends FastInv {
 
                             });
                         } else {
-                            int[] slots1 = Ints.toArray(items.getSlots());
-                            setItems(slots1, stack, event -> {
+
+                            setItems(Ints.toArray(items.getSlots()), stack, event -> {
                                 if(items.getType().equals("shop")){
 
                                     plugin.getShopUtils().buyHandler(items, player, stack);
