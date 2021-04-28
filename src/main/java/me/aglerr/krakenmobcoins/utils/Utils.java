@@ -26,10 +26,8 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.text.NumberFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Utils {
@@ -75,6 +73,40 @@ public class Utils {
 
     public DecimalFormat getDecimalFormat(){
         return new DecimalFormat("###,###,###,###,###.##");
+    }
+
+    private String format(double d){
+        NumberFormat format = NumberFormat.getInstance(Locale.ENGLISH);
+        format.setMaximumFractionDigits(2);
+        format.setMinimumFractionDigits(0);
+        return format.format(d);
+    }
+
+    private String toLong(double amt) {
+        return String.valueOf((long) amt);
+    }
+
+    public String formatShort(double d){
+        if (d < 1000L) {
+            return format(d);
+        }
+        if (d < 1000000L) {
+            return format(d / 1000L) + "K";
+        }
+        if (d < 1000000000L) {
+            return format(d / 1000000L) + "M";
+        }
+        if (d < 1000000000000L) {
+            return format(d / 1000000000L) + "B";
+        }
+        if (d < 1000000000000000L) {
+            return format(d / 1000000000000L) + "T";
+        }
+        if (d < 1000000000000000000L) {
+            return format(d / 1000000000000000L) + "Q";
+        }
+
+        return toLong(d);
     }
 
     public ItemStack getMobCoinItem(double amount){

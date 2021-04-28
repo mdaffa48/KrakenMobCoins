@@ -174,9 +174,9 @@ normalShop:
 
 rotatingShop:
   enabled: false
-  # Normal Time Reset and Special Time Reset are in hours.
-  normalTimeReset: 24
-  specialTimeReset: 72
+  # Normal Time Reset and Special Time Reset are in seconds.
+  normalTimeReset: 86400
+  specialTimeReset: 259200
   title: 'MobCoins Shop'
   size: 36
   normalItemSlots:

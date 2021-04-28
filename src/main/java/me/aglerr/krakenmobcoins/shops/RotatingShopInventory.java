@@ -57,16 +57,27 @@ public class RotatingShopInventory extends FastInv {
                 if(finalStock > 0) placeholder = String.valueOf(finalStock);
                 if(placeholder == null) placeholder = "Placeholder Error!";
 
+                String limit = null;
+                if(limitManager.containsLimit(player.getUniqueId(), normal.getConfigKey()))
+                    limit = String.valueOf(limitManager.getLimit(player.getUniqueId(), normal.getConfigKey()));
+                if(limit == null) limit = "0";
+
                 for(String line : normal.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(normal.getLimit()))
-                            .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), normal.getConfigKey())))
+                            .replace("%limit%", limit)
                             .replace("%stock%", placeholder)
                             .replace("%price%", String.valueOf(normal.getPrice())));
                 }
             } else {
+
+                String limit = null;
+                if(limitManager.containsLimit(player.getUniqueId(), normal.getConfigKey()))
+                    limit = String.valueOf(limitManager.getLimit(player.getUniqueId(), normal.getConfigKey()));
+                if(limit == null) limit = "0";
+
                 for(String line : normal.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(normal.getLimit()))
-                            .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), normal.getConfigKey())))
+                            .replace("%limit%", limit)
                             .replace("%price%", String.valueOf(normal.getPrice())));
                 }
             }
@@ -105,18 +116,28 @@ public class RotatingShopInventory extends FastInv {
                 if(finalStock > 0) placeholder = String.valueOf(finalStock);
                 if(placeholder == null) placeholder = "Placeholder Error!";
 
+                String limit = null;
+                if(limitManager.containsLimit(player.getUniqueId(), special.getConfigKey()))
+                    limit = String.valueOf(limitManager.getLimit(player.getUniqueId(), special.getConfigKey()));
+                if(limit == null) limit = "0";
 
                 for(String line : special.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(special.getLimit()))
-                            .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), special.getConfigKey())))
+                            .replace("%limit%", limit)
                             .replace("%stock%", placeholder)
                             .replace("%price%", String.valueOf(special.getPrice())));
                 }
 
             } else {
+
+                String limit = null;
+                if(limitManager.containsLimit(player.getUniqueId(), special.getConfigKey()))
+                    limit = String.valueOf(limitManager.getLimit(player.getUniqueId(), special.getConfigKey()));
+                if(limit == null) limit = "0";
+
                 for(String line : special.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(special.getLimit()))
-                            .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), special.getConfigKey())))
+                            .replace("%limit%", limit)
                             .replace("%price%", String.valueOf(special.getPrice())));
                 }
 
@@ -183,16 +204,27 @@ public class RotatingShopInventory extends FastInv {
                         if(finalStock > 0) placeholder = String.valueOf(finalStock);
                         if(placeholder == null) placeholder = "Placeholder Error!";
 
+                        String limit = null;
+                        if(limitManager.containsLimit(player.getUniqueId(), normal.getConfigKey()))
+                            limit = String.valueOf(limitManager.getLimit(player.getUniqueId(), normal.getConfigKey()));
+                        if(limit == null) limit = "0";
+
                         for(String line : normal.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(normal.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), normal.getConfigKey())))
+                                    .replace("%limit%", limit)
                                     .replace("%stock%", placeholder)
                                     .replace("%price%", String.valueOf(normal.getPrice())));
                         }
                     } else {
+
+                        String limit = null;
+                        if(limitManager.containsLimit(player.getUniqueId(), normal.getConfigKey()))
+                            limit = String.valueOf(limitManager.getLimit(player.getUniqueId(), normal.getConfigKey()));
+                        if(limit == null) limit = "0";
+
                         for(String line : normal.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(normal.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), normal.getConfigKey())))
+                                    .replace("%limit%", limit)
                                     .replace("%price%", String.valueOf(normal.getPrice())));
                         }
                     }
@@ -231,18 +263,28 @@ public class RotatingShopInventory extends FastInv {
                         if(finalStock > 0) placeholder = String.valueOf(finalStock);
                         if(placeholder == null) placeholder = "Placeholder Error!";
 
+                        String limit = null;
+                        if(limitManager.containsLimit(player.getUniqueId(), special.getConfigKey()))
+                            limit = String.valueOf(limitManager.getLimit(player.getUniqueId(), special.getConfigKey()));
+                        if(limit == null) limit = "0";
 
                         for(String line : special.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(special.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), special.getConfigKey())))
+                                    .replace("%limit%", limit)
                                     .replace("%stock%", placeholder)
                                     .replace("%price%", String.valueOf(special.getPrice())));
                         }
 
                     } else {
+
+                        String limit = null;
+                        if(limitManager.containsLimit(player.getUniqueId(), special.getConfigKey()))
+                            limit = String.valueOf(limitManager.getLimit(player.getUniqueId(), special.getConfigKey()));
+                        if(limit == null) limit = "0";
+
                         for(String line : special.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(special.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), special.getConfigKey())))
+                                    .replace("%limit%", limit)
                                     .replace("%price%", String.valueOf(special.getPrice())));
                         }
 

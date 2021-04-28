@@ -45,11 +45,13 @@ public class ShopUtils {
             }
 
             if(config.getBoolean("options.purchaseLimit") && items.getLimit() > 0){
-                int playerLimit = limitManager.getLimit(player.getUniqueId(), items.getConfigKey());
-                if(playerLimit >= items.getLimit()){
-                    player.sendMessage(utils.color(ConfigMessages.MAX_LIMIT.toString())
-                            .replace("%prefix%", utils.getPrefix()));
-                    return;
+                if(limitManager.containsLimit(player.getUniqueId(), items.getConfigKey())){
+                    int playerLimit = limitManager.getLimit(player.getUniqueId(), items.getConfigKey());
+                    if(playerLimit >= items.getLimit()){
+                        player.sendMessage(utils.color(ConfigMessages.MAX_LIMIT.toString())
+                                .replace("%prefix%", utils.getPrefix()));
+                        return;
+                    }
                 }
             }
 
@@ -81,9 +83,15 @@ public class ShopUtils {
                 stockManager.setStock(items.getConfigKey(), currentStock - 1);
             }
 
-            if(config.getBoolean("options.purchaseLimit") && items.getLimit() > 0)
-                limitManager.incrementLimit(player.getUniqueId(), items.getConfigKey());
+            if(config.getBoolean("options.purchaseLimit") && items.getLimit() > 0){
+                if(limitManager.containsLimit(player.getUniqueId(), items.getConfigKey())){
+                    limitManager.incrementLimit(player.getUniqueId(), items.getConfigKey());
+                    return;
+                }
 
+                limitManager.modifyLimit(player.getUniqueId(), items.getConfigKey(), 1);
+
+            }
 
         } else {
 
@@ -110,7 +118,6 @@ public class ShopUtils {
 
         if(playerCoins.getMoney() >= items.getPrice()){
             if(config.getBoolean("options.confirmationMenu")){
-
                 int sizeConfirmation = shop.getInt("confirmationMenu.size");
                 String titleConfirmation = utils.color(shop.getString("confirmationMenu.title"));
                 new ConfirmationInventory(sizeConfirmation, titleConfirmation, stack, items.getPrice(), items.getCommands(), items.getConfigKey(), items.getLimit(), items.isUseStock(), plugin).open(player);
@@ -118,11 +125,13 @@ public class ShopUtils {
             }
 
             if(config.getBoolean("options.purchaseLimit") && items.getLimit() > 0){
-                int playerLimit = limitManager.getLimit(player.getUniqueId(), items.getConfigKey());
-                if(playerLimit >= items.getLimit()){
-                    player.sendMessage(utils.color(ConfigMessages.MAX_LIMIT.toString())
-                            .replace("%prefix%", utils.getPrefix()));
-                    return;
+                if(limitManager.containsLimit(player.getUniqueId(), items.getConfigKey())) {
+                    int playerLimit = limitManager.getLimit(player.getUniqueId(), items.getConfigKey());
+                    if (playerLimit >= items.getLimit()) {
+                        player.sendMessage(utils.color(ConfigMessages.MAX_LIMIT.toString())
+                                .replace("%prefix%", utils.getPrefix()));
+                        return;
+                    }
                 }
             }
 
@@ -153,10 +162,15 @@ public class ShopUtils {
                 stockManager.setStock(items.getConfigKey(), currentStock - 1);
             }
 
-            if(config.getBoolean("options.purchaseLimit") && items.getLimit() > 0)
-                limitManager.incrementLimit(player.getUniqueId(), items.getConfigKey());
+            if(config.getBoolean("options.purchaseLimit") && items.getLimit() > 0){
+                if(limitManager.containsLimit(player.getUniqueId(), items.getConfigKey())){
+                    limitManager.incrementLimit(player.getUniqueId(), items.getConfigKey());
+                    return;
+                }
 
+                limitManager.modifyLimit(player.getUniqueId(), items.getConfigKey(), 1);
 
+            }
 
         } else {
 

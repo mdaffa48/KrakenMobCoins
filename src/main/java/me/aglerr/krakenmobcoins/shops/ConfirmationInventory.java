@@ -7,6 +7,7 @@ import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.configs.ConfigMessages;
 import me.aglerr.krakenmobcoins.manager.AccountManager;
 import me.aglerr.krakenmobcoins.manager.ItemStockManager;
+import me.aglerr.krakenmobcoins.manager.PurchaseLimitManager;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -23,9 +24,12 @@ public class ConfirmationInventory extends FastInv {
 
         FileConfiguration config = plugin.getConfig();
         FileConfiguration shop = plugin.getShopManager().getConfiguration();
+
         Utils utils = plugin.getUtils();
-        final ItemStockManager stockManager = plugin.getItemStockManager();
-        final AccountManager accountManager = plugin.getAccountManager();
+
+        ItemStockManager stockManager = plugin.getItemStockManager();
+        AccountManager accountManager = plugin.getAccountManager();
+        PurchaseLimitManager limitManager = plugin.getPurchaseLimitManager();
 
         String acceptMaterial = shop.getString("confirmationMenu.items.acceptButton.material").toUpperCase();
         String acceptName = shop.getString("confirmationMenu.items.acceptButton.name");
@@ -52,12 +56,14 @@ public class ConfirmationInventory extends FastInv {
                 }
 
                 if(config.getBoolean("options.purchaseLimit") && limit > 0){
-                    int playerLimit = plugin.getPurchaseLimitManager().getLimit(player.getUniqueId(), configKey);
-                    if(playerLimit >= limit){
-                        player.sendMessage(utils.color(ConfigMessages.MAX_LIMIT.toString())
-                        .replace("%prefix%", utils.getPrefix()));
-                        player.closeInventory();
-                        return;
+                    if(limitManager.containsLimit(player.getUniqueId(), configKey)){
+                        int playerLimit = plugin.getPurchaseLimitManager().getLimit(player.getUniqueId(), configKey);
+                        if(playerLimit >= limit){
+                            player.sendMessage(utils.color(ConfigMessages.MAX_LIMIT.toString())
+                                    .replace("%prefix%", utils.getPrefix()));
+                            player.closeInventory();
+                            return;
+                        }
                     }
                 }
 
@@ -89,7 +95,13 @@ public class ConfirmationInventory extends FastInv {
                 }
 
                 if(config.getBoolean("options.purchaseLimit") && limit > 0){
-                    plugin.getPurchaseLimitManager().incrementLimit(player.getUniqueId(), configKey);
+                    if(limitManager.containsLimit(player.getUniqueId(), configKey)){
+                        plugin.getPurchaseLimitManager().incrementLimit(player.getUniqueId(), configKey);
+                        return;
+                    }
+
+                    limitManager.modifyLimit(player.getUniqueId(), configKey, 1);
+
                 }
 
             } else {

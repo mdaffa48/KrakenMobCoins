@@ -50,9 +50,15 @@ public class NormalShopInventory extends FastInv {
                 if(finalStock > 0) placeholder = String.valueOf(finalStock);
                 if(placeholder == null) placeholder = "Placeholder Error!";
 
+                String limit = null;
+                if(limitManager.containsLimit(player.getUniqueId(), items.getConfigKey()))
+                    limit = String.valueOf(limitManager.getLimit(player.getUniqueId(), items.getConfigKey()));
+
+                if(limit == null) limit = "0";
+
                 for(String line : items.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
-                            .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), items.getConfigKey())))
+                            .replace("%limit%",  limit)
                             .replace("%stock%", placeholder)
                             .replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney()))
                             .replace("%price%", String.valueOf(items.getPrice())));
@@ -60,9 +66,15 @@ public class NormalShopInventory extends FastInv {
 
             } else {
 
+                String limit = null;
+                if(limitManager.containsLimit(player.getUniqueId(), items.getConfigKey()))
+                    limit = String.valueOf(limitManager.getLimit(player.getUniqueId(), items.getConfigKey()));
+
+                if(limit == null) limit = "0";
+
                 for(String line : items.getLore()){
                     lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
-                            .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), items.getConfigKey())))
+                            .replace("%limit%", limit)
                             .replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney()))
                             .replace("%price%", String.valueOf(items.getPrice())));
                 }
@@ -124,7 +136,7 @@ public class NormalShopInventory extends FastInv {
 
                         if(!stockManager.isItemExist(items.getConfigKey())){
                             finalStock = items.getStock();
-                            stockManager.setStock(items.getConfigKey(), items.getStock() - 1);
+                            stockManager.setStock(items.getConfigKey(), items.getStock());
                         }
 
                         String placeholder = null;
@@ -132,9 +144,15 @@ public class NormalShopInventory extends FastInv {
                         if(finalStock > 0) placeholder = String.valueOf(finalStock);
                         if(placeholder == null) placeholder = "Placeholder Error!";
 
+                        String limit = null;
+                        if(limitManager.containsLimit(player.getUniqueId(), items.getConfigKey()))
+                            limit = String.valueOf(limitManager.getLimit(player.getUniqueId(), items.getConfigKey()));
+
+                        if(limit == null) limit = "0";
+
                         for(String line : items.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), items.getConfigKey())))
+                                    .replace("%limit%",  limit)
                                     .replace("%stock%", placeholder)
                                     .replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney()))
                                     .replace("%price%", String.valueOf(items.getPrice())));
@@ -142,9 +160,15 @@ public class NormalShopInventory extends FastInv {
 
                     } else {
 
+                        String limit = null;
+                        if(limitManager.containsLimit(player.getUniqueId(), items.getConfigKey()))
+                            limit = String.valueOf(limitManager.getLimit(player.getUniqueId(), items.getConfigKey()));
+
+                        if(limit == null) limit = "0";
+
                         for(String line : items.getLore()){
                             lore.add(line.replace("%maxLimit%", String.valueOf(items.getLimit()))
-                                    .replace("%limit%", String.valueOf(limitManager.getLimit(player.getUniqueId(), items.getConfigKey())))
+                                    .replace("%limit%", limit)
                                     .replace("%coins%", utils.getDecimalFormat().format(playerCoins.getMoney()))
                                     .replace("%price%", String.valueOf(items.getPrice())));
                         }

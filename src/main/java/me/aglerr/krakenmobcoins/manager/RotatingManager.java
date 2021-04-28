@@ -169,17 +169,12 @@ public class RotatingManager {
             for(ShopItems items : plugin.getItemsLoader().getShopItemsList()){
                 for(String key : normal){
                     if(items.getConfigKey().equalsIgnoreCase(key)){
+                        System.out.println("Adding " + items.getConfigKey());
                         normalItems.add(items);
                     }
                 }
             }
-            for(ShopItems items : plugin.getItemsLoader().getShopItemsList()){
-                for(String key : normal){
-                    if(!items.getConfigKey().equalsIgnoreCase(key) && !items.isSpecial()){
-                        normalItems.add(items);
-                    }
-                }
-            }
+
         }
 
         List<String> special = temp.getStringList("specialItems");
@@ -195,13 +190,7 @@ public class RotatingManager {
                     }
                 }
             }
-            for(ShopItems items : plugin.getItemsLoader().getShopItemsList()){
-                for(String key : special){
-                    if(!items.getConfigKey().equalsIgnoreCase(key) && items.isSpecial()){
-                        specialItems.add(items);
-                    }
-                }
-            }
+
         }
 
         temp.set("normalItems", new ArrayList<>());
@@ -213,6 +202,8 @@ public class RotatingManager {
     public void startCounting(){
 
         ItemStockManager stockManager = plugin.getItemStockManager();
+        PurchaseLimitManager limitManager = plugin.getPurchaseLimitManager();
+
         FileConfiguration config = plugin.getConfig();
         Utils utils = plugin.getUtils();
 
@@ -233,6 +224,7 @@ public class RotatingManager {
 
                 for(ShopItems items : normalItems){
                     stockManager.removeStock(items.getConfigKey());
+                    limitManager.clearSpecificItem(items.getConfigKey());
                 }
 
             }
@@ -249,6 +241,7 @@ public class RotatingManager {
 
                 for(ShopItems items : specialItems){
                     stockManager.removeStock(items.getConfigKey());
+                    limitManager.clearSpecificItem(items.getConfigKey());
                 }
 
             }

@@ -130,6 +130,7 @@ public class ItemsLoader {
 
             File file = new File(plugin.getDataFolder() + File.separator + "categories", "crates.yml");
             utils.exampleShop(file);
+            plugin.getCategoryManager().addCategory(file.getName(), YamlConfiguration.loadConfiguration(file));
 
         }
     }

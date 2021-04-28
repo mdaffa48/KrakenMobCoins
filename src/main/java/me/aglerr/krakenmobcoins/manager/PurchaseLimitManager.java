@@ -38,6 +38,18 @@ public class PurchaseLimitManager {
         table.clear();
     }
 
+    public boolean containsLimit(UUID uuid, String key){
+        return table.contains(uuid, key);
+    }
+
+    public void clearSpecificItem(String key){
+        for(UUID uuid : table.rowKeySet()){
+            if(table.containsColumn(key)){
+                table.remove(uuid, key);
+            }
+        }
+    }
+
     public void saveLimit(){
 
         FileConfiguration temp = plugin.getTempDataManager().getConfiguration();

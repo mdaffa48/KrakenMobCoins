@@ -46,8 +46,7 @@ public class CategoryInventory extends FastInv {
                     }
                 });
             } else {
-                int[] slots1 = Ints.toArray(items.getSlots());
-                setItems(slots1, stack, event -> {
+                setItems(Ints.toArray(items.getSlots()), stack, event -> {
                     if(items.getType().equals("category")){
                         utils.openCategory(category, player);
                     }

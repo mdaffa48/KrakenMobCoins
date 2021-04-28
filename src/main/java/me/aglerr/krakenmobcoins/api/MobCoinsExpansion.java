@@ -56,27 +56,24 @@ public class MobCoinsExpansion extends PlaceholderExpansion {
         DecimalFormat df = utils.getDecimalFormat();
 
         if(identifier.equalsIgnoreCase("balance")){
-            if(playerCoins == null){
-                return null;
-            } else {
-                return String.valueOf(playerCoins.getMoney());
-            }
+            if(playerCoins == null) return null;
+            return String.valueOf(playerCoins.getMoney());
         }
 
         if(identifier.equalsIgnoreCase("balance_formatted")){
-            if(playerCoins == null){
-                return null;
-            } else {
-                return df.format(playerCoins.getMoney());
-            }
+            if(playerCoins == null) return null;
+            return df.format(playerCoins.getMoney());
+
+        }
+
+        if(identifier.equalsIgnoreCase("balance_shortformat")){
+            if(playerCoins == null) return null;
+            return utils.formatShort(playerCoins.getMoney());
         }
 
         if(identifier.equalsIgnoreCase("balance_rounded")){
-            if(playerCoins == null){
-                return null;
-            } else {
-                return String.valueOf(Math.round(playerCoins.getMoney()));
-            }
+            if(playerCoins == null) return null;
+            return String.valueOf(Math.round(playerCoins.getMoney()));
         }
 
         if(identifier.equalsIgnoreCase("normal_time")){

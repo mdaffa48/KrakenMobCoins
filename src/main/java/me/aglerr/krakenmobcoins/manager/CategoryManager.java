@@ -37,6 +37,7 @@ public class CategoryManager {
         File[] files = new File(plugin.getDataFolder() + File.separator + "categories").listFiles();
         if(files.length > 0){
             for(File file : files){
+                System.out.println("Category Name: " + file.getName());
                 addCategory(file.getName(), YamlConfiguration.loadConfiguration(file));
             }
         }

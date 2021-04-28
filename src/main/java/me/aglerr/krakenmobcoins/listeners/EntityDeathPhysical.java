@@ -68,9 +68,6 @@ public class EntityDeathPhysical implements Listener {
             entity.getWorld().dropItemNaturally(entity.getLocation(), utils.getMobCoinItem(amountAfter));
         }
 
-
-
-
     }
 
 }
