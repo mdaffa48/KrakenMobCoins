@@ -2,16 +2,15 @@ package me.aglerr.krakenmobcoins.commands.subcommands;
 
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.abstraction.SubCommand;
-import me.aglerr.krakenmobcoins.configs.ConfigMessages;
+import me.aglerr.krakenmobcoins.enums.ConfigMessages;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ShopCommand extends SubCommand {
@@ -19,6 +18,23 @@ public class ShopCommand extends SubCommand {
     @Override
     public @Nullable String getPermission() {
         return "krakenmobcoins.shop";
+    }
+
+    @Override
+    public @Nullable List<String> parseTabCompletions(MobCoins plugin, CommandSender sender, String[] args) {
+
+        if(args.length == 2){
+            if(!(sender.hasPermission("krakenmobcoins.shop.others"))) return null;
+
+            List<String> suggestions = new ArrayList<>();
+            for(Player player : Bukkit.getOnlinePlayers()){
+                suggestions.add(player.getName());
+            }
+
+            return suggestions;
+        }
+
+        return null;
     }
 
     @Override
@@ -41,7 +57,7 @@ public class ShopCommand extends SubCommand {
                 utils.openShopMenu(player);
 
             } else {
-                sender.sendMessage(utils.color("&cUsage: /mobcoins shop <player]"));
+                sender.sendMessage(utils.color("&cUsage: /mobcoins shop <player>"));
             }
 
         } else if(args.length == 2){

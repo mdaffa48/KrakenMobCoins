@@ -3,16 +3,15 @@ package me.aglerr.krakenmobcoins.commands.subcommands;
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.abstraction.SubCommand;
 import me.aglerr.krakenmobcoins.api.events.MobCoinsWithdrawEvent;
-import me.aglerr.krakenmobcoins.configs.ConfigMessages;
+import me.aglerr.krakenmobcoins.enums.ConfigMessages;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class WithdrawCommand extends SubCommand {
@@ -20,6 +19,12 @@ public class WithdrawCommand extends SubCommand {
     @Override
     public String getPermission() {
         return "krakenmobcoins.withdraw";
+    }
+
+    @Override
+    public @Nullable List<String> parseTabCompletions(MobCoins plugin, CommandSender sender, String[] args) {
+        if(args.length == 2) return Collections.singletonList("<amount>");
+        return null;
     }
 
     @Override
@@ -70,19 +75,16 @@ public class WithdrawCommand extends SubCommand {
                 } else {
                     player.sendMessage(utils.color(ConfigMessages.NOT_ENOUGH_COINS.toString())
                             .replace("%prefix%", utils.getPrefix()));
-                    return;
                 }
 
             } else {
                 player.sendMessage(utils.color(ConfigMessages.NOT_INTEGER.toString())
                         .replace("%prefix%", utils.getPrefix()));
-                return;
             }
 
         } else {
             sender.sendMessage(utils.color(ConfigMessages.ONLY_PLAYER.toString())
                     .replace("%player%", utils.getPrefix()));
-            return;
         }
     }
 }

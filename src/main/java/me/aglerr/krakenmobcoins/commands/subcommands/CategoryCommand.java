@@ -2,18 +2,19 @@ package me.aglerr.krakenmobcoins.commands.subcommands;
 
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.abstraction.SubCommand;
-import me.aglerr.krakenmobcoins.configs.ConfigMessages;
+import me.aglerr.krakenmobcoins.enums.ConfigMessages;
+import me.aglerr.krakenmobcoins.manager.CategoryManager;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class CategoryCommand extends SubCommand {
@@ -21,6 +22,17 @@ public class CategoryCommand extends SubCommand {
     @Override
     public @Nullable String getPermission() {
         return "krakenmobcoins.admin";
+    }
+
+    @Override
+    public @Nullable List<String> parseTabCompletions(MobCoins plugin, CommandSender sender, String[] args) {
+
+
+        if(args.length == 2) return Arrays.asList("add", "remove", "open");
+
+        if(args.length == 3) return plugin.getCategoryManager().getCategoryList();
+
+        return null;
     }
 
     @Override

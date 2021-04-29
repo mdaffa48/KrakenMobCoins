@@ -2,7 +2,7 @@ package me.aglerr.krakenmobcoins.commands.subcommands;
 
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.abstraction.SubCommand;
-import me.aglerr.krakenmobcoins.configs.ConfigMessages;
+import me.aglerr.krakenmobcoins.enums.ConfigMessages;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
@@ -11,11 +11,30 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BalanceCommand extends SubCommand {
 
     @Override
     public @Nullable String getPermission(){ return "krakenmobcoins.balance"; }
+
+    @Override
+    public @Nullable List<String> parseTabCompletions(MobCoins plugin, CommandSender sender, String[] args) {
+
+        if(sender.hasPermission("krakenmobcoins.balance.others")){
+            if(args.length == 2){
+                List<String> suggestions = new ArrayList<>();
+                for(Player player : Bukkit.getOnlinePlayers()){
+                    suggestions.add(player.getName());
+                }
+                return suggestions;
+            }
+        }
+
+
+        return null;
+    }
 
     @Override
     public void perform(MobCoins plugin, CommandSender sender, String[] args) {

@@ -5,8 +5,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class CategoryManager {
 
@@ -31,6 +30,16 @@ public class CategoryManager {
 
     public FileConfiguration getCategory(String name){
         return categories.get(name);
+    }
+
+    public List<String> getCategoryList(){
+        List<String> list = new ArrayList<>();
+        for(String name : categories.keySet()){
+            String[] split = name.replace(".", ";").split(";");
+            list.add(split[0]);
+        }
+
+        return list;
     }
 
     public void loadCategory(){

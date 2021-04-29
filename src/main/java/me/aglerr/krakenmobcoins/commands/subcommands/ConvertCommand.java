@@ -11,12 +11,18 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.util.List;
 
 public class ConvertCommand extends SubCommand {
 
     @Override
     public @Nullable String getPermission() {
         return "krakenmobcoins.admin";
+    }
+
+    @Override
+    public @Nullable List<String> parseTabCompletions(MobCoins plugin, CommandSender sender, String[] args) {
+        return null;
     }
 
     @Override

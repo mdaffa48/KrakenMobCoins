@@ -12,6 +12,9 @@ public abstract class SubCommand {
     @Nullable
     public abstract String getPermission();
 
+    @Nullable
+    public abstract List<String> parseTabCompletions(MobCoins plugin, CommandSender sender, String[] args);
+
     public abstract void perform(MobCoins plugin, CommandSender sender, String[] args);
 
 }

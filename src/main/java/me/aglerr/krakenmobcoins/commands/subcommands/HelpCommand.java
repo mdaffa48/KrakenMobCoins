@@ -2,19 +2,22 @@ package me.aglerr.krakenmobcoins.commands.subcommands;
 
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.abstraction.SubCommand;
-import me.aglerr.krakenmobcoins.configs.ConfigMessagesList;
+import me.aglerr.krakenmobcoins.enums.ConfigMessagesList;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.command.CommandSender;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class HelpCommand extends SubCommand {
 
     @Override
     public @Nullable String getPermission() {
+        return null;
+    }
+
+    @Override
+    public @Nullable List<String> parseTabCompletions(MobCoins plugin, CommandSender sender, String[] args) {
         return null;
     }
 
