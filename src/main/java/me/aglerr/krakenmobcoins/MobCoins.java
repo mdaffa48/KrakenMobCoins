@@ -6,6 +6,8 @@ import me.aglerr.krakenmobcoins.coinmob.CoinMobManager;
 import me.aglerr.krakenmobcoins.commands.MainCommand;
 import me.aglerr.krakenmobcoins.configs.*;
 import me.aglerr.krakenmobcoins.database.SQL;
+import me.aglerr.krakenmobcoins.enums.ConfigMessages;
+import me.aglerr.krakenmobcoins.enums.ConfigMessagesList;
 import me.aglerr.krakenmobcoins.listeners.*;
 import me.aglerr.krakenmobcoins.manager.*;
 import me.aglerr.krakenmobcoins.shops.ShopUtils;
@@ -62,7 +64,6 @@ public class MobCoins extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        api = new MobCoinsAPI(this);
 
         createDatabaseFile();
         File categoriesFolder = new File("plugins/KrakenMobcoins/categories");
@@ -73,47 +74,17 @@ public class MobCoins extends JavaPlugin {
         registerConfigs();
         updateConfigs();
 
-        dependencyManager.setupDependency();
-        registerListeners();
-        registerCommands();
+        registerCommandsListeners();
 
         database = new SQL(this);
+        api = new MobCoinsAPI(this);
 
-        utils.sendConsoleMessage("Loading all saved accounts!");
-        accountManager.loadAllPlayerData();
-        notificationManager.loadToggledListFromConfig();
-
-        accountManager.startAutoSaveTask();
-        new Metrics(this, 10310);
-        FastInvManager.register(this);
-
-        if(this.getConfig().getBoolean("rotatingShop.enabled")){
-            rotatingManager.loadNormalAndSpecialTime();
-            itemsLoader.loadRotatingItems();
-            itemsLoader.loadShopItems();
-            rotatingManager.loadRewards();
-            Bukkit.getScheduler().runTask(this, rotatingManager::startCounting);
-        } else {
-            categoryManager.loadCategory();
-            itemsLoader.loadMainMenu();
-            itemsLoader.loadShopNormal();
-        }
-
-        salaryManager.beginSalaryTask();
-        coinMobManager.loadCoinMob();
-        loadDamageCausePhysical();
-        itemStockManager.loadStockFromConfig();
-
-        ConfigMessages.initialize(this.getConfig());
-        ConfigMessagesList.initialize(this.getConfig());
-
-        limitManager.loadLimit();
+        register();
 
     }
 
     @Override
     public void onDisable(){
-        utils.sendConsoleMessage("Saving all player data...");
         notificationManager.saveToggledListToConfig();
         rotatingManager.saveNormalAndSpecialTime();
         accountManager.saveAllPlayerData();
@@ -122,20 +93,46 @@ public class MobCoins extends JavaPlugin {
         limitManager.saveLimit();
     }
 
-    private void createDatabaseFile(){
-        File pluginFolder = new File("plugins/KrakenMobcoins");
-        if(!pluginFolder.exists()){
-            pluginFolder.mkdirs();
-        }
+    private void register(){
 
-        File dataFolder = new File(this.getDataFolder(), "database.db");
-        if(!dataFolder.exists()){
-            try{
-                dataFolder.createNewFile();
-                utils.sendConsoleMessage("Successfully creating database file.");
-            } catch(IOException e){
-                e.printStackTrace();
-            }
+        this.loadShop();
+
+        accountManager.loadAllPlayerData();
+        notificationManager.loadToggledListFromConfig();
+        coinMobManager.loadCoinMob();
+        itemStockManager.loadStockFromConfig();
+        limitManager.loadLimit();
+        dependencyManager.setupDependency();
+
+        this.loadDamageCausePhysical();
+
+        ConfigMessages.initialize(this.getConfig());
+        ConfigMessagesList.initialize(this.getConfig());
+
+        new Metrics(this, 10310);
+        FastInvManager.register(this);
+
+        Bukkit.getScheduler().runTask(this, salaryManager::beginSalaryTask);
+        Bukkit.getScheduler().runTask(this, accountManager::startAutoSaveTask);
+
+    }
+
+    private void loadShop(){
+        if(this.getConfig().getBoolean("rotatingShop.enabled")){
+
+            rotatingManager.loadNormalAndSpecialTime();
+            itemsLoader.loadRotatingItems();
+            itemsLoader.loadShopItems();
+            rotatingManager.loadRewards();
+
+            Bukkit.getScheduler().runTask(this, rotatingManager::startCounting);
+
+        } else {
+
+            categoryManager.loadCategory();
+            itemsLoader.loadMainMenu();
+            itemsLoader.loadShopNormal();
+
         }
     }
 
@@ -190,7 +187,7 @@ public class MobCoins extends JavaPlugin {
 
     }
 
-    private void registerListeners(){
+    private void registerCommandsListeners(){
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new PlayerListener(this), this);
         pm.registerEvents(new PlayerInteract(this), this);
@@ -201,10 +198,9 @@ public class MobCoins extends JavaPlugin {
             pm.registerEvents(new MythicMobDeath(this), this);
             pm.registerEvents(new MythicMobDeathPhysical(this), this);
         }
-    }
 
-    private void registerCommands(){
         this.getCommand("mobcoins").setExecutor(new MainCommand(this));
+
     }
 
     private void loadDamageCausePhysical(){
@@ -214,6 +210,23 @@ public class MobCoins extends JavaPlugin {
             } catch (IllegalArgumentException exception) {
                 utils.sendConsoleMessage("Damage Cause with name '{string}' is invalid!".replace("{string}", string));
                 exception.printStackTrace();
+            }
+        }
+    }
+
+    private void createDatabaseFile(){
+        File pluginFolder = new File("plugins/KrakenMobcoins");
+        if(!pluginFolder.exists()){
+            pluginFolder.mkdirs();
+        }
+
+        File dataFolder = new File(this.getDataFolder(), "database.db");
+        if(!dataFolder.exists()){
+            try{
+                dataFolder.createNewFile();
+                utils.sendConsoleMessage("Successfully creating database file.");
+            } catch(IOException e){
+                e.printStackTrace();
             }
         }
     }

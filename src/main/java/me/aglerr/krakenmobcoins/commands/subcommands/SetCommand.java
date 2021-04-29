@@ -2,16 +2,17 @@ package me.aglerr.krakenmobcoins.commands.subcommands;
 
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.abstraction.SubCommand;
-import me.aglerr.krakenmobcoins.configs.ConfigMessages;
+import me.aglerr.krakenmobcoins.enums.ConfigMessages;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SetCommand extends SubCommand {
@@ -19,6 +20,22 @@ public class SetCommand extends SubCommand {
     @Override
     public @Nullable String getPermission() {
         return "krakenmobcoins.admin";
+    }
+
+    @Override
+    public @Nullable List<String> parseTabCompletions(MobCoins plugin, CommandSender sender, String[] args) {
+
+        if(args.length == 2){
+            List<String> suggestions = new ArrayList<>();
+            for(Player player : Bukkit.getOnlinePlayers()){
+                suggestions.add(player.getName());
+            }
+            return suggestions;
+        }
+
+        if(args.length == 3) return Collections.singletonList("<amount>");
+
+        return null;
     }
 
     @Override
@@ -37,7 +54,6 @@ public class SetCommand extends SubCommand {
             sender.sendMessage(utils.color(ConfigMessages.TARGET_NOT_FOUND.toString())
                     .replace("%prefix%", utils.getPrefix())
                     .replace("%player%", args[1]));
-            return;
 
         } else {
             if(utils.isDouble(args[2])){
@@ -47,7 +63,6 @@ public class SetCommand extends SubCommand {
                     sender.sendMessage(utils.color(ConfigMessages.NO_ACCOUNT_OTHERS.toString())
                             .replace("%prefix%", utils.getPrefix())
                             .replace("%player%", args[1]));
-                    return;
 
                 } else {
                     if(!config.getBoolean("options.canGoNegative")){
@@ -73,7 +88,6 @@ public class SetCommand extends SubCommand {
             } else {
                 sender.sendMessage(utils.color(ConfigMessages.NOT_INTEGER.toString())
                         .replace("%prefix%", utils.getPrefix()));
-                return;
             }
         }
 

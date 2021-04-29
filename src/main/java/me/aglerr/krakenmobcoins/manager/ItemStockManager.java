@@ -43,21 +43,20 @@ public class ItemStockManager {
         }
 
         plugin.getTempDataManager().saveData();
-        clearStock();
 
     }
 
     public void loadStockFromConfig(){
         FileConfiguration config = plugin.getTempDataManager().getConfiguration();
-        if(config.isConfigurationSection("stock")){
-            for(String key : config.getConfigurationSection("stock").getKeys(false)){
-                setStock(key, config.getInt("stock." + key));
-            }
+        if(!config.isConfigurationSection("stock")) return;
 
-            config.set("stock", null);
-            plugin.getTempDataManager().saveData();
-
+        for(String key : config.getConfigurationSection("stock").getKeys(false)){
+            setStock(key, config.getInt("stock." + key));
         }
+
+        config.set("stock", null);
+        plugin.getTempDataManager().saveData();
+
     }
 
 }

@@ -84,26 +84,77 @@ public class MobCoinsExpansion extends PlaceholderExpansion {
             return plugin.getRotatingManager().getFormattedResetTime(true);
         }
 
-        if(identifier.equalsIgnoreCase("name_top1")) return this.getTopName(0);
-        if(identifier.equalsIgnoreCase("money_top1")) return this.getTopMoney(0);
-        if(identifier.equalsIgnoreCase("name_top2")) return this.getTopName(1);
-        if(identifier.equalsIgnoreCase("money_top2")) return this.getTopMoney(1);
-        if(identifier.equalsIgnoreCase("name_top3")) return this.getTopName(2);
-        if(identifier.equalsIgnoreCase("money_top3")) return this.getTopMoney(2);
-        if(identifier.equalsIgnoreCase("name_top4")) return this.getTopName(3);
-        if(identifier.equalsIgnoreCase("money_top4")) return this.getTopMoney(3);
-        if(identifier.equalsIgnoreCase("name_top5")) return this.getTopName(4);
-        if(identifier.equalsIgnoreCase("money_top5")) return this.getTopMoney(4);
-        if(identifier.equalsIgnoreCase("name_top6")) return this.getTopName(5);
-        if(identifier.equalsIgnoreCase("money_top6")) return this.getTopMoney(5);
-        if(identifier.equalsIgnoreCase("name_top7")) return this.getTopName(6);
-        if(identifier.equalsIgnoreCase("money_top7")) return this.getTopMoney(6);
-        if(identifier.equalsIgnoreCase("name_top8")) return this.getTopName(7);
-        if(identifier.equalsIgnoreCase("money_top8")) return this.getTopMoney(7);
-        if(identifier.equalsIgnoreCase("name_top9")) return this.getTopName(8);
-        if(identifier.equalsIgnoreCase("money_top9")) return this.getTopMoney(8);
-        if(identifier.equalsIgnoreCase("name_top10")) return this.getTopName(9);
-        if(identifier.equalsIgnoreCase("money_top10")) return this.getTopMoney(9);
+        if(identifier.equalsIgnoreCase("name_top1"))
+            return this.getTopName(0);
+        if(identifier.equalsIgnoreCase("money_top1"))
+            return this.getTopMoney(0, false);
+        if(identifier.equalsIgnoreCase("money_format_top1"))
+            return this.getTopMoney(0, true);
+
+        if(identifier.equalsIgnoreCase("name_top2"))
+            return this.getTopName(1);
+        if(identifier.equalsIgnoreCase("money_top2"))
+            return this.getTopMoney(1, false);
+        if(identifier.equalsIgnoreCase("money_format_top2"))
+            return this.getTopMoney(1, true);
+
+        if(identifier.equalsIgnoreCase("name_top3"))
+            return this.getTopName(2);
+        if(identifier.equalsIgnoreCase("money_top3"))
+            return this.getTopMoney(2, false);
+        if(identifier.equalsIgnoreCase("money_format_top3"))
+            return this.getTopMoney(2, true);
+
+        if(identifier.equalsIgnoreCase("name_top4"))
+            return this.getTopName(3);
+        if(identifier.equalsIgnoreCase("money_top4"))
+            return this.getTopMoney(3, false);
+        if(identifier.equalsIgnoreCase("money_format_top4"))
+            return this.getTopMoney(3, true);
+
+        if(identifier.equalsIgnoreCase("name_top5"))
+            return this.getTopName(4);
+        if(identifier.equalsIgnoreCase("money_top5"))
+            return this.getTopMoney(4, false);
+        if(identifier.equalsIgnoreCase("money_format_top5"))
+            return this.getTopMoney(4, true);
+
+        if(identifier.equalsIgnoreCase("name_top6"))
+            return this.getTopName(5);
+        if(identifier.equalsIgnoreCase("money_top6"))
+            return this.getTopMoney(5, false);
+        if(identifier.equalsIgnoreCase("money_format_top6"))
+            return this.getTopMoney(5, true);
+
+        if(identifier.equalsIgnoreCase("name_top7"))
+            return this.getTopName(6);
+        if(identifier.equalsIgnoreCase("money_top7"))
+            return this.getTopMoney(6, false);
+        if(identifier.equalsIgnoreCase("money_format_top7"))
+            return this.getTopMoney(6, true);
+
+        if(identifier.equalsIgnoreCase("name_top8"))
+            return this.getTopName(7);
+        if(identifier.equalsIgnoreCase("money_top8"))
+            return this.getTopMoney(7, false);
+        if(identifier.equalsIgnoreCase("money_format_top8"))
+            return this.getTopMoney(7, true);
+
+        if(identifier.equalsIgnoreCase("name_top9"))
+            return this.getTopName(8);
+        if(identifier.equalsIgnoreCase("money_top9"))
+            return this.getTopMoney(8, false);
+        if(identifier.equalsIgnoreCase("money_format_top9"))
+            return this.getTopMoney(8, true);
+
+        if(identifier.equalsIgnoreCase("name_top10"))
+            return this.getTopName(9);
+        if(identifier.equalsIgnoreCase("money_top10"))
+            return this.getTopMoney(9, false);
+        if(identifier.equalsIgnoreCase("money_format_top10"))
+            return this.getTopMoney(9, true);
+
+
 
         return null;
     }
@@ -124,8 +175,9 @@ public class MobCoinsExpansion extends PlaceholderExpansion {
 
     }
 
-    private String getTopMoney(int index){
+    private String getTopMoney(int index, boolean shortFormat){
         FileConfiguration config = plugin.getConfig();
+        Utils utils = plugin.getUtils();
         String moneyEmpty = config.getString("placeholders.top.moneyIfEmpty");
 
         List<PlayerCoins> playerCoinsList = accountManager.getTop();
@@ -133,6 +185,7 @@ public class MobCoinsExpansion extends PlaceholderExpansion {
 
         try{
             PlayerCoins playerCoins = playerCoinsList.get(index);
+            if(shortFormat) return utils.formatShort(playerCoins.getMoney());
             return df.format(playerCoins.getMoney());
         } catch(IndexOutOfBoundsException exception){
             return moneyEmpty;

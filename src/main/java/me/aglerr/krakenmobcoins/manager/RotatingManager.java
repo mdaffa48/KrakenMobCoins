@@ -2,7 +2,6 @@ package me.aglerr.krakenmobcoins.manager;
 
 import fr.mrmicky.fastinv.FastInv;
 import me.aglerr.krakenmobcoins.MobCoins;
-import me.aglerr.krakenmobcoins.configs.ConfigMessagesList;
 import me.aglerr.krakenmobcoins.shops.items.ShopItems;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
@@ -12,7 +11,6 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class RotatingManager {
 
@@ -146,6 +144,7 @@ public class RotatingManager {
 
         List<String> special = new ArrayList<>();
         for(ShopItems items : specialItems){
+            System.out.println("Saving: " + items.getConfigKey());
             special.add(items.getConfigKey());
         }
 
@@ -169,12 +168,13 @@ public class RotatingManager {
             for(ShopItems items : plugin.getItemsLoader().getShopItemsList()){
                 for(String key : normal){
                     if(items.getConfigKey().equalsIgnoreCase(key)){
-                        System.out.println("Adding " + items.getConfigKey());
                         normalItems.add(items);
                     }
                 }
+                if(items.isSpecial()) continue;
+                if(normal.stream().anyMatch(key -> key.equalsIgnoreCase(items.getConfigKey()))) continue;
+                normalItems.add(items);
             }
-
         }
 
         List<String> special = temp.getStringList("specialItems");
@@ -189,8 +189,10 @@ public class RotatingManager {
                         specialItems.add(items);
                     }
                 }
+                if(!items.isSpecial()) continue;
+                if(special.stream().anyMatch(key -> key.equalsIgnoreCase(items.getConfigKey()))) continue;
+                specialItems.add(items);
             }
-
         }
 
         temp.set("normalItems", new ArrayList<>());
@@ -273,9 +275,9 @@ public class RotatingManager {
 
         int timeRemaining;
         if(isSpecial){
-            timeRemaining = getNormalTime();
-        } else {
             timeRemaining = getSpecialTime();
+        } else {
+            timeRemaining = getNormalTime();
         }
 
         if (timeRemaining < 60) {

@@ -17,6 +17,7 @@ C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\sho
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\commands\subcommands\BalanceCommand.java
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\commands\subcommands\ConvertCommand.java
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\shops\items\ShopNormalItems.java
+C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\enums\ConfigMessagesList.java
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\commands\subcommands\RefreshCommand.java
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\database\SQL.java
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\commands\subcommands\SetCommand.java
@@ -36,8 +37,8 @@ C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\sho
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\api\events\MobCoinsWithdrawEvent.java
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\manager\ToggleNotificationManager.java
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\api\MobCoinsAPI.java
+C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\enums\ConfigMessages.java
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\commands\subcommands\HelpCommand.java
-C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\configs\ConfigMessages.java
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\shops\items\MainMenuItems.java
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\api\MobCoinsExpansion.java
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\database\PlayerCoins.java
@@ -57,4 +58,3 @@ C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\man
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\listeners\PlayerListener.java
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\manager\CategoryManager.java
 C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\shops\ConfirmationInventory.java
-C:\Daffa\Intellij IDEA\KrakenMobcoins\src\main\java\me\aglerr\krakenmobcoins\configs\ConfigMessagesList.java

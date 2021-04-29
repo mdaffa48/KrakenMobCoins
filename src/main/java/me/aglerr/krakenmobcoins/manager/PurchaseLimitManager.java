@@ -71,7 +71,6 @@ public class PurchaseLimitManager {
         for(String uuid : temp.getConfigurationSection("purchaseLimit").getKeys(false)){
             for(String key : temp.getConfigurationSection("purchaseLimit." + uuid).getKeys(false)){
                 int limit = temp.getInt("purchaseLimit." + uuid + "." + key);
-                System.out.println("  " + key + ": " + limit);
                 table.put(UUID.fromString(uuid), key, limit);
             }
         }
