@@ -1,8 +1,11 @@
 package me.aglerr.krakenmobcoins.listeners;
 
+import io.lumine.xikage.mythicmobs.MythicMobs;
+import io.lumine.xikage.mythicmobs.api.bukkit.BukkitAPIHelper;
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.coinmob.CoinMob;
 import me.aglerr.krakenmobcoins.coinmob.CoinMobManager;
+import me.aglerr.krakenmobcoins.manager.DependencyManager;
 import me.aglerr.krakenmobcoins.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -28,13 +31,22 @@ public class EntityDeathPhysical implements Listener {
         FileConfiguration config = plugin.getConfig();
         if(!config.getBoolean("options.physicalMobCoin.enabled")) return;
 
+        DependencyManager dependencyManager = plugin.getDependencyManager();
+
+        Utils utils = plugin.getUtils();
+        LivingEntity entity = event.getEntity();
+
         if(!config.getBoolean("options.physicalMobCoin.ignoreDeathCause")){
             if(event.getEntity().getLastDamageCause() == null) return;
             if(!plugin.getDamageCauses().contains(event.getEntity().getLastDamageCause().getCause())) return;
         }
 
-        Utils utils = plugin.getUtils();
-        LivingEntity entity = event.getEntity();
+        if(dependencyManager.isMythicMobs()){
+            BukkitAPIHelper mythicMobsAPI = MythicMobs.inst().getAPIHelper();
+            if(mythicMobsAPI.isMythicMob(entity)){
+                return;
+            }
+        }
 
         List<String> worlds = config.getStringList("disabledWorlds");
         if(worlds.contains(entity.getWorld().getName())) return;

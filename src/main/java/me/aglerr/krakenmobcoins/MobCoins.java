@@ -23,6 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class MobCoins extends JavaPlugin {
 
@@ -74,12 +75,11 @@ public class MobCoins extends JavaPlugin {
         registerConfigs();
         updateConfigs();
 
+        register();
         registerCommandsListeners();
 
         database = new SQL(this);
         api = new MobCoinsAPI(this);
-
-        register();
 
     }
 

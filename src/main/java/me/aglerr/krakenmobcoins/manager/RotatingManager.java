@@ -144,7 +144,6 @@ public class RotatingManager {
 
         List<String> special = new ArrayList<>();
         for(ShopItems items : specialItems){
-            System.out.println("Saving: " + items.getConfigKey());
             special.add(items.getConfigKey());
         }
 

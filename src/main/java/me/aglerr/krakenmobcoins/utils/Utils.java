@@ -7,6 +7,7 @@ import com.cryptomorin.xseries.messages.ActionBar;
 import com.cryptomorin.xseries.messages.Titles;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import me.aglerr.krakenmobcoins.MobCoins;
+import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.enums.ConfigMessages;
 import me.aglerr.krakenmobcoins.shops.CategoryInventory;
 import me.aglerr.krakenmobcoins.shops.NormalShopInventory;
@@ -82,29 +83,6 @@ public class Utils {
 
     private String toLong(double amt) {
         return String.valueOf((long) amt);
-    }
-
-    public String formatShort(double d){
-        if (d < 1000L) {
-            return format(d);
-        }
-        if (d < 1000000L) {
-            return format(d / 1000L) + "K";
-        }
-        if (d < 1000000000L) {
-            return format(d / 1000000L) + "M";
-        }
-        if (d < 1000000000000L) {
-            return format(d / 1000000000L) + "B";
-        }
-        if (d < 1000000000000000L) {
-            return format(d / 1000000000000L) + "T";
-        }
-        if (d < 1000000000000000000L) {
-            return format(d / 1000000000000000L) + "Q";
-        }
-
-        return toLong(d);
     }
 
     public ItemStack getMobCoinItem(double amount){
@@ -349,6 +327,75 @@ public class Utils {
             ActionBar.sendActionBar(plugin, player, color(message), duration);
 
         }
+    }
+
+    public String getTopName(int index){
+
+        FileConfiguration config = plugin.getConfig();
+        String nameEmpty = config.getString("placeholders.top.nameIfEmpty");
+
+        List<PlayerCoins> playerCoinsList = plugin.getAccountManager().getTop();
+
+        try{
+            PlayerCoins playerCoins = playerCoinsList.get(index);
+            return playerCoins.getPlayerName();
+        } catch(IndexOutOfBoundsException exception){
+            return nameEmpty;
+        }
+
+    }
+
+    public String getTopMoney(int index){
+        FileConfiguration config = plugin.getConfig();
+        String moneyEmpty = config.getString("placeholders.top.moneyIfEmpty");
+
+        List<PlayerCoins> playerCoinsList = plugin.getAccountManager().getTop();
+        DecimalFormat df = plugin.getUtils().getDecimalFormat();
+
+        try{
+            PlayerCoins playerCoins = playerCoinsList.get(index);
+            return df.format(playerCoins.getMoney());
+        } catch(IndexOutOfBoundsException exception){
+            return moneyEmpty;
+        }
+
+    }
+
+    public String getTopMoneyFormat(int index){
+        FileConfiguration config = plugin.getConfig();
+        String moneyEmpty = config.getString("placeholders.top.moneyIfEmpty");
+        List<PlayerCoins> playerCoinsList = plugin.getAccountManager().getTop();
+
+        try{
+            PlayerCoins playerCoins = playerCoinsList.get(index);
+            return this.formatShort(playerCoins.getMoney());
+        } catch(IndexOutOfBoundsException exception){
+            return moneyEmpty;
+        }
+
+    }
+
+    public String formatShort(double d){
+        if (d < 1000L) {
+            return format(d);
+        }
+        if (d < 1000000L) {
+            return format(d / 1000L) + "K";
+        }
+        if (d < 1000000000L) {
+            return format(d / 1000000L) + "M";
+        }
+        if (d < 1000000000000L) {
+            return format(d / 1000000000L) + "B";
+        }
+        if (d < 1000000000000000L) {
+            return format(d / 1000000000000L) + "T";
+        }
+        if (d < 1000000000000000000L) {
+            return format(d / 1000000000000000L) + "Q";
+        }
+
+        return toLong(d);
     }
 
 }

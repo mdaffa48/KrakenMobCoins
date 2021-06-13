@@ -5,6 +5,7 @@ import me.aglerr.krakenmobcoins.abstraction.SubCommand;
 import me.aglerr.krakenmobcoins.enums.ConfigMessagesList;
 import me.aglerr.krakenmobcoins.database.PlayerCoins;
 import me.aglerr.krakenmobcoins.utils.Utils;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.Nullable;
@@ -31,58 +32,36 @@ public class TopCommand extends SubCommand {
 
         for(String message : ConfigMessagesList.LEADERBOARD.toStringList()){
             sender.sendMessage(utils.color(message)
-                    .replace("%name_top1%", this.getTopName(plugin, 0))
-                    .replace("%money_top1%", this.getTopMoney(plugin, 0))
-                    .replace("%name_top2%", this.getTopName(plugin, 1))
-                    .replace("%money_top2%", this.getTopMoney(plugin, 1))
-                    .replace("%name_top3%", this.getTopName(plugin, 2))
-                    .replace("%money_top3%", this.getTopMoney(plugin, 2))
-                    .replace("%name_top4%", this.getTopName(plugin, 3))
-                    .replace("%money_top4%", this.getTopMoney(plugin, 3))
-                    .replace("%name_top5%", this.getTopName(plugin, 4))
-                    .replace("%money_top5%", this.getTopMoney(plugin, 4))
-                    .replace("%name_top6%", this.getTopName(plugin, 5))
-                    .replace("%money_top6%", this.getTopMoney(plugin, 5))
-                    .replace("%name_top7%", this.getTopName(plugin, 6))
-                    .replace("%money_top7%", this.getTopMoney(plugin, 6))
-                    .replace("%name_top8%", this.getTopName(plugin, 7))
-                    .replace("%money_top8%", this.getTopMoney(plugin, 7))
-                    .replace("%name_top9%", this.getTopName(plugin, 8))
-                    .replace("%money_top9%", this.getTopMoney(plugin, 8))
-                    .replace("%name_top10%", this.getTopName(plugin, 9))
-                    .replace("%money_top10%", this.getTopMoney(plugin, 9)));
-        }
-
-    }
-
-    private String getTopName(MobCoins plugin, int index){
-
-        FileConfiguration config = plugin.getConfig();
-        String nameEmpty = config.getString("placeholders.top.nameIfEmpty");
-
-        List<PlayerCoins> playerCoinsList = plugin.getAccountManager().getTop();
-
-        try{
-            PlayerCoins playerCoins = playerCoinsList.get(index);
-            return playerCoins.getPlayerName();
-        } catch(IndexOutOfBoundsException exception){
-            return nameEmpty;
-        }
-
-    }
-
-    private String getTopMoney(MobCoins plugin, int index){
-        FileConfiguration config = plugin.getConfig();
-        String moneyEmpty = config.getString("placeholders.top.moneyIfEmpty");
-
-        List<PlayerCoins> playerCoinsList = plugin.getAccountManager().getTop();
-        DecimalFormat df = new DecimalFormat("###,###,###,###,###.##");
-
-        try{
-            PlayerCoins playerCoins = playerCoinsList.get(index);
-            return df.format(playerCoins.getMoney());
-        } catch(IndexOutOfBoundsException exception){
-            return moneyEmpty;
+                    .replace("%name_top1%", utils.getTopName(0))
+                    .replace("%money_top1%", utils.getTopMoney(0))
+                    .replace("%name_top2%", utils.getTopName(1))
+                    .replace("%money_top2%", utils.getTopMoney(1))
+                    .replace("%name_top3%", utils.getTopName(2))
+                    .replace("%money_top3%", utils.getTopMoney(2))
+                    .replace("%name_top4%", utils.getTopName(3))
+                    .replace("%money_top4%", utils.getTopMoney(3))
+                    .replace("%name_top5%", utils.getTopName(4))
+                    .replace("%money_top5%", utils.getTopMoney(4))
+                    .replace("%name_top6%", utils.getTopName(5))
+                    .replace("%money_top6%", utils.getTopMoney(5))
+                    .replace("%name_top7%", utils.getTopName(6))
+                    .replace("%money_top7%", utils.getTopMoney(6))
+                    .replace("%name_top8%", utils.getTopName(7))
+                    .replace("%money_top8%", utils.getTopMoney(7))
+                    .replace("%name_top9%", utils.getTopName(8))
+                    .replace("%money_top9%", utils.getTopMoney(8))
+                    .replace("%name_top10%", utils.getTopName(9))
+                    .replace("%money_top10%", utils.getTopMoney(9))
+                    .replace("%money_format_top1%", utils.getTopMoneyFormat(0))
+                    .replace("%money_format_top2%", utils.getTopMoneyFormat(1))
+                    .replace("%money_format_top3%", utils.getTopMoneyFormat(2))
+                    .replace("%money_format_top4%", utils.getTopMoneyFormat(3))
+                    .replace("%money_format_top5%", utils.getTopMoneyFormat(4))
+                    .replace("%money_format_top6%", utils.getTopMoneyFormat(5))
+                    .replace("%money_format_top7%", utils.getTopMoneyFormat(6))
+                    .replace("%money_format_top8%", utils.getTopMoneyFormat(7))
+                    .replace("%money_format_top9%", utils.getTopMoneyFormat(8))
+                    .replace("%money_format_top10%", utils.getTopMoneyFormat(9)));
         }
 
     }

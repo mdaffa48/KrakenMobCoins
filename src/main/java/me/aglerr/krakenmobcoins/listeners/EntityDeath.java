@@ -1,6 +1,8 @@
 package me.aglerr.krakenmobcoins.listeners;
 
 import com.bgsoftware.wildstacker.api.WildStackerAPI;
+import io.lumine.xikage.mythicmobs.MythicMobs;
+import io.lumine.xikage.mythicmobs.api.bukkit.BukkitAPIHelper;
 import me.aglerr.krakenmobcoins.MobCoins;
 import me.aglerr.krakenmobcoins.coinmob.CoinMob;
 import me.aglerr.krakenmobcoins.coinmob.CoinMobManager;
@@ -31,9 +33,19 @@ public class EntityDeath implements Listener {
     public void onEntityDeath(EntityDeathEvent event){
         FileConfiguration config = plugin.getConfig();
         Utils utils = plugin.getUtils();
+        DependencyManager dependencyManager = plugin.getDependencyManager();
+
+        LivingEntity entity = event.getEntity();
 
         if(config.getBoolean("options.physicalMobCoin.enabled")) return;
-        if(event.getEntity().getKiller() == null) return;
+        if(entity.getKiller() == null) return;
+
+        if(dependencyManager.isMythicMobs()){
+            BukkitAPIHelper mythicMobsAPI = MythicMobs.inst().getAPIHelper();
+            if(mythicMobsAPI.isMythicMob(entity)){
+                return;
+            }
+        }
 
         Player player = event.getEntity().getKiller();
         PlayerCoins playerCoins = plugin.getAccountManager().getPlayerData(player.getUniqueId().toString());
@@ -42,7 +54,6 @@ public class EntityDeath implements Listener {
         List<String> worlds = config.getStringList("disabledWorlds");
         if(worlds.contains(player.getWorld().getName())) return;
 
-        LivingEntity entity = event.getEntity();
         if(config.getBoolean("options.disableMobCoinsFromSpawner")){
             if(plugin.getMobSpawner().contains(entity.getUniqueId())){
                 plugin.getMobSpawner().remove(entity.getUniqueId());
@@ -68,7 +79,6 @@ public class EntityDeath implements Listener {
         if(mobCoinsReceiveEvent.isCancelled()) return;
 
         if(config.getBoolean("options.wildStackerSupport")){
-            final DependencyManager dependencyManager = plugin.getDependencyManager();
             if(dependencyManager.isWildStacker()) {
                 mobCoinsReceiveEvent.setAmountAfterMultiplier(mobCoinsReceiveEvent.getAmountAfterMultiplier() * WildStackerAPI.getEntityAmount(entity));
             }

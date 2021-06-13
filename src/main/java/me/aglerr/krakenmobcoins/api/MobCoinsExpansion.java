@@ -85,112 +85,76 @@ public class MobCoinsExpansion extends PlaceholderExpansion {
         }
 
         if(identifier.equalsIgnoreCase("name_top1"))
-            return this.getTopName(0);
+            return utils.getTopName(0);
         if(identifier.equalsIgnoreCase("money_top1"))
-            return this.getTopMoney(0, false);
+            return utils.getTopMoney(0);
         if(identifier.equalsIgnoreCase("money_format_top1"))
-            return this.getTopMoney(0, true);
+            return utils.getTopMoneyFormat(0);
 
         if(identifier.equalsIgnoreCase("name_top2"))
-            return this.getTopName(1);
+            return utils.getTopName(1);
         if(identifier.equalsIgnoreCase("money_top2"))
-            return this.getTopMoney(1, false);
+            return utils.getTopMoney(1);
         if(identifier.equalsIgnoreCase("money_format_top2"))
-            return this.getTopMoney(1, true);
+            return utils.getTopMoneyFormat(1);
 
         if(identifier.equalsIgnoreCase("name_top3"))
-            return this.getTopName(2);
+            return utils.getTopName(2);
         if(identifier.equalsIgnoreCase("money_top3"))
-            return this.getTopMoney(2, false);
+            return utils.getTopMoney(2);
         if(identifier.equalsIgnoreCase("money_format_top3"))
-            return this.getTopMoney(2, true);
+            return utils.getTopMoneyFormat(2);
 
         if(identifier.equalsIgnoreCase("name_top4"))
-            return this.getTopName(3);
+            return utils.getTopName(3);
         if(identifier.equalsIgnoreCase("money_top4"))
-            return this.getTopMoney(3, false);
+            return utils.getTopMoney(3);
         if(identifier.equalsIgnoreCase("money_format_top4"))
-            return this.getTopMoney(3, true);
+            return utils.getTopMoneyFormat(3);
 
         if(identifier.equalsIgnoreCase("name_top5"))
-            return this.getTopName(4);
+            return utils.getTopName(4);
         if(identifier.equalsIgnoreCase("money_top5"))
-            return this.getTopMoney(4, false);
+            return utils.getTopMoney(4);
         if(identifier.equalsIgnoreCase("money_format_top5"))
-            return this.getTopMoney(4, true);
+            return utils.getTopMoneyFormat(4);
 
         if(identifier.equalsIgnoreCase("name_top6"))
-            return this.getTopName(5);
+            return utils.getTopName(5);
         if(identifier.equalsIgnoreCase("money_top6"))
-            return this.getTopMoney(5, false);
+            return utils.getTopMoney(5);
         if(identifier.equalsIgnoreCase("money_format_top6"))
-            return this.getTopMoney(5, true);
+            return utils.getTopMoneyFormat(5);
 
         if(identifier.equalsIgnoreCase("name_top7"))
-            return this.getTopName(6);
+            return utils.getTopName(6);
         if(identifier.equalsIgnoreCase("money_top7"))
-            return this.getTopMoney(6, false);
+            return utils.getTopMoney(6);
         if(identifier.equalsIgnoreCase("money_format_top7"))
-            return this.getTopMoney(6, true);
+            return utils.getTopMoneyFormat(6);
 
         if(identifier.equalsIgnoreCase("name_top8"))
-            return this.getTopName(7);
+            return utils.getTopName(7);
         if(identifier.equalsIgnoreCase("money_top8"))
-            return this.getTopMoney(7, false);
+            return utils.getTopMoney(7);
         if(identifier.equalsIgnoreCase("money_format_top8"))
-            return this.getTopMoney(7, true);
+            return utils.getTopMoneyFormat(7);
 
         if(identifier.equalsIgnoreCase("name_top9"))
-            return this.getTopName(8);
+            return utils.getTopName(8);
         if(identifier.equalsIgnoreCase("money_top9"))
-            return this.getTopMoney(8, false);
+            return utils.getTopMoney(8);
         if(identifier.equalsIgnoreCase("money_format_top9"))
-            return this.getTopMoney(8, true);
+            return utils.getTopMoneyFormat(8);
 
         if(identifier.equalsIgnoreCase("name_top10"))
-            return this.getTopName(9);
+            return utils.getTopName(9);
         if(identifier.equalsIgnoreCase("money_top10"))
-            return this.getTopMoney(9, false);
+            return utils.getTopMoney(9);
         if(identifier.equalsIgnoreCase("money_format_top10"))
-            return this.getTopMoney(9, true);
-
-
+            return utils.getTopMoneyFormat(9);
 
         return null;
-    }
-
-    private String getTopName(int index){
-
-        FileConfiguration config = plugin.getConfig();
-        String nameEmpty = config.getString("placeholders.top.nameIfEmpty");
-
-        List<PlayerCoins> playerCoinsList = accountManager.getTop();
-
-        try{
-            PlayerCoins playerCoins = playerCoinsList.get(index);
-            return playerCoins.getPlayerName();
-        } catch(IndexOutOfBoundsException exception){
-            return nameEmpty;
-        }
-
-    }
-
-    private String getTopMoney(int index, boolean shortFormat){
-        FileConfiguration config = plugin.getConfig();
-        Utils utils = plugin.getUtils();
-        String moneyEmpty = config.getString("placeholders.top.moneyIfEmpty");
-
-        List<PlayerCoins> playerCoinsList = accountManager.getTop();
-        DecimalFormat df = plugin.getUtils().getDecimalFormat();
-
-        try{
-            PlayerCoins playerCoins = playerCoinsList.get(index);
-            if(shortFormat) return utils.formatShort(playerCoins.getMoney());
-            return df.format(playerCoins.getMoney());
-        } catch(IndexOutOfBoundsException exception){
-            return moneyEmpty;
-        }
-
     }
 
 }
