@@ -100,7 +100,7 @@ public class AccountManager {
                 statement.close();
                 connection.close();
             } catch (SQLException exception) {
-                System.out.println("[KrakenMobCoins] Error saving player account data.");
+                plugin.getLogger().severe("Error saving player account data.");
                 exception.printStackTrace();
             }
         });
