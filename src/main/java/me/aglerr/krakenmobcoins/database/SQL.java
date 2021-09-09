@@ -93,7 +93,7 @@ public class SQL {
             statement.close();
 
         } catch (SQLException exception) {
-            System.out.println("[KrakenMobCoins] Error trying to insert to the database!");
+            plugin.getLogger().severe("Error trying to insert to the database!");
             exception.printStackTrace();
         }
 
@@ -109,7 +109,7 @@ public class SQL {
             statement.close();
 
         } catch (SQLException exception) {
-            System.out.println("[KrakenMobCoins] Error trying to update to the database!");
+            plugin.getLogger().severe("Error trying to update to the database!");
             exception.printStackTrace();
         }
 
