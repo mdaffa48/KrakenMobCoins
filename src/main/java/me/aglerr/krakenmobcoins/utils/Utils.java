@@ -45,7 +45,7 @@ public class Utils {
     }
 
     public void sendConsoleMessage(String string) {
-        System.out.println(color("[KrakenMobCoins] " + string));
+        plugin.getLogger().info(color(string));
     }
 
     public String getPrefix(){
