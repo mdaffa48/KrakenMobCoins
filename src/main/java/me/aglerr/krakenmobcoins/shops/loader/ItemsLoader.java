@@ -126,7 +126,7 @@ public class ItemsLoader {
         } else {
 
             Utils utils = plugin.getUtils();
-            System.out.println("[KrakenMobCoins] Couldn't find any category, creating one...");
+            plugin.getLogger().info("Couldn't find any category, creating one...");
 
             File file = new File(plugin.getDataFolder() + File.separator + "categories", "crates.yml");
             utils.exampleShop(file);
