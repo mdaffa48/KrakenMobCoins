@@ -55,7 +55,7 @@ public class ConvertCommand extends SubCommand {
                     String amount = String.valueOf(profile.getInt("Profile." + uuid + ".mobcoins"));
 
                     plugin.getAccountManager().createPlayerData(uuid, Double.parseDouble(amount));
-                    System.out.println("[KrakenMobCoins] Converting " + uuid + " data.");
+                    plugin.getLogger().info("Converting " + uuid + " data.");
 
                 }
 
