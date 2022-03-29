@@ -85,7 +85,7 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.17-R0.1-SNAPSHOT</version>
+      <version>1.18.2-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -106,6 +106,13 @@
       <version>1.1.1</version>
       <scope>system</scope>
       <systemPath>${project.basedir}/deps/mobcoins-api-1.1.1-SNAPSHOT.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.bgsoftware</groupId>
+      <artifactId>WildStackerAPI</artifactId>
+      <version>latest</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/deps/WildStackerAPI.jar</systemPath>
     </dependency>
   </dependencies>
 </project>
